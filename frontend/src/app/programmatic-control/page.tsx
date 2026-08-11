@@ -54,33 +54,15 @@ export default function Page() {
         </div>
       </Panel>
 
-      <Callout
-        tone="warn"
-        title="The published snippet has no render half — so the demo renders nothing"
-      >
-        <p>
-          The page walks through its <code>headless-complete</code> component and
-          builds a full send pipeline: <code>consumeAttachments</code> →{" "}
-          <code>buildContent</code> → <code>agent.addMessage</code> →{" "}
-          <code>copilotkit.runAgent</code>, plus stop and reset handlers. Then
-          the snippet ends. There is no JSX, no message list and no composer
-          anywhere on the page.
-        </p>
-        <p className="mt-2">
-          Reproduced as-is, that component can only{" "}
-          <code>return &lt;&gt;&lt;/&gt;</code>, so this route is an empty
-          frame. Nothing is missing from the transcription — the render half was
-          never published. Completing it would mean inventing the part of the
-          page that does not exist, and hiding the gap the harness is meant to
-          surface.
-        </p>
-        <p className="mt-2">
-          The handlers above it are all real and typecheck against the installed
-          package, which is what makes the omission worth recording rather than
-          dismissing: the logic the page teaches is sound, it just never shows
-          you where any of it is wired.
-        </p>
-      </Callout>
+
+   
+       <Panel title="It is an issue - half the code is missing and imports are missing">
+        <Callout tone="warn" title="Missing code">
+          <p>
+           Missing imports and code 
+          </p>
+        </Callout>
+      </Panel>
 
       <Panel title="The demo — the doc's send pipeline, verbatim">
         <SourceCode file="frontend/src/app/programmatic-control/demo-chat/page.tsx" />

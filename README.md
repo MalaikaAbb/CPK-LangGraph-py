@@ -198,10 +198,6 @@ INFO:     Uvicorn running on http://0.0.0.0:8123 (Press CTRL+C to quit)
 LangSmith transport instead:
 
 ```bash
-cd backend && LANGGRAPH_TRANSPORT=langsmith uv run langgraph dev --port 8123 --no-browser
-
-or try
-
 
 npx @langchain/langgraph-cli dev --port 8123 --no-browser
 ```
