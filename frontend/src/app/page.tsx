@@ -1,10 +1,19 @@
 import Link from "next/link";
 
+import { DocDriftPanel } from "@/components/doc-drift-panel";
+import { DocSyncedAt } from "@/components/doc-synced-at";
 import { StatusBadge } from "@/components/route-header";
 import { Callout, KeyValue, Panel } from "@/components/ui";
 import { AGENT_IDS } from "@/lib/agents";
-import { DOCS_ROOT, DOC_SYNC_DATE, NAV } from "@/lib/nav-config";
+import { DOCS_ROOT, NAV } from "@/lib/nav-config";
 import { describeTransport } from "@/lib/runtime-agents";
+
+/**
+ * Dynamic because the doc-drift panel reads the snapshot off disk. Left static,
+ * `next build` would inline whatever the snapshot said at build time and the
+ * panel would never move again — while still looking correct under `next dev`.
+ */
+export const dynamic = "force-dynamic";
 
 export default function Page() {
   const transport = describeTransport();
@@ -31,7 +40,7 @@ export default function Page() {
         <div className="mt-4">
           <KeyValue
             rows={[
-              ["Doc sync", DOC_SYNC_DATE],
+              ["Docs synced", <DocSyncedAt key="docs-synced" withPages />],
               ["Routes", `${routeCount}`],
               ["Graphs", `${AGENT_IDS.length}`],
               [
@@ -45,6 +54,8 @@ export default function Page() {
         </div>
       </header>
 
+
+      <DocDriftPanel />
 
       <Panel
         title="Both deployment tabs are real"

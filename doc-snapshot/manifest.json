@@ -1,0 +1,576 @@
+{
+  "schema": 1,
+  "docsRoot": "https://docs.copilotkit.ai/langgraph-python",
+  "syncedAt": "2026-08-17T12:19:02.842Z",
+  "pages": {
+    "/langgraph-python": {
+      "file": "langgraph-python.md",
+      "sha256": "e8f1f95aa2e5237c1f0d1a2f4789ac5b58d6d99658f7546516e428fed862a155",
+      "bytes": 3449,
+      "lines": 63,
+      "routes": [
+        "/",
+        "/status",
+        "/doc-sync"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/agent-app-context": {
+      "file": "langgraph-python__agent-app-context.md",
+      "sha256": "ae48ead1990a8d8ee81beac02d1fccedd07dc59dda4c62cd5d4079fd62746a1b",
+      "bytes": 12171,
+      "lines": 264,
+      "routes": [
+        "/agent-app-context"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/agent-config": {
+      "file": "langgraph-python__agent-config.md",
+      "sha256": "e255648e72954e539d8140977ce33d3d2d3cf85131dc969d0b4fe9fbdadcd2a5",
+      "bytes": 5808,
+      "lines": 165,
+      "routes": [
+        "/agent-config"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/configurable": {
+      "file": "langgraph-python__configurable.md",
+      "sha256": "038d09a09986b7e95a197fbbc5afbd60065db866110bdaeaa3be9f4e29facd3f",
+      "bytes": 4525,
+      "lines": 132,
+      "routes": [
+        "/configurable"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/custom-look-and-feel/css": {
+      "file": "langgraph-python__custom-look-and-feel__css.md",
+      "sha256": "7d7327c75d4bf60889ebec3f6202f2aeb6b6d8737c9f7ccd01433af0267c20b9",
+      "bytes": 10206,
+      "lines": 301,
+      "routes": [
+        "/custom-look-and-feel/css"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/custom-look-and-feel/headless-ui": {
+      "file": "langgraph-python__custom-look-and-feel__headless-ui.md",
+      "sha256": "9531f46882fc25e1f0cdb5e6ff7e624fdb59a2985bc17c683814e8460005fc83",
+      "bytes": 13655,
+      "lines": 363,
+      "routes": [
+        "/custom-look-and-feel/headless-ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/custom-look-and-feel/reasoning-messages": {
+      "file": "langgraph-python__custom-look-and-feel__reasoning-messages.md",
+      "sha256": "dd6ab86845cadd57cfbe7b383473badf058951fb7334bac24e8de1e2cda9b740",
+      "bytes": 7269,
+      "lines": 261,
+      "routes": [
+        "/custom-look-and-feel/reasoning-messages"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/custom-look-and-feel/slots": {
+      "file": "langgraph-python__custom-look-and-feel__slots.md",
+      "sha256": "eb4d3b13128ef9fcf2d58e0224e3a32bf7d14afc8250cf9ea9e9729846cd8e95",
+      "bytes": 6867,
+      "lines": 235,
+      "routes": [
+        "/custom-look-and-feel/slots"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/frontend-tools": {
+      "file": "langgraph-python__frontend-tools.md",
+      "sha256": "1a8fbc8887a64f01adc65d83109e37420bc4750f46f9c5f4ccbc792f59aff39f",
+      "bytes": 3495,
+      "lines": 108,
+      "routes": [
+        "/frontend-tools"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/generative-ui/a2ui/dynamic-schema": {
+      "file": "langgraph-python__generative-ui__a2ui__dynamic-schema.md",
+      "sha256": "0fe51c0e39a90c0e1382df2ffcc44d9267bda5e51c5e88ea1696eb6b34e1900e",
+      "bytes": 22954,
+      "lines": 688,
+      "routes": [
+        "/generative-ui/a2ui/dynamic-schema"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/generative-ui/a2ui/fixed-schema": {
+      "file": "langgraph-python__generative-ui__a2ui__fixed-schema.md",
+      "sha256": "cc546405a57d4f25902f038061aa752a62c761e6bbe652c1fba5d8322d73b40a",
+      "bytes": 23375,
+      "lines": 687,
+      "routes": [
+        "/generative-ui/a2ui/fixed-schema"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/generative-ui/reasoning": {
+      "file": "langgraph-python__generative-ui__reasoning.md",
+      "sha256": "6717c7ea6c98144d0bfa2c033d239087b3c646844d7be06f000d8ae0817c12c8",
+      "bytes": 5668,
+      "lines": 180,
+      "routes": [
+        "/generative-ui/reasoning"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:03 GMT"
+    },
+    "/langgraph-python/generative-ui/state-rendering": {
+      "file": "langgraph-python__generative-ui__state-rendering.md",
+      "sha256": "1b9e8ccd2757bdd334cb2d564011f387b181eb570f0fcf495c0aa79432f3860c",
+      "bytes": 4769,
+      "lines": 135,
+      "routes": [
+        "/generative-ui/state-rendering"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/generative-ui/tool-based": {
+      "file": "langgraph-python__generative-ui__tool-based.md",
+      "sha256": "d861095db6c3dc132147f8e32dcb0f1523c87c1f33baae8dc76db9dc48661336",
+      "bytes": 3174,
+      "lines": 97,
+      "routes": [
+        "/generative-ui/tool-based"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/generative-ui/tool-rendering": {
+      "file": "langgraph-python__generative-ui__tool-rendering.md",
+      "sha256": "5b055471ea7a5afd07579d616f5a1b0014d8850c4b29bbd45b2b5b9fa312ed37",
+      "bytes": 10944,
+      "lines": 374,
+      "routes": [
+        "/generative-ui/tool-rendering"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/human-in-the-loop": {
+      "file": "langgraph-python__human-in-the-loop.md",
+      "sha256": "c2219a22cf4bcbea735358b1211cef84fa642114121b84b1822bb407fa625915",
+      "bytes": 7230,
+      "lines": 221,
+      "routes": [
+        "/human-in-the-loop"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/human-in-the-loop/interrupt-flow": {
+      "file": "langgraph-python__human-in-the-loop__interrupt-flow.md",
+      "sha256": "2fe65233f3267561e3c596115eb69933c758fe7d7083f53f43a52d3022bb78e1",
+      "bytes": 17182,
+      "lines": 452,
+      "routes": [
+        "/human-in-the-loop/interrupt-flow"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/multi-agent/subagents": {
+      "file": "langgraph-python__multi-agent__subagents.md",
+      "sha256": "a7ec5a5e24b5a2494740a8dfc76a7dcc015d08b0f03c5db1b4414fc05f14f0bf",
+      "bytes": 25162,
+      "lines": 685,
+      "routes": [
+        "/multi-agent/subagents"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/multimodal-attachments": {
+      "file": "langgraph-python__multimodal-attachments.md",
+      "sha256": "7237dfd40119e56ee3057445eaf61f34ef8328b32acd750c95f2857d9defc1ae",
+      "bytes": 6144,
+      "lines": 176,
+      "routes": [
+        "/multimodal-attachments"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/prebuilt-components/chat": {
+      "file": "langgraph-python__prebuilt-components__chat.md",
+      "sha256": "513009a4999f11f04867ce04e90a60ecb8315592d28e2445e40d52e3e4d524ae",
+      "bytes": 2915,
+      "lines": 77,
+      "routes": [
+        "/prebuilt-components/chat"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/prebuilt-components/chat-controls": {
+      "file": "langgraph-python__prebuilt-components__chat-controls.md",
+      "sha256": "8cb9b25007c5ba78aeb96f0900163aba83d2053273eb32d97b57c04202ca3076",
+      "bytes": 3865,
+      "lines": 101,
+      "routes": [
+        "/prebuilt-components/chat-controls"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/prebuilt-components/popup": {
+      "file": "langgraph-python__prebuilt-components__popup.md",
+      "sha256": "be08bb952b3947a81a0c51e03430b2e4e84bfe1f22552c1f40abefaacf56ac6b",
+      "bytes": 2471,
+      "lines": 70,
+      "routes": [
+        "/prebuilt-components/popup"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/prebuilt-components/sidebar": {
+      "file": "langgraph-python__prebuilt-components__sidebar.md",
+      "sha256": "b8d285fdeaf791cab85e0a6d8f29ea0f985523e5f52b78c910431cb9498aa8b9",
+      "bytes": 2522,
+      "lines": 70,
+      "routes": [
+        "/prebuilt-components/sidebar"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/programmatic-control": {
+      "file": "langgraph-python__programmatic-control.md",
+      "sha256": "194f05f0e730b63b024d9781862a76b8b2658e61be61104a12033571581f82c7",
+      "bytes": 12812,
+      "lines": 377,
+      "routes": [
+        "/programmatic-control"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/quickstart": {
+      "file": "langgraph-python__quickstart.md",
+      "sha256": "59e99e00faa5df12c6c3f5a4a21d8789062394e5a48f2129cb588bc252bd435a",
+      "bytes": 19722,
+      "lines": 549,
+      "routes": [
+        "/quickstart"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/shared-state": {
+      "file": "langgraph-python__shared-state.md",
+      "sha256": "4e1b60d13193b445e0fe25195491ef99dd2c807f02c8b0505905bcd71a889b40",
+      "bytes": 10705,
+      "lines": 301,
+      "routes": [
+        "/shared-state"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/shared-state/agent-readonly": {
+      "file": "langgraph-python__shared-state__agent-readonly.md",
+      "sha256": "91319d3bf0a7d4422e3fb959f63559c1f8fadbeb6b5a84688b4c1d03d7df911e",
+      "bytes": 5436,
+      "lines": 163,
+      "routes": [
+        "/shared-state/agent-readonly"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/shared-state/in-app-agent-read": {
+      "file": "langgraph-python__shared-state__in-app-agent-read.md",
+      "sha256": "6474c25ecd644a280249a80ae1c615bb5a3a8bf15f93018565d89bfe93ed1471",
+      "bytes": 6203,
+      "lines": 173,
+      "routes": [
+        "/shared-state/in-app-agent-read"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/shared-state/in-app-agent-write": {
+      "file": "langgraph-python__shared-state__in-app-agent-write.md",
+      "sha256": "ac3b2f8c82f7ced0311d59e56bcaa6bf3cbed68035621d6e2355576befa7137a",
+      "bytes": 5429,
+      "lines": 158,
+      "routes": [
+        "/shared-state/in-app-agent-write"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/shared-state/predictive-state-updates": {
+      "file": "langgraph-python__shared-state__predictive-state-updates.md",
+      "sha256": "6f266b71202a3a702d5c9027c93a35966c4b24cd1a5a18a30d416cc3b262182f",
+      "bytes": 26740,
+      "lines": 597,
+      "routes": [
+        "/shared-state/predictive-state-updates"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:04 GMT"
+    },
+    "/langgraph-python/shared-state/rendering-in-app": {
+      "file": "langgraph-python__shared-state__rendering-in-app.md",
+      "sha256": "b545acbea0b341e633a4eba83b791e9d0d2109ef9c56a64589425bc18e29ef0a",
+      "bytes": 4221,
+      "lines": 115,
+      "routes": [
+        "/shared-state/rendering-in-app"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:05 GMT"
+    },
+    "/langgraph-python/shared-state/state-inputs-outputs": {
+      "file": "langgraph-python__shared-state__state-inputs-outputs.md",
+      "sha256": "76a3d94ebf2598428974cd1a41c3e890fc43d7cab158fa9cb4c646f6753d6e76",
+      "bytes": 8716,
+      "lines": 213,
+      "routes": [
+        "/shared-state/state-inputs-outputs"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:05 GMT"
+    },
+    "/langgraph-python/shared-state/streaming": {
+      "file": "langgraph-python__shared-state__streaming.md",
+      "sha256": "96eb855694b498d27d3fa193f2c312604cad1c6cffcbc38fc3363d6d294b1085",
+      "bytes": 9078,
+      "lines": 266,
+      "routes": [
+        "/shared-state/streaming"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:05 GMT"
+    },
+    "/langgraph-python/subgraphs": {
+      "file": "langgraph-python__subgraphs.md",
+      "sha256": "df7806e03618cc00265731773b5560ccd9d693df989a5e8cb7a9beb11c248fb7",
+      "bytes": 1666,
+      "lines": 50,
+      "routes": [
+        "/subgraphs"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:05 GMT"
+    },
+    "/langgraph-python/voice": {
+      "file": "langgraph-python__voice.md",
+      "sha256": "a954a8ce79696b592bb0577cbaa916107a171055201eed9a6638ff66866f9b47",
+      "bytes": 12063,
+      "lines": 269,
+      "routes": [
+        "/voice"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:19:05 GMT"
+    }
+  },
+  "sitemap": {
+    "fetchedAt": "2026-08-17T12:19:02.842Z",
+    "urlsUnderRoot": 175,
+    "knownUnmapped": [
+      "https://docs.copilotkit.ai/langgraph-python/advanced/disabling-state-streaming",
+      "https://docs.copilotkit.ai/langgraph-python/advanced/emit-api-hook-mapping",
+      "https://docs.copilotkit.ai/langgraph-python/advanced/emit-messages",
+      "https://docs.copilotkit.ai/langgraph-python/advanced/exit-agent",
+      "https://docs.copilotkit.ai/langgraph-python/advanced/persistence/loading-agent-state",
+      "https://docs.copilotkit.ai/langgraph-python/advanced/persistence/loading-message-history",
+      "https://docs.copilotkit.ai/langgraph-python/advanced/persistence/message-persistence",
+      "https://docs.copilotkit.ai/langgraph-python/ag-ui",
+      "https://docs.copilotkit.ai/langgraph-python/agent-spec",
+      "https://docs.copilotkit.ai/langgraph-python/agent-spec/human-in-the-loop",
+      "https://docs.copilotkit.ai/langgraph-python/agent-spec/langgraph",
+      "https://docs.copilotkit.ai/langgraph-python/agent-spec/quickstart",
+      "https://docs.copilotkit.ai/langgraph-python/agent-spec/wayflow",
+      "https://docs.copilotkit.ai/langgraph-python/agentic-chat-ui",
+      "https://docs.copilotkit.ai/langgraph-python/agentic-protocols",
+      "https://docs.copilotkit.ai/langgraph-python/agentic-protocols/a2a",
+      "https://docs.copilotkit.ai/langgraph-python/agentic-protocols/ag-ui",
+      "https://docs.copilotkit.ai/langgraph-python/agentic-protocols/ag-ui-middleware",
+      "https://docs.copilotkit.ai/langgraph-python/agentic-protocols/mcp",
+      "https://docs.copilotkit.ai/langgraph-python/auth",
+      "https://docs.copilotkit.ai/langgraph-python/backend/ag-ui",
+      "https://docs.copilotkit.ai/langgraph-python/backend/agent-runner",
+      "https://docs.copilotkit.ai/langgraph-python/backend/copilot-runtime",
+      "https://docs.copilotkit.ai/langgraph-python/backend/custom-agent",
+      "https://docs.copilotkit.ai/langgraph-python/backend/runtime-endpoints",
+      "https://docs.copilotkit.ai/langgraph-python/backend/self-managed-agents",
+      "https://docs.copilotkit.ai/langgraph-python/build-with-agents",
+      "https://docs.copilotkit.ai/langgraph-python/built-in-agent",
+      "https://docs.copilotkit.ai/langgraph-python/cli",
+      "https://docs.copilotkit.ai/langgraph-python/coagent-troubleshooting/common-coagent-issues",
+      "https://docs.copilotkit.ai/langgraph-python/coagent-troubleshooting/error-debugging",
+      "https://docs.copilotkit.ai/langgraph-python/coagent-troubleshooting/migrate-from-v0.2-to-v0.3",
+      "https://docs.copilotkit.ai/langgraph-python/concepts/architecture",
+      "https://docs.copilotkit.ai/langgraph-python/concepts/generative-ui-overview",
+      "https://docs.copilotkit.ai/langgraph-python/concepts/oss-vs-enterprise",
+      "https://docs.copilotkit.ai/langgraph-python/concepts/which-hook",
+      "https://docs.copilotkit.ai/langgraph-python/contributing/code-contributions",
+      "https://docs.copilotkit.ai/langgraph-python/contributing/code-contributions/package-linking",
+      "https://docs.copilotkit.ai/langgraph-python/contributing/docs-contributions",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook/angular-adk-agentic-app",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook/arcade",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook/daytona",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook/openbox-governed-copilotkit",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook/oracle-agent-spec-memory",
+      "https://docs.copilotkit.ai/langgraph-python/copilot-runtime",
+      "https://docs.copilotkit.ai/langgraph-python/deep-agents",
+      "https://docs.copilotkit.ai/langgraph-python/deepagents",
+      "https://docs.copilotkit.ai/langgraph-python/deploy-agentcore",
+      "https://docs.copilotkit.ai/langgraph-python/deploy/agentcore",
+      "https://docs.copilotkit.ai/langgraph-python/examples",
+      "https://docs.copilotkit.ai/langgraph-python/faq",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/advanced",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/styling",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/display",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/hashbrown",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/interactive",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/json-render",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/mcp-apps",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/open-generative-ui",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/open-json-ui",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/your-components/display-only",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/your-components/interactive",
+      "https://docs.copilotkit.ai/langgraph-python/generative-ui/your-components/interrupt-based",
+      "https://docs.copilotkit.ai/langgraph-python/headless",
+      "https://docs.copilotkit.ai/langgraph-python/headless-threads",
+      "https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/headless",
+      "https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/useInterrupt",
+      "https://docs.copilotkit.ai/langgraph-python/inspector",
+      "https://docs.copilotkit.ai/langgraph-python/migrate/1.10.X",
+      "https://docs.copilotkit.ai/langgraph-python/migrate/1.8.2",
+      "https://docs.copilotkit.ai/langgraph-python/migrate/v2",
+      "https://docs.copilotkit.ai/langgraph-python/multi-agent-flows",
+      "https://docs.copilotkit.ai/langgraph-python/prebuilt-components",
+      "https://docs.copilotkit.ai/langgraph-python/prebuilt-components/copilot-threads-drawer",
+      "https://docs.copilotkit.ai/langgraph-python/premium/headless-ui",
+      "https://docs.copilotkit.ai/langgraph-python/premium/intelligence-platform",
+      "https://docs.copilotkit.ai/langgraph-python/premium/managed-intelligence-platform",
+      "https://docs.copilotkit.ai/langgraph-python/premium/overview",
+      "https://docs.copilotkit.ai/langgraph-python/premium/self-hosting",
+      "https://docs.copilotkit.ai/langgraph-python/premium/threads-explained",
+      "https://docs.copilotkit.ai/langgraph-python/reference/v2/hooks/useCapabilities",
+      "https://docs.copilotkit.ai/langgraph-python/runtime-server-adapter",
+      "https://docs.copilotkit.ai/langgraph-python/shared-state/workflow-execution",
+      "https://docs.copilotkit.ai/langgraph-python/telemetry",
+      "https://docs.copilotkit.ai/langgraph-python/threads",
+      "https://docs.copilotkit.ai/langgraph-python/threads-import",
+      "https://docs.copilotkit.ai/langgraph-python/threads-lifecycle",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/common-issues",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/debug-mode",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/error-debugging",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/error-reference",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/event-inspector",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/hook-explorer",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/inspector-dev-console",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/migrate-to-1.10.X",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/migrate-to-1.8.2",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/migrate-to-agui",
+      "https://docs.copilotkit.ai/langgraph-python/troubleshooting/migrate-to-v2",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/next-steps",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-2-start-the-agent",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-3-setup-copilotkit",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-4-agentic-chat-ui",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-5-human-in-the-loop",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-6-shared-state",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-7-generative-ui",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/agent-native-app/step-8-progressive-state-updates",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-powered-textarea/next-steps",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-powered-textarea/overview",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-powered-textarea/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-powered-textarea/step-2-setup-copilotkit",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-powered-textarea/step-3-copilot-textarea",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-powered-textarea/step-4-copilot-readable-state",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-todo-app/next-steps",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-todo-app/overview",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-todo-app/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-todo-app/step-2-setup-copilotkit",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-todo-app/step-3-copilot-readable-state",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-todo-app/step-4-frontend-tools",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/next-steps",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/step-2-langgraph-agent",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/step-3-setup-copilotkit",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/step-4-integrate-the-agent",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/step-5-stream-progress",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/ai-travel-app/step-6-human-in-the-loop",
+      "https://docs.copilotkit.ai/langgraph-python/tutorials/multi-conversation-chat",
+      "https://docs.copilotkit.ai/langgraph-python/videos/research-canvas",
+      "https://docs.copilotkit.ai/langgraph-python/vs-code-extension",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new/a2a-mcp-handshake",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new/a2ui-launch",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new/generative-ui-spec-support",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new/langgraph-deep-agents",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new/mcp-apps-support",
+      "https://docs.copilotkit.ai/langgraph-python/whats-new/v1-50"
+    ]
+  }
+}

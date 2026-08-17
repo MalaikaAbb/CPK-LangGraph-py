@@ -4,13 +4,14 @@ A navigable, working test harness for the CopilotKit LangGraph (Python) integrat
 
 | | |
 |---|---|
-| **Doc sync date** | 2026-08-06 |
+| **Doc sync date** | Machine-maintained — `doc-snapshot/manifest.json` → `syncedAt`, shown on `/` and `/doc-sync`, rewritten on every sync |
 | **CopilotKit packages** | `@copilotkit/react-core` 1.66.2 · `@copilotkit/runtime` 1.66.2 · `@copilotkit/a2ui-renderer` 1.66.2 · `@copilotkit/voice` 1.66.2 |
 | **CopilotKit Python SDK** | `copilotkit` 0.1.94 · `ag-ui-langgraph` 0.0.42 |
 | **LangGraph / LangChain** | `langgraph` 1.2.10 · `langchain` 1.3.14 · `langchain-openai` 1.4.1 |
 | **Frontend** | Next.js 16.3.0 (App Router) · React 19.2 · TypeScript · Tailwind 4 |
 | **Backend** | Python 3.10+ · FastAPI 0.141 · Uvicorn 0.52 |
-| **Build status** | No CI. Verified locally: typecheck ✅ · lint ✅ · `next build` ✅ (74 pages) · agent server boots with all 35 graphs mounted ✅ · 1 route ❌ Broken (§8) |
+| **Doc snapshot** | Press **Sync docs now** on `/` — see `/doc-sync` and §7. Snapshot lives in `doc-snapshot/`. |
+| **Build status** | No CI. Verified locally: lint ✅ (0 errors) · `/doc-sync` end-to-end ✅ (35-page baseline, severity classification, guards) · agent server boots with all 35 graphs mounted ✅ · 1 route ❌ Broken (§8) · **typecheck and `next build` currently fail** on `/programmatic-control/demo-chat` — see below |
 
 ---
 
@@ -100,7 +101,7 @@ Ids follow each doc page's own demo id where it names one (`sample_agent`, `agen
 
 | Requirement | Version | Notes |
 |---|---|---|
-| Node.js | 20+ | Next.js 16 requires it. |
+| Node.js | 20.3+ | Next.js 16 requires 20; `/doc-sync` additionally uses `AbortSignal.any`, added in 20.3. |
 | npm | 10+ | Or pnpm/yarn/bun. |
 | Python | 3.10+ | `copilotkit` 0.1.94 requires `>=3.10,<3.15`. |
 | `uv` | any recent | Used for the backend venv. `pip` works too — see §5. |
@@ -331,6 +332,35 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/status`** — Every route in one table, plus a live cross-check against the running agent server.
 
+**`/doc-sync`** — Detects when the docs move out from under this repo. Press **Sync docs now** (on the landing page or here) and it fetches the markdown source behind all 35 tracked doc pages, diffs each against a stored snapshot, replaces the snapshot, and reports what changed — ranked by whether the change can actually break an implementation.
+
+**Sections checked** lists every tracked doc page in nav order — Introduction, Quickstart, CopilotChat, CopilotSidebar, and so on down to Doc drift — each with a mark showing how it fared: `✓` unchanged, `!` changed, `+` stored for the first time, `✗` 404 upstream, `~` unstable. A neutral `·` means the page was not part of the last run, which is deliberately *not* a tick: "checked and fine" and "never checked" must not look alike.
+
+Expanding a row shows the comparison behind its mark — for a changed page the diff, with `−` lines being the existing snapshot and `+` lines the copy just fetched. Unchanged pages have no diff by definition, so the row shows the two hashes that matched instead; that is the evidence the check really ran. Note that several routes share one doc page (`/`, `/status` and `/doc-sync` all track the framework root), so one upstream edit legitimately marks all three rows.
+
+Try it: press the button twice in a row. The first press reports whatever drifted since the snapshot was taken; the second should report *No changes — every page matches the snapshot*, in roughly four seconds.
+
+To see a real diff without waiting for CopilotKit to publish one, edit any `doc-snapshot/pages/*.md` file and press the button. Edit a line inside a code fence for **High**, a `##` heading for **Medium**, a sentence for **Low**. Nothing else needs changing — the comparison reads the stored file itself, so the edit is picked up on the next sync.
+
+The diff is reported against your edited copy, and both `/doc-sync` and the changelog label it as a local snapshot edit rather than an upstream change, so a test never masquerades as real drift in the record. After the sync the file is replaced with upstream's copy again, so the edit is one-shot by design.
+
+Success looks like: a **High** badge on a hunk that names its heading and language (e.g. *under How it works · `python`*), **Medium** for a changed heading, **Low** for reworded prose. Failure looks like every page reporting as changed at once — that means the snapshot was written with something other than markdown, and the structural guard should have prevented it; check the abort message.
+
+Severity ranking depends entirely on the fence scanner knowing which lines sit inside a code block, and its edge cases are covered by `FENCE_FIXTURES` / `runFenceSelfCheck()` in `lib/doc-sync/diff.ts` — nested fences, tilde fences, unterminated fences, fences indented inside `<Tabs>`, backtick-in-info-string, front matter. Nothing in the app runs them any more, so if you change the annotator, exercise those fixtures yourself.
+
+There is exactly one doc-sync date in the repo — `syncedAt` in `doc-snapshot/manifest.json`, rewritten every time the button runs and shown on `/`, `/status` and `/doc-sync`. There is no separate hand-maintained date to keep in step with it.
+
+#### `doc-snapshot/CHANGELOG.md`
+
+The sync replaces the snapshot as part of comparing against it, so the run *after* a change reports nothing — the basis it would have compared against is gone. The live report on `/doc-sync` therefore only ever describes the most recent run. The changelog is the record that survives that: it is written at the moment of discovery and never rewritten by a later run.
+
+- **Only changes are recorded.** A sync where everything matched does not touch the file — it is not created, not rewritten, and its timestamp does not move. Baseline and aborted runs write nothing either.
+- **Each entry says where and what**: the doc path, the routes it backs, the section heading it happened under, the code language if it was inside a fence, a one-line summary, and a diff excerpt.
+- **Three dated entries are kept.** Counted, not aged — three headings are retained however far apart the dates fall, so a change from six weeks ago still shows if nothing has happened since. When a change lands on a fourth date, the oldest date is dropped whole.
+- **Several syncs on one date share that date's entry**, newest first, so a day spent pressing the button cannot evict the two older dates.
+
+Commit it along with the rest of `doc-snapshot/` — together with `git log -p doc-snapshot/`, that gives you a permanent history behind the rolling three-entry window.
+
 ---
 
 ## 8. Testing checklist / current status
@@ -372,6 +402,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 | `/langgraph-python/agent-app-context` | `/agent-app-context` | ✅ Working | |
 | `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Works, and disproves the page's filtering claim. Uses the page's deprecated `config_schema=` — doc-verbatim. |
 | `/langgraph-python/subgraphs` | `/subgraphs` | ⚠️ Partial | The page prints no agent code at all; the graph is this repo's. |
+| — (tooling, not a doc page) | `/doc-sync` | ✅ Working | Fetches all 35 tracked doc pages and diffs them against `doc-snapshot/`. Verified: 35-page baseline in ~4s; code/heading/prose edits classify High/Medium/Low. |
 
 **Legend:** ✅ Working · ⚠️ Partial · ❌ Broken · 📖 Reference · 🚧 Not started
 
@@ -384,6 +415,16 @@ Code on a page is never a re-typed approximation: each page reads real files via
 Found against `@copilotkit/react-core` 1.66.2, `@copilotkit/runtime` 1.66.2, `copilotkit` 0.1.94, `ag-ui-langgraph` 0.0.42 and `langgraph` 1.2.10.
 
 **Reproduction policy:** where the docs' published code is wrong, this repo *keeps it wrong* and documents the mismatch. A silently corrected snippet would hide the defect this harness exists to surface. Suppressions (`@ts-expect-error`, `eslint-disable`) are used where a doc bug would otherwise break the build for every other route; the doc expression itself is never edited.
+
+**Open gap — `/programmatic-control/demo-chat` is missing that suppression.** It reproduces the Programmatic Control page's undefined `useAgent` / `useCopilotKit` hooks verbatim, which is correct per the policy above, but nothing insulates the rest of the repo from it:
+
+```
+src/app/programmatic-control/demo-chat/page.tsx(27,21): error TS2304: Cannot find name 'useAgent'.
+src/app/programmatic-control/demo-chat/page.tsx(28,26): error TS2552: Cannot find name 'useCopilotKit'.
+src/app/programmatic-control/demo-chat/page.tsx(71,17): error TS7006: Parameter 'err' implicitly has an 'any' type.
+```
+
+So `npm run typecheck` fails, and `next build` dies at `ReferenceError: useAgent is not defined` while prerendering that route — taking the whole build with it. This predates the doc-sync work and is unrelated to it. Fixing it means either adding suppressions plus `export const dynamic = "force-dynamic"` to keep it out of prerendering, or accepting that this repo has no green build until the doc page is corrected upstream. Deliberately left as-is, since choosing between those is a policy call.
 
 ### Things the docs get wrong
 
@@ -645,12 +686,19 @@ langgraph-python/
 │       ├── declarative_gen_ui.py
 │       └── a2ui_schemas/             # flight_schema.json · booked_schema.json
 │
+├── doc-snapshot/                     # ★ the doc-drift baseline — committed
+│   ├── manifest.json                 # ★ per-page sha256; the diff basis
+│   ├── CHANGELOG.md                  # ★ what changed and where — survives re-syncs
+│   ├── pages/                        # 35 markdown files, one per tracked doc page
+│   └── reports/                      # gitignored — last 10 runs + latest.json
+│
 └── frontend/
     └── src/
         ├── app/
         │   ├── layout.tsx
-        │   ├── page.tsx                     # / — orientation + transport readout
+        │   ├── page.tsx                     # / — orientation, transport readout, sync button
         │   ├── status/page.tsx              # live registry cross-check
+        │   ├── doc-sync/page.tsx            # ★ the drift report
         │   ├── api/
         │   │   ├── copilotkit/route.ts                    # ★ main runtime, 35 graphs
         │   │   ├── copilotkit-voice/[[...slug]]/route.ts  # ★ v2 runtime + transcription
@@ -660,6 +708,10 @@ langgraph-python/
         │       └── demo-chat/page.tsx       # ★ the running feature, chrome-free
         ├── components/
         │   ├── providers.tsx                # ★ the one app-wide provider
+        │   ├── doc-sync-button.tsx          # the sync trigger (client)
+        │   ├── doc-drift-panel.tsx          # landing-page summary — self-contained
+        │   ├── doc-synced-at.tsx            # the single sync date, read from the manifest
+        │   ├── doc-diff.tsx                 # severity badge, check marks, hunk rendering
         │   ├── source-code.tsx              # renders a repo file verbatim
         │   ├── code-figure.tsx              # shared Shiki code block
         │   ├── app-chrome.tsx               # sidebar layout, skipped on /demo-chat
@@ -672,9 +724,42 @@ langgraph-python/
             ├── agents.ts                    # ★ agent ids + transport switch
             ├── runtime-agents.ts            # ★ builds LangGraphAgent vs LangGraphHttpAgent
             ├── inspector.ts                 # which provider owns the Inspector
-            ├── source.ts                    # server-only file reader
-            └── highlight.ts                 # server-only Shiki wrapper
+            ├── source.ts                    # server-only file reader + repo-root guard
+            ├── highlight.ts                 # server-only Shiki wrapper
+            └── doc-sync/                    # ★ portable — zero repo-specific code
+                ├── types.ts                 # shared shapes (safe on the client)
+                ├── paths.ts                 # nav routes → unique doc URLs
+                ├── fetch-docs.ts            # pool, timeouts, markdown validation
+                ├── diff.ts                  # fence annotator, LCS, severity
+                ├── changelog.ts             # CHANGELOG.md rendering + 3-entry rotation
+                ├── store.ts                 # snapshot fs + write guard
+                └── actions.ts               # the "use server" entry point
 ```
+
+### Porting `/doc-sync` to the other framework repos
+
+`src/lib/doc-sync/` derives everything from `DOCS_ROOT` and `NAV` in `nav-config.ts`, so it contains no framework-specific code and there are **no dependencies to install** — the line differ is hand-rolled precisely so the port stays a file copy.
+
+1. Copy `src/lib/doc-sync/` (7 files), the four `src/components/doc-*.tsx` files, and `src/app/doc-sync/page.tsx`.
+2. In `src/lib/source.ts`, export `REPO_ROOT` and rename the private `resolveRepoPath` to an exported `resolveInRepo` (the doc-sync store reuses both, so the repo root and its traversal guard stay defined once).
+3. Add a `/doc-sync` entry to `NAV`.
+4. Add `export const dynamic = "force-dynamic"` and `<DocDriftPanel />` to `src/app/page.tsx`. The panel reads the snapshot itself, so no other restructuring is needed — an async server component renders fine inside a synchronous parent.
+5. Delete `DOC_SYNC_DATE` from `nav-config.ts` and swap its readouts on `/` and `/status` for `<DocSyncedAt />`. It substitutes in either place the constant was used — a `KeyValue` row or mid-sentence in prose — so each repo keeps a single, machine-written sync date.
+6. Add `doc-snapshot/reports/` to `.gitignore`.
+7. Press the button once to create the baseline, then commit `doc-snapshot/`.
+8. Prune `manifest.json`'s `knownUnmapped` by hand as you build routes for pages it lists.
+
+### Why it is built this way
+
+A few choices look arbitrary until they bite:
+
+- **The snapshot lives at the repo root, not under `frontend/`.** `frontend/package-lock.json` is the only lockfile, so that is where the dev server roots its watcher — writing 35 files inside it on every sync would recompile the page that triggered the sync.
+- **Changes are detected by SHA-256, not by the differ.** The line diff is presentation only, which is what makes a hand-rolled differ safe: it can render an ugly hunk, but it can never miss a change.
+- **The comparison basis is the stored file, not the hash recorded beside it.** `manifest.json` records what was written; it is not evidence of what is on disk now. Trusting it would make a snapshot edited or corrupted locally invisible — its recorded hash still matches upstream, so the page reads as unchanged and the next write quietly restores it. Reading the 35 bodies back costs nothing locally and makes the snapshot answer for its actual contents.
+- **Every response is checked for `text/markdown`.** The `.md` endpoint is undocumented, and a URL that misses it still answers `200` with the HTML app shell. Writing that in would destroy the baseline and report the whole corpus as rewritten next run. A failure aborts and writes nothing.
+- **A run commits all pages or none.** A partial snapshot makes the *next* run's diff silently wrong about whichever pages were skipped.
+- **The sitemap's `lastmod` is deliberately ignored.** It looks exactly like the change signal this feature needs, but 3505 of the sitemap's 3543 entries carry an identical timestamp — it is the site's build stamp, not a per-page modification time.
+- **Changed pages get re-fetched once before being committed.** Responses are cached for 60s with no ETag, so a deploy landing mid-run can serve a mix of builds. A page whose two reads disagree is reported as `unstable` and held back.
 
 ---
 
