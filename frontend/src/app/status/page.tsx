@@ -3,7 +3,8 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/route-header";
 import { Callout, KeyValue, Panel } from "@/components/ui";
 import { AGENT_IDS, LANGGRAPH_URL } from "@/lib/agents";
-import { DOC_SYNC_DATE, NAV, docUrl } from "@/lib/nav-config";
+import { DocSyncedAt } from "@/components/doc-synced-at";
+import { NAV, docUrl } from "@/lib/nav-config";
 import { describeTransport } from "@/lib/runtime-agents";
 
 /**
@@ -69,7 +70,7 @@ export default async function Page() {
       <Panel title="Registry cross-check">
         <KeyValue
           rows={[
-            ["Doc sync", DOC_SYNC_DATE],
+            ["Docs synced", <DocSyncedAt key="docs-synced" />],
             [
               "Transport",
               <code key="t" className="font-mono text-xs">

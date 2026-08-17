@@ -10,3 +10,9 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+
+# Drift reports are derived data — regenerated on every /doc-sync run, and once
+# the new snapshot is committed `git show` says the same thing. The snapshot
+# itself (doc-snapshot/pages/ and manifest.json) IS committed; it is the
+# baseline every diff is taken against.
+doc-snapshot/reports/
