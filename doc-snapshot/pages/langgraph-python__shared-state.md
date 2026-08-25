@@ -1,6 +1,8 @@
 # Shared State
 
 > Create a two-way connection between your UI and agent state.
+
+
 ## What is shared state?
 
 Agentic Copilots maintain a shared state that seamlessly connects your UI with the agent's execution. This shared state system allows you to:
@@ -16,6 +18,14 @@ Agentic Copilots maintain a shared state that seamlessly connects your UI with t
   height={1000}
   className="rounded-lg shadow-lg border mt-0"
 />
+
+<Callout type="info" title="See this in Inspector">
+  Open Inspector on localhost. Open a thread, then click **State**.
+  Agent state updates here as the run proceeds.
+
+  More detail: [Inspector](/langgraph-python/inspector).
+</Callout>
+
 
 ## When should I use this?
 

@@ -13,10 +13,9 @@ exposes three primitives that cover every triggering pattern:
 - `copilotkit.runAgent({ agent })` — the same entry point `<CopilotChat />` calls under the hood. Orchestrates frontend tools, follow-up runs, and the subscriber lifecycle.
 - `agent.subscribe(subscriber)` — low-level AG-UI event subscription (`onCustomEvent`, `onRunStartedEvent`, `onRunFinalized`, `onRunFailed`, …). Pairs with `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` to drive interrupt resolution from arbitrary UI.
 
-Every example on this page is pulled from two live cells:
-`headless-complete` (full chat surface, shown here for the message-send
-path) and `interrupt-headless` (button-driven interrupt resolver, shown
-here for the subscribe + resume path).
+The send-and-stop example below is intentionally self-contained. The
+later subscription and interrupt examples are pulled from the live
+`interrupt-headless` cell.
 
 ## When should I use this?
 
@@ -68,90 +67,47 @@ graph = create_agent(
   </Step>
 </Steps>
 
-The message-send path in `headless-complete` is the canonical pattern:
-append a user message with `agent.addMessage`, then call
-`copilotkit.runAgent({ agent })`. The same `handleStop` calls
-`copilotkit.stopAgent({ agent })` to cancel mid-run. Note the
-`connectAgent` effect at the top, which opens the backend session on
-mount so the very first `runAgent` doesn't race the handshake.
+The canonical pattern is to append a user message with
+`agent.addMessage`, then call `copilotkit.runAgent({ agent })`. Use
+`copilotkit.stopAgent({ agent })` to cancel an in-flight run.
 
-```typescript
-// src/app/demos/headless-complete/chat/chat.tsx
+```tsx title="frontend/src/app/agent-trigger.tsx"
+import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
+
+export function AgentTrigger({ agentId }: { agentId: string }) {
   const { agent } = useAgent({ agentId });
   const { copilotkit } = useCopilotKit();
 
-  const {
-    attachments,
-    fileInputRef,
-    containerRef,
-    handleFileUpload,
-    handleDragOver,
-    handleDragLeave,
-    handleDrop,
-    dragOver,
-    removeAttachment,
-    consumeAttachments,
-  } = useAttachmentsConfig();
+  const run = async () => {
+    if (agent.isRunning) return;
 
-  const [input, setInput] = useState("");
-  const messages = agent.messages;
-  const { listRef, bottomRef, stickRef } = useAutoScroll(
-    messages,
-    agent.isRunning,
-  );
+    agent.addMessage({
+      id: crypto.randomUUID(),
+      role: "user",
+      content: "Summarize the latest sales data",
+    });
 
-  // Send pipeline: consume any ready attachments at submit time, build
-  // the multimodal `content` array if needed, then dispatch the run.
-  const sendText = useCallback(
-    (text: string) => {
-      const trimmed = text.trim();
-      // Consume queued uploads first so they get sent even if the user
-      // didn't type any text alongside them.
-      const ready = consumeAttachments();
-      if (!trimmed && ready.length === 0) return;
-      if (agent.isRunning) return;
-
-      stickRef.current = true;
-
-      const content = buildContent(trimmed, ready);
-      agent.addMessage({
-        id: crypto.randomUUID(),
-        role: "user",
-        content,
-      });
-      void copilotkit
-        .runAgent({ agent })
-        .catch((err) =>
-          console.error("[headless-complete] runAgent failed", err),
-        );
-    },
-    [agent, copilotkit, consumeAttachments],
-  );
-
-  const handleSend = useCallback(() => {
-    sendText(input);
-    setInput("");
-  }, [input, sendText]);
-
-  const handleSuggestion = useCallback(
-    (text: string) => {
-      sendText(text);
-    },
-    [sendText],
-  );
-
-  const handleReset = useCallback(() => {
-    if (agent.isRunning) {
-      try {
-        agent.abortRun();
-      } catch {
-        // no-op: some transports don't support abort
-      }
+    try {
+      await copilotkit.runAgent({ agent });
+    } catch (error) {
+      console.error("CopilotKit runAgent failed:", error);
     }
-    agent.setMessages([]);
-    setInput("");
-    stickRef.current = true;
-  }, [agent]);
+  };
+
+  return (
+    <>
+      <button onClick={run} disabled={agent.isRunning}>
+        Run agent
+      </button>
+      <button
+        onClick={() => copilotkit.stopAgent({ agent })}
+        disabled={!agent.isRunning}
+      >
+        Stop
+      </button>
+    </>
+  );
+}
 ```
 
 ### `copilotkit.runAgent()` vs `agent.runAgent()`
@@ -170,7 +126,7 @@ deltas. Use it to drive custom progress UI, forward events to
 analytics, or catch framework pause/resume events and resolve them with
 a payload (the pattern below).
 
-<WhenFrameworkHas flag="interrupt_pattern" equals="native">
+
 
 ## Resolving a LangGraph interrupt from a button
 
@@ -325,45 +281,11 @@ The resulting `{ pending, resolve }` tuple is pure data; any UI can
 drive it. The cell itself renders a simple button grid, but the same
 hook would power a modal, a toast, a sidebar form, or a voice UI.
 
-</WhenFrameworkHas>
 
-<WhenFrameworkHas flag="interrupt_pattern" equals="promise-based">
 
-## Resolving a frontend tool call from a button
 
-For promise-based integrations there is no native interrupt primitive —
-the demo uses `useFrontendTool` with a Promise-based handler instead.
-The handler stages its `resolve` callback and pending payload via React
-state, the app surface renders the picker outside the chat, and the
-user's pick resolves the Promise that the agent's tool call is awaiting.
-Same UX, different mechanism — the agent never knows it's talking to a
-button grid instead of a chat picker:
 
-<!-- snippet skipped: region 'headless-promise-primitives' missing in langgraph-python::interrupt-headless -->
 
-The resulting `{ pending, resolveActive }` pair is pure data; any UI
-can drive it. The cell itself renders a simple button grid, but the
-same pattern would power a modal, a toast, a sidebar form, or a voice
-UI.
-
-</WhenFrameworkHas>
-
-<WhenFrameworkHas flag="interrupt_pattern" absent>
-
-## Resolving a pause from a button
-
-> **Interrupt-style pause/resume isn't available on this framework.**
-> The headless interrupt pattern shown above requires the underlying
-> runtime to expose either a native `interrupt(...)` primitive
-> (LangGraph) or a Promise-resolving frontend-tool path. For all other
-> integrations, drive pauses through
-> [`useHumanInTheLoop`](./human-in-the-loop) instead — it's the
-> standard hook for tool-call-based pause/resume flows and works on
-> every framework that supports tool calls. The `agent.addMessage`,
-> `copilotkit.runAgent`, and `agent.subscribe` primitives above still
-> apply — only the interrupt-resolution path is framework-specific.
-
-</WhenFrameworkHas>
 
 ## See also
 

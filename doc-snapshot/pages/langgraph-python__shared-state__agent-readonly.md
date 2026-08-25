@@ -3,7 +3,16 @@
 > Publish UI values to the agent as a one-way read-only channel via useAgentContext.
 
 
+
 <!-- interactive demo: readonly-state-agent-context -->
+
+
+<Callout type="info" title="See this in Inspector">
+  Open Inspector on localhost. Go to **Agents**, then **Context**.
+  The values you publish with `useAgentContext` appear here.
+
+  More detail: [Inspector](/langgraph-python/inspector).
+</Callout>
 
 
 ## What is this?
