@@ -21,7 +21,7 @@ If the values are a *channel* the user occasionally tunes (a settings panel, a t
 
 How agent config flows from the UI into the agent's reasoning loop depends on your runtime architecture. Agents living behind a runtime read it from agent state on every run, while in-process agents receive the same object as forwarded properties on the provider — same UX, slightly different wiring on each side.
 
-<WhenFrameworkHas flag="agent_config_pattern" equals="shared-state">
+
 
 ## How it works
 
@@ -122,43 +122,8 @@ async def my_agent_node(state: AgentState, config: RunnableConfig):
 
 The agent reads the latest typed config at the start of every turn, rebuilds the system prompt, runs the turn. This is the same shape as the [shared-state write-side pattern](/langgraph-python/shared-state#writing-to-agent-state); agent config is just a specific use of that pattern with a UI-owned typed object on top.
 
-</WhenFrameworkHas>
-
-<WhenFrameworkHas flag="agent_config_pattern" equals="runtime-properties">
-
-## How it works
-
-The runtime owns the agent in-process, so config travels through frontend
-runtime properties rather than agent state. There's no separate backend service
-to push state into: the typed object becomes the input to the agent factory
-directly.
-
-
-Pass the typed object as `properties` on `<CopilotKit>`:
-
-```tsx title="frontend/src/app/page.tsx — config flows through the provider"
-<CopilotKit
-  runtimeUrl="/api/copilotkit"
-  properties={{ tone, expertise, responseLength }}
-  useSingleEndpoint
->
-  <Demo />
-</CopilotKit>
-```
 
 
 
-
-The runtime hands the same object to the agent factory on every call as `input.forwardedProps`. The factory uses those fields to build a system prompt before returning the agent for that turn:
-
-```ts title="backend/agent factory — synthesise the system prompt per turn"
-export const agentConfigFactory = async (input: AgentFactoryInput) => {
-  const { tone, expertise, responseLength } = input.forwardedProps ?? {};
-  const systemPrompt = buildSystemPrompt(tone, expertise, responseLength);
-  return makeAgent({ systemPrompt /* ... */ });
-};
-```
-
-</WhenFrameworkHas>
 
 <IntegrationGrid path="agent-config" />

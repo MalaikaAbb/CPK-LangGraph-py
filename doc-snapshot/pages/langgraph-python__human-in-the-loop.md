@@ -3,7 +3,16 @@
 > Allow your agent and users to collaborate on complex tasks.
 
 
+
 <!-- interactive demo: hitl-in-chat -->
+
+
+<Callout type="info" title="See this in Inspector">
+  Open Inspector on localhost. Go to **Agents**, then **Frontend Tools**.
+  Your tool and its schema are listed.
+
+  More detail: [Inspector](/langgraph-python/inspector).
+</Callout>
 
 
 ## What is this?

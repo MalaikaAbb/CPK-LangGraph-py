@@ -62,8 +62,11 @@ without data bindings (like `Title` or `Arrow`) carry their value
 inline; components bound to the LLM's data (like `Airport`) reference
 fields via JSON Pointer paths such as `{ "path": "/origin" }`. The
 A2UI binder resolves those paths *before* the React renderer runs, so
-renderer props are typed as their resolved values (plain `z.string()`,
-not a path-or-literal union).
+your renderer receives the resolved value and never sees the path — but
+the *definition* still has to declare that prop as a literal-or-binding
+union, because that union is the only signal the binder has that the
+prop is bindable. See [Declare the component
+definitions](#declare-the-component-definitions).
 
 ## The 5-component custom catalog
 
@@ -74,10 +77,58 @@ CopilotKit's basic catalog (Card, Column, Row, Text, Button, …) via
 
 <Steps>
 <Step>
+### Install the renderer package
+
+The catalog, definitions and renderers below all import from
+`@copilotkit/a2ui-renderer`. It ships separately from
+`@copilotkit/react-core`, and the definitions use `zod` for prop schemas:
+
+```npm
+npm install @copilotkit/a2ui-renderer zod
+```
+</Step>
+
+<Step>
 ### Declare the component definitions
 
-Each component declares its props as a Zod schema. Props are the
-*resolved* values, never the path expressions:
+Each component declares its props as a Zod schema. Any prop the schema
+binds to the data model — anything that can arrive as
+`{ "path": "/origin" }` rather than a literal — **must** be declared as a
+union of the literal type and the binding object. That is what the
+`DynString` helper below is for, and why `Airport`'s `code` uses it
+rather than a plain `z.string()`.
+
+The binder decides whether to resolve a prop by *inspecting its Zod
+type*: a union with a `{ path }` member is treated as dynamic and
+resolved against the data model, while a plain literal type is treated
+as static and passed through untouched. So declaring a bound prop as
+`z.string()` does not merely lose type precision — it tells the binder
+not to resolve it, and the raw `{ path: "/origin" }` object reaches your
+renderer.
+
+<Callout type="warn" title="Plain `z.string()` on a bound prop crashes the render">
+  Because the unresolved object reaches the renderer, the first thing
+  that renders it as text throws React's
+  [error #31](https://react.dev/errors/31):
+  `Objects are not valid as a React child (found: object with keys {path})`.
+  Nothing in that message points at the schema, so it reads as a renderer
+  bug rather than a missing union. If you hit it, check the prop's
+  declared type first.
+
+  Props that are never bound (`Arrow`, or a `variant` enum) are fine as
+  plain types. This applies only to props the schema binds.
+</Callout>
+
+Once the union is declared, the binder resolves the path before your
+renderer runs, so the renderer still receives a plain string — the union
+describes what the *schema* may send, not what the renderer must handle.
+`@copilotkit/a2ui-renderer` re-exports A2UI's canonical
+`DynamicStringSchema` (plus `DynamicNumberSchema`, `DynamicBooleanSchema`
+and the matching types) if you would rather not hand-roll the union:
+
+```ts
+import { DynamicStringSchema } from "@copilotkit/a2ui-renderer";
+```
 
 ```typescript
 // src/app/demos/a2ui-fixed-schema/a2ui/definitions.ts
@@ -283,7 +334,7 @@ export const catalog = createCatalog(definitions, renderers, {
 ```
 </Step>
 
-<WhenFrameworkHas flag="a2ui_pattern" equals="schema-loading">
+
 <Step>
 ### Load the schema JSON at startup
 
@@ -396,211 +447,68 @@ def display_flight(origin: str, destination: str, airline: str, price: str) -> s
         ],
     )
 ```
+
+Nothing about A2UI depends on how the agent itself is built — the operations
+container is just the tool's return value, so the tool drops into whatever agent
+you already have.
 </Step>
-</WhenFrameworkHas>
 
-<WhenFrameworkHas flag="a2ui_pattern" equals="schema-inline">
-<Step>
-### Define the schema inline
 
-Spring AI / .NET don't ship a `load_schema` JSON helper, so the
-component tree is declared inline as a typed literal in source,
-equivalent to deserialising a `flight_schema.json` but compiled into
-the agent class. The structure is identical to the JSON form; only
-the surface syntax changes:
-
-```python
-# src/agents/a2ui_fixed.py
-from __future__ import annotations
-
-from pathlib import Path
-from typing import TypedDict
-
-from copilotkit import CopilotKitMiddleware, a2ui
-from langchain.agents import create_agent
-from langchain.tools import tool
-from langchain_openai import ChatOpenAI
-
-CATALOG_ID = "copilotkit://flight-fixed-catalog"
-SURFACE_ID = "flight-fixed-schema"
-
-_SCHEMAS_DIR = Path(__file__).parent / "a2ui_schemas"
-
-# The schema is JSON so it can be authored and reviewed independently of the
-# Python code. `a2ui.load_schema` is just a thin `json.load` wrapper.
-FLIGHT_SCHEMA = a2ui.load_schema(_SCHEMAS_DIR / "flight_schema.json")
-```
-</Step>
 
 <Step>
-### Return render operations from the tool
+### Attach the tool to an existing `StateGraph`
 
-The agent tool builds the same `createSurface` + `updateComponents` +
-`updateDataModel` operations container and returns it. The A2UI
-middleware detects the operations in the tool result and forwards
-them to the frontend renderer; the LLM only supplies the four data
-fields:
+The snippets above stop at the tool. The reference cell builds its agent with
+`langchain.agents.create_agent` plus `CopilotKitMiddleware` — that is what
+those imports are for — but the construction itself is not shown. If you added
+A2UI to an agent you already wrote, you probably have a hand-built `StateGraph`
+instead. The tool is unchanged; put it in a `ToolNode` and leave the rest of the
+graph alone:
 
-```python
-# src/agents/a2ui_fixed.py
-from __future__ import annotations
-
-from pathlib import Path
-from typing import TypedDict
-
-from copilotkit import CopilotKitMiddleware, a2ui
-from langchain.agents import create_agent
-from langchain.tools import tool
+```python title="agent.py (LangGraph StateGraph form)"
 from langchain_openai import ChatOpenAI
+from langgraph.graph import START, MessagesState, StateGraph
+from langgraph.prebuilt import ToolNode, tools_condition
 
-CATALOG_ID = "copilotkit://flight-fixed-catalog"
-SURFACE_ID = "flight-fixed-schema"
-
-_SCHEMAS_DIR = Path(__file__).parent / "a2ui_schemas"
-
-# The schema is JSON so it can be authored and reviewed independently of the
-# Python code. `a2ui.load_schema` is just a thin `json.load` wrapper.
-FLIGHT_SCHEMA = a2ui.load_schema(_SCHEMAS_DIR / "flight_schema.json")
+# `display_flight` is the tool defined above — unchanged.
+model = ChatOpenAI(model="gpt-4.1-mini").bind_tools([display_flight])
 
 
-class Flight(TypedDict):
-    """Shape the LLM should fill in when calling `display_flight`.
-
-    LangGraph serializes this TypedDict into the tool's JSON schema, so
-    defining it narrowly is how we steer the LLM to produce data that fits
-    the frontend `FlightCard` component's props.
-    """
-
-    origin: str
-    destination: str
-    airline: str
-    price: str
+def call_model(state: MessagesState):
+    return {"messages": [model.invoke(state["messages"])]}
 
 
-@tool
-def display_flight(origin: str, destination: str, airline: str, price: str) -> str:
-    """Show a flight card for the given trip.
+builder = StateGraph(MessagesState)
+builder.add_node("call_model", call_model)
+builder.add_node("tools", ToolNode([display_flight]))
+builder.add_edge(START, "call_model")
+builder.add_conditional_edges("call_model", tools_condition)
+builder.add_edge("tools", "call_model")
 
-    Use short airport codes (e.g. "SFO", "JFK") for origin/destination and a
-    price string like "$289".
-
-    After this tool returns, the flight card is already rendered to the user
-    via the A2UI surface — the JSON returned here is the surface descriptor
-    the renderer consumes, NOT a status code. Do NOT call this tool again
-    for the same flight (the user already sees the card). Reply with one
-    short confirmation sentence and stop.
-    """
-    # The A2UI middleware detects the `a2ui_operations` container in this
-    # tool result and forwards the ops to the frontend renderer. The frontend
-    # catalog resolves component names to the local React components.
-    #
-    # Note: schema-swap-on-action (e.g. swapping to a "booked" schema when
-    # the card's button is clicked) will be added once the Python SDK
-    # exposes `action_handlers=` on `a2ui.render`.
-    return a2ui.render(
-        operations=[
-            a2ui.create_surface(SURFACE_ID, catalog_id=CATALOG_ID),
-            a2ui.update_components(SURFACE_ID, FLIGHT_SCHEMA),
-            a2ui.update_data_model(
-                SURFACE_ID,
-                {
-                    "origin": origin,
-                    "destination": destination,
-                    "airline": airline,
-                    "price": price,
-                },
-            ),
-        ],
-    )
+# No `checkpointer=` — the LangGraph API server owns persistence and
+# rejects a custom one. See the LangGraph quickstart for the FastAPI case,
+# where you host the graph yourself and do need a checkpointer.
+graph = builder.compile()
 ```
+
+Keep whatever system prompt your agent already has. The reference cell's prompt
+tells the model to call `display_flight` exactly once and stop, because the tool
+result *is* the rendered card. Without it, the model tends to call the tool
+again, looking for a status code.
+
+`CopilotKitMiddleware` is a `create_agent` middleware, so it has no
+`StateGraph` equivalent — and the fixed-schema path does not need one: the
+A2UI middleware that turns the tool result into a surface runs in the
+TypeScript runtime (see [Registering the runtime](#registering-the-runtime)
+below), not in the graph. Note that dropping it also drops the other things it
+does — frontend-tool injection and exposing agent state to the model — so keep
+`create_agent` if your agent relies on those.
 </Step>
-</WhenFrameworkHas>
-
-<WhenFrameworkHas flag="a2ui_pattern" equals="llm-driven">
-<Step>
-### Generate the schema dynamically
-
-Mastra and Strands take a different route: the agent tool runs a
-*secondary* LLM call with a forced tool choice that produces the
-operations container per-request. The frontend catalog is still fixed
-(same `Title`/`Airport`/`Arrow`/`AirlineBadge`/`PriceTag` primitives),
-but the schema is built on the fly. Schema construction and render
-emission happen in the same tool call:
-
-```python
-# src/agents/a2ui_fixed.py
-from __future__ import annotations
-
-from pathlib import Path
-from typing import TypedDict
-
-from copilotkit import CopilotKitMiddleware, a2ui
-from langchain.agents import create_agent
-from langchain.tools import tool
-from langchain_openai import ChatOpenAI
-
-CATALOG_ID = "copilotkit://flight-fixed-catalog"
-SURFACE_ID = "flight-fixed-schema"
-
-_SCHEMAS_DIR = Path(__file__).parent / "a2ui_schemas"
-
-# The schema is JSON so it can be authored and reviewed independently of the
-# Python code. `a2ui.load_schema` is just a thin `json.load` wrapper.
-FLIGHT_SCHEMA = a2ui.load_schema(_SCHEMAS_DIR / "flight_schema.json")
 
 
-class Flight(TypedDict):
-    """Shape the LLM should fill in when calling `display_flight`.
-
-    LangGraph serializes this TypedDict into the tool's JSON schema, so
-    defining it narrowly is how we steer the LLM to produce data that fits
-    the frontend `FlightCard` component's props.
-    """
-
-    origin: str
-    destination: str
-    airline: str
-    price: str
 
 
-@tool
-def display_flight(origin: str, destination: str, airline: str, price: str) -> str:
-    """Show a flight card for the given trip.
 
-    Use short airport codes (e.g. "SFO", "JFK") for origin/destination and a
-    price string like "$289".
-
-    After this tool returns, the flight card is already rendered to the user
-    via the A2UI surface — the JSON returned here is the surface descriptor
-    the renderer consumes, NOT a status code. Do NOT call this tool again
-    for the same flight (the user already sees the card). Reply with one
-    short confirmation sentence and stop.
-    """
-    # The A2UI middleware detects the `a2ui_operations` container in this
-    # tool result and forwards the ops to the frontend renderer. The frontend
-    # catalog resolves component names to the local React components.
-    #
-    # Note: schema-swap-on-action (e.g. swapping to a "booked" schema when
-    # the card's button is clicked) will be added once the Python SDK
-    # exposes `action_handlers=` on `a2ui.render`.
-    return a2ui.render(
-        operations=[
-            a2ui.create_surface(SURFACE_ID, catalog_id=CATALOG_ID),
-            a2ui.update_components(SURFACE_ID, FLIGHT_SCHEMA),
-            a2ui.update_data_model(
-                SURFACE_ID,
-                {
-                    "origin": origin,
-                    "destination": destination,
-                    "airline": airline,
-                    "price": price,
-                },
-            ),
-        ],
-    )
-```
-</Step>
-</WhenFrameworkHas>
 </Steps>
 
 ## Why compositional beats monolithic
@@ -641,6 +549,8 @@ const runtime = new CopilotRuntime({
 });
 ```
 
+<!-- setup skipped: a2ui-fixed-schema-setup is not bundled for langgraph-python -->
+
 ## Action handlers (reference)
 
 The canonical reference pairs fixed schemas with
@@ -669,9 +579,10 @@ When available, a button declares its action like this:
 ```
 
 And the Python tool matches it with a handler keyed by the action
-name (plus a `"*"` catch-all). Until the SDK lands, see the reference
-[fixed-schema guide](/integrations/langgraph/generative-ui/a2ui/fixed-schema)
-for the full pattern.
+name (plus a `"*"` catch-all). Until the SDK lands, handle the click on the
+frontend instead — see
+[Advanced — Action Handlers](./advanced#action-handlers) for the
+`createA2UIMessageRenderer` / `onAction` pattern.
 
 ## When should I use fixed schemas?
 

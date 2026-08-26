@@ -3,7 +3,28 @@
 > Let your agent interact with and update your application's UI.
 
 
+
 <!-- interactive demo: frontend-tools -->
+
+
+<Callout type="info" title="See this in Inspector">
+  Open Inspector on localhost. Go to **Agents**, then **Frontend Tools**.
+  Your tool and its schema are listed.
+
+  More detail: [Inspector](/langgraph-python/inspector).
+</Callout>
+
+<Callout type="info" title="See this in Inspector">
+  Open Inspector on localhost. Go to **Inspect**, then **Event Snippets**.
+  You can compile a tool call, reasoning, text, or activity, run it on the live
+  agent, and save it. Saved snippets are grouped by recipe. On localhost chat,
+  **Save as snippet** uses the recipe for the thing you click and fills the form.
+  On a tool call, generative UI, or A2UI, the bookmark sits to the right of the
+  block (or to the left if there is no room on the right).
+  Run of a `generateSandboxedUi` tool call paints the sandbox UI in chat.
+
+  More detail: [Inspector](/langgraph-python/inspector).
+</Callout>
 
 
 ## What is this?
