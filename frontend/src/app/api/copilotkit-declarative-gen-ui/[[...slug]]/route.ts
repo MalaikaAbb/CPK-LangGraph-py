@@ -1,11 +1,7 @@
-import {
-  CopilotRuntime,
-  ExperimentalEmptyAdapter,
-  copilotRuntimeNextJSAppRouterEndpoint,
-} from "@copilotkit/runtime";
-import { NextRequest } from "next/server";
+import { createCopilotRuntimeHandler } from "@copilotkit/runtime/v2";
 
 import { A2UI_DYNAMIC_AGENT_ID } from "@/lib/agents";
+import { buildRuntime } from "@/lib/copilot-runtime";
 import { buildAgents } from "@/lib/runtime-agents";
 
 /**
@@ -24,19 +20,19 @@ import { buildAgents } from "@/lib/runtime-agents";
  * The main runtime sets the former, so dynamic-schema is served here. No `a2ui`
  * block is needed: the route's provider passes `a2ui={{ catalog }}`, and per the
  * doc page a catalog auto-enables A2UI and injects the tool on its own.
+ *
+ * Moved to the v2 catch-all alongside the main route, and it shares
+ * `buildRuntime` — so Intelligence and per-user threads are wired the same way
+ * here as on the main endpoint.
  */
-const serviceAdapter = new ExperimentalEmptyAdapter();
-
-const runtime = new CopilotRuntime({
-  agents: buildAgents([A2UI_DYNAMIC_AGENT_ID]),
+const handler = createCopilotRuntimeHandler({
+  runtime: buildRuntime({ agents: buildAgents([A2UI_DYNAMIC_AGENT_ID]) }),
+  basePath: "/api/copilotkit-declarative-gen-ui",
 });
 
-export const POST = async (req: NextRequest) => {
-  const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
-    runtime,
-    serviceAdapter,
-    endpoint: "/api/copilotkit-declarative-gen-ui",
-  });
-
-  return handleRequest(req);
+export {
+  handler as GET,
+  handler as POST,
+  handler as PATCH,
+  handler as DELETE,
 };

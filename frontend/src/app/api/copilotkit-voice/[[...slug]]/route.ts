@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import {
-  CopilotRuntime,
   TranscriptionService,
   createCopilotRuntimeHandler,
 } from "@copilotkit/runtime/v2";
@@ -8,6 +7,7 @@ import type { TranscribeFileOptions } from "@copilotkit/runtime/v2";
 import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
 import OpenAI from "openai";
 
+import { buildRuntime } from "@/lib/copilot-runtime";
 import { buildAgents } from "@/lib/runtime-agents";
 
 /**
@@ -78,7 +78,9 @@ let cachedHandler: ((req: Request) => Promise<Response>) | null = null;
 function getHandler(): (req: Request) => Promise<Response> {
   if (cachedHandler) return cachedHandler;
 
-  const runtime = new CopilotRuntime({
+  // Shares `buildRuntime`, so Intelligence and per-user threads work here too;
+  // `transcriptionService` is the one option unique to this endpoint.
+  const runtime = buildRuntime({
     agents: buildAgents([
       // The page mounts <CopilotKit agent="voice-demo">.
       "voice-demo",

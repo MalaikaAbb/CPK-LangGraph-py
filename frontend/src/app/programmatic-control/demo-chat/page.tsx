@@ -1,5 +1,6 @@
 "use client";
 
+import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { useCallback, useState } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
