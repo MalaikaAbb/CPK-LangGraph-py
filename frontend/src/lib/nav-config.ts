@@ -85,7 +85,7 @@ export const NAV: NavGroup[] = [
         docPath: "/langgraph-python/prebuilt-components/copilot-threads-drawer",
         summary:
           "The drop-in conversation sidebar, wired with no active-thread state of its own.",
-        status: "partial",
+        status: "working",
         statusNote:
           "Two separate switches: Intelligence mode for real rows, and a license (publicLicenseKey or licenseToken) for the drawer to render anything but its locked Upgrade view.",
       },
@@ -97,7 +97,7 @@ export const NAV: NavGroup[] = [
         docPath: "/langgraph-python/headless-threads",
         summary:
           "The same thread data through useThreads, with a hand-built list — including rename, which the drawer omits.",
-        status: "partial",
+        status: "working",
         statusNote:
           "Needs Intelligence mode. In SSE mode /info reports mutations: false, so rename/archive/delete have no endpoint to call.",
       },
@@ -109,7 +109,7 @@ export const NAV: NavGroup[] = [
         docPath: "/langgraph-python/threads-lifecycle",
         summary:
           "Where a threadId comes from, how history replays, and how switching differs from starting fresh.",
-        status: "partial",
+        status: "working",
         statusNote:
           "Switch and start are live in either mode; history replay needs a server-side store, so it is inert in SSE mode.",
       },

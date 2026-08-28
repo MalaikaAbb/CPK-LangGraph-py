@@ -6,9 +6,17 @@ import {
   useCopilotChatConfiguration,
   useThreads,
 } from "@copilotkit/react-core/v2";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
+
+/**
+ * Stable module-scope callbacks for the `useSyncExternalStore` below. Defining
+ * them inline would hand it a new subscribe function on every render.
+ */
+const subscribeNever = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 /** The runtime id this demo binds to. Also shown in the demo header. */
 const AGENT_ID = "sample_agent";
@@ -31,6 +39,26 @@ function ThreadControls() {
   const { threads } = useThreads({ agentId: AGENT_ID });
   const [picked, setPicked] = useState<string>("");
 
+  /**
+   * The readout below cannot be server-rendered.
+   *
+   * `config.threadId` is minted at mount with a UUID v4, so the server renders
+   * one id and the client mints a different one — a guaranteed hydration
+   * mismatch, which React resolves by throwing away and regenerating the whole
+   * subtree. Gating on a client flag means the server and the first client pass
+   * both render the placeholder, and the real id appears on the next paint.
+   *
+   * `useSyncExternalStore` rather than `useState` + `useEffect`: the two
+   * snapshot functions are exactly the server/client distinction this needs,
+   * and setting state from an effect to detect mounting is what
+   * `react-hooks/set-state-in-effect` exists to catch.
+   */
+  const mounted = useSyncExternalStore(
+    subscribeNever,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
+
   const existingId = picked || threads[0]?.id;
 
   return (
@@ -42,11 +70,13 @@ function ThreadControls() {
         <dl className="mt-2 grid grid-cols-[minmax(0,9rem)_1fr] gap-x-4 gap-y-1.5 text-sm">
           <dt className="text-slate-500">threadId</dt>
           <dd className="break-all">
-            <code>{config?.threadId ?? "—"}</code>
+            <code>{mounted ? (config?.threadId ?? "—") : "—"}</code>
           </dd>
           <dt className="text-slate-500">explicit?</dt>
           <dd>
-            <code>{String(config?.hasExplicitThreadId ?? false)}</code>
+            <code>
+              {mounted ? String(config?.hasExplicitThreadId ?? false) : "—"}
+            </code>
           </dd>
           <dt className="text-slate-500">agentId</dt>
           <dd>

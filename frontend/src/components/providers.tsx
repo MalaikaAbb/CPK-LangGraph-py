@@ -6,6 +6,8 @@ import type { ReactNode } from "react";
 
 import { rootInspectorSetting } from "@/lib/inspector";
 
+import { RestOnlyThreadStores } from "./rest-only-thread-stores";
+
 /**
  * One provider for the whole app, so a conversation survives navigation
  * between test routes.
@@ -17,11 +19,20 @@ import { rootInspectorSetting } from "@/lib/inspector";
  * are the cases where the doc page is specifically about the provider, so an
  * isolated instance is the honest thing to show.
  *
- * On the inspector prop name, which is genuinely confusing: the doc page says
- * `enableInspector`, and that prop exists — but only on `<CopilotKit>`, the v1
- * compatibility wrapper. All it does there is forward to this provider's
- * `showDevConsole`. On `CopilotKitProvider` there is no `enableInspector` at
- * all, and `showDevConsole` is the only switch. See README §9.
+ * On the inspector prop name, which is a genuine trap: this must be
+ * `enableInspector`, not `showDevConsole`. `CopilotKitProviderProps` declares
+ * BOTH, so `showDevConsole` typechecks and looks right — but the v2
+ * `CopilotKitProvider` never destructures it. The only gate it reads is
+ * `shouldEnableInspector`, which mounts the inspector in dev unless
+ * `enableInspector` is explicitly `false`. Passing `showDevConsole` is
+ * therefore a silent no-op that leaves the inspector on everywhere. See
+ * README §9 and `lib/inspector.ts`.
+ *
+ * `inspectorDefaultAnchor` used to sit alongside it, pinning the inspector
+ * button bottom-left so it would not cover the prebuilt Popup and Sidebar
+ * launchers. 1.69.3 removed the prop with no replacement — the provider now
+ * exposes no positioning control at all — so on routes that mount those
+ * launchers the inspector button overlaps them again.
  *
  * Two props exist for Rich Threads:
  *
@@ -47,6 +58,22 @@ const DEMO_USER_NAME = process.env.NEXT_PUBLIC_DEMO_USER_NAME ?? "Harness User";
 const PUBLIC_LICENSE_KEY =
   process.env.NEXT_PUBLIC_COPILOTKIT_PUBLIC_LICENSE_KEY;
 
+/**
+ * Hoisted to module scope on purpose — this must be a STABLE reference.
+ *
+ * Written inline as `headers={{ ... }}` it is a fresh object on every render,
+ * and the provider treats a changed `headers` identity as a changed request
+ * config: it rebuilds its client, which re-fetches thread lists and re-opens
+ * realtime subscriptions. With a large agent registry that turns one re-render
+ * into a burst of `GET /threads` + `POST /threads/subscribe` per agent, over
+ * and over. The values are module constants, so the object never needs a new
+ * identity.
+ */
+const IDENTITY_HEADERS = {
+  "x-user-id": DEMO_USER_ID,
+  "x-user-name": DEMO_USER_NAME,
+} as const;
+
 export function Providers({ children }: { children: ReactNode }) {
   // The inspector can only watch the core it is attached to, and two of them
   // on one page is fatal — so on routes that bring their own provider, this
@@ -56,22 +83,22 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <CopilotKitProvider
       runtimeUrl={RUNTIME_URL}
-      headers={{
-        "x-user-id": DEMO_USER_ID,
-        "x-user-name": DEMO_USER_NAME,
-      }}
+      headers={IDENTITY_HEADERS}
       // Spread rather than passed as `publicLicenseKey={undefined}`: an
       // explicit undefined is still a supplied prop, and the provider treats a
       // present-but-empty key differently from an absent one.
       {...(PUBLIC_LICENSE_KEY ? { publicLicenseKey: PUBLIC_LICENSE_KEY } : {})}
-      showDevConsole={rootInspectorSetting(pathname)}
-      // Bottom-left, because the prebuilt Popup and Sidebar launchers both
-      // live bottom-right and would sit under the inspector button.
-      inspectorDefaultAnchor={{ horizontal: "left", vertical: "bottom" }}
+      enableInspector={rootInspectorSetting(pathname)}
       onError={(event) => {
         console.error(`[CopilotKit ${event.code}]`, event.error);
       }}
     >
+      {/*
+        Must sit INSIDE the provider — it reads the core through
+        `useCopilotKit()`. Renders nothing; it only caps realtime thread
+        subscriptions at one agent. See the file for why that is necessary.
+      */}
+      <RestOnlyThreadStores />
       {children}
     </CopilotKitProvider>
   );
