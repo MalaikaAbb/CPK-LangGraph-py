@@ -35,17 +35,62 @@ export const NESTED_PROVIDER_ROUTES = [
 ] as const;
 
 /**
- * What the app-wide provider should pass as `showDevConsole`.
+ * Route subtrees where the Inspector is suppressed, on purpose.
  *
- * `"auto"` means localhost-only; `false` means "a nested provider owns the
- * inspector on this route".
+ * The Inspector is what turns the realtime thread defect from waste into a
+ * broken agent. With it mounted, prompting fails with "Timed out joining
+ * channel"; with it off, the same agent runs. Proven by A/B, with StrictMode on
+ * in every case and `reactStrictMode: false` ruling React out:
+ *
+ *     inspector off                   -> agent runs
+ *     inspector on                    -> Timed out joining channel
+ *     inspector on + REST-only stores -> still fails
+ *
+ * The Rich Threads routes are the ones that actually exercise realtime threads,
+ * so they are the ones that must stay runnable. Everywhere else keeps the
+ * Inspector, which is the point of a QA harness.
+ *
+ * Prefix match, so each section and its `demo-chat` child are both covered.
+ * See README §9.
  */
-export function rootInspectorSetting(pathname: string | null): "auto" | false {
+export const INSPECTOR_SUPPRESSED_PREFIXES = [
+  "/headless-threads",
+  "/threads-lifecycle",
+  "/prebuilt-components/copilot-threads-drawer",
+] as const;
+
+/** True when `pathname` sits inside a suppressed subtree. */
+function isInspectorSuppressedRoute(pathname: string): boolean {
+  return INSPECTOR_SUPPRESSED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
+/**
+ * What the app-wide provider should pass as `enableInspector`.
+ *
+ * It must be `enableInspector`, NOT `showDevConsole`. `CopilotKitProviderProps`
+ * declares both, so `showDevConsole` typechecks — but the v2
+ * `CopilotKitProvider` never destructures it, and the only gate it reads is:
+ *
+ *     shouldEnableInspector({ enableInspector, isBrowser, isDevelopment })
+ *       => isBrowser && isDevelopment && enableInspector !== false
+ *
+ * So the inspector mounts in dev unless `enableInspector` is *explicitly*
+ * `false`, and passing `showDevConsole` is silently a no-op. See README §9.
+ *
+ * That rule already is the old `"auto"` behaviour (dev + browser only), so:
+ *   - `false`     — off: the kill switch, or a nested provider owns this route.
+ *   - `undefined` — leave the package's dev-only default in place.
+ */
+export function rootInspectorSetting(pathname: string | null): false | undefined {
   if (!INSPECTOR_ENABLED) return false;
   if (pathname && (NESTED_PROVIDER_ROUTES as readonly string[]).includes(pathname)) {
     return false;
   }
-  return "auto";
+  // Rich Threads routes: the Inspector breaks agent runs there.
+  if (pathname && isInspectorSuppressedRoute(pathname)) return false;
+  return undefined;
 }
 
 /**
