@@ -517,6 +517,18 @@ export const NAV: NavGroup[] = [
         statusNote:
           "The page prints no agent code at all — it links to the Feature Viewer. The graph here is this repo's, built to demonstrate the one claim the page makes.",
       },
+      {
+        path: "/guardrails",
+        hasDemo: true,
+        agentId: "guardrails",
+        title: "Guardrails & DLP",
+        docPath: "/langgraph-python/guardrails",
+        summary:
+          "Screening middleware on both boundaries: PII redaction in and out, an input firewall that ends the run, an output DLP pass, and tool-call policy — ordered ahead of CopilotKitMiddleware.",
+        status: "working",
+        statusNote:
+          "All five snippets run unedited; two of them do nothing useful. CopilotKit drives the graph with astream_events, so OutputFirewall.awrap_model_call — published with its body elided to a comment — scrubs nothing, and ToolFirewall (sync wrap_tool_call only) raises NotImplementedError on the first tool call. See README §9 items 27 and 28.",
+      },
     ],
   },
   {

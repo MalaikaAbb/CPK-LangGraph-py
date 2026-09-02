@@ -62,6 +62,7 @@ export const AGENT_IDS = [
   "agent-app-context",
   "configurable",
   "subgraphs",
+  "guardrails",
 ] as const;
 
 export type AgentId = (typeof AGENT_IDS)[number];
