@@ -192,6 +192,12 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "subgraphs": RegisteredGraph(
         "subgraphs", "graph", "/langgraph-python/subgraphs"
     ),
+    # The only agent carrying screening middleware. Its firewalls are the
+    # Guardrails page's, reproduced including the two that fail on the async
+    # path CopilotKit uses — see the module docstring.
+    "guardrails": RegisteredGraph(
+        "guardrails", "graph", "/langgraph-python/guardrails"
+    ),
 }
 #endregion
 

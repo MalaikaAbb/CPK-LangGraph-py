@@ -40,7 +40,8 @@
     "agent-config": "./src/graphs/agent_config.py:graph",
     "agent-app-context": "./src/graphs/agent_app_context.py:graph",
     "configurable": "./src/graphs/configurable.py:graph",
-    "subgraphs": "./src/graphs/subgraphs.py:graph"
+    "subgraphs": "./src/graphs/subgraphs.py:graph",
+    "guardrails": "./src/graphs/guardrails.py:graph"
   },
   "env": ".env"
 }

@@ -93,7 +93,10 @@ export async function readSource(
   const lines = raw.split("\n");
   // Accept both `//#region name` (TS convention) and `# region name` (the
   // Python one), so markers read naturally in whichever file they live in.
-  const startRe = new RegExp(`#\\s?region\\s+${escapeRe(region)}\\b`);
+  // Anchored at end-of-line, not `\b`: region names here prefix one another
+  // (`tool-firewall` / `tool-firewall-remedy`), and `\b` matches before the
+  // hyphen — so a prefix would silently slice whichever region came first.
+  const startRe = new RegExp(`#\\s?region\\s+${escapeRe(region)}\\s*$`);
   const endRe = /#\s?endregion\b/;
   const startIdx = lines.findIndex((l) => startRe.test(l));
   if (startIdx === -1) {
