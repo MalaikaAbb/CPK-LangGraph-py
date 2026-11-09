@@ -300,7 +300,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/human-in-the-loop/headless`** — The same kind of interrupt resolved outside the chat by a hand-written `useHeadlessInterrupt` over `useAgent`. **Try:** `Schedule a call with Alice about the Q3 roadmap`. **Pass:** the picker appears in the app surface beside the chat, and choosing a slot resumes the run. **Fail:** nothing appears (no `on_interrupt` event reached the hook).
 
-**`/human-in-the-loop/governed-actions`** — A `useHumanInTheLoop` approval card gating a side-effecting action, built around the page's `GovernedAction` envelope. **Try:** `Refund order 1042 for $120`. **Pass:** an approval card appears and the agent reports the decision after you approve or reject. The verdict and reference fields are model-invented (§9 item 38).
+**`/human-in-the-loop/governed-actions`** — A `useHumanInTheLoop` approval card gating a side-effecting action, built around the page's `GovernedAction` envelope. **Try:** `Email carol@northwind.test to confirm her refund of $420 on order NW-8812.`. **Pass:** an approval card appears and the agent reports the decision after you approve or reject. The verdict and reference fields are model-invented (§9 item 38).
 
 **`/programmatic-control`** — the page's `headless-complete` send pipeline (`addMessage` / `runAgent` / `stopAgent`), reproduced verbatim. **Pass:** an empty frame — the snippet ends after the handlers and never publishes any JSX, so there is no UI to reproduce. See §9 item 19.
 
