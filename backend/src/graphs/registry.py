@@ -112,6 +112,16 @@ REGISTRY: dict[str, RegisteredGraph] = {
         "declarative_gen_ui", "graph",
         "/langgraph-python/generative-ui/a2ui/dynamic-schema",
     ),
+    # Declarative › JSON Render and Hashbrown. Ids are the graph ids the
+    # pages' Code-tab runtime routes name; each has its own runtime endpoint.
+    "byoc_json_render": RegisteredGraph(
+        "byoc_json_render", "graph",
+        "/langgraph-python/generative-ui/json-render",
+    ),
+    "byoc_hashbrown": RegisteredGraph(
+        "byoc_hashbrown", "graph",
+        "/langgraph-python/generative-ui/hashbrown",
+    ),
 
     # --- App control -----------------------------------------------------
     "frontend-tools": RegisteredGraph(

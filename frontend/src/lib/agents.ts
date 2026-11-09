@@ -36,6 +36,8 @@ export const AGENT_IDS = [
   "gen-ui-tool-based",
   "a2ui-fixed-schema",
   "declarative-gen-ui",
+  "byoc_json_render",
+  "byoc_hashbrown",
 
   // App control
   "frontend-tools",
