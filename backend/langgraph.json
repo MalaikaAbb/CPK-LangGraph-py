@@ -23,6 +23,7 @@
     "gen-ui-tool-based": "./src/graphs/chat.py:gen_ui_tool_based_graph",
     "a2ui-fixed-schema": "./src/graphs/a2ui_fixed.py:graph",
     "declarative-gen-ui": "./src/graphs/declarative_gen_ui.py:graph",
+    "genui": "./src/graphs/genui.py:graph",
     "frontend-tools": "./src/graphs/chat.py:frontend_tools_graph",
     "hitl-in-chat": "./src/graphs/chat.py:hitl_in_chat_graph",
     "interrupt-flow": "./src/graphs/interrupt_flow.py:graph",

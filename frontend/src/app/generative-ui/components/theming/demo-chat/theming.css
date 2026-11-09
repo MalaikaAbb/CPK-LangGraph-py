@@ -1,0 +1,6 @@
+/* "Set variables in CSS", as published. Next loads this stylesheet globally
+   once the demo has been opened, so the accent can also show on other routes'
+   standard components until a full reload. */
+.a2ui-surface {
+  --a2ui-color-accent: #d97706;
+}

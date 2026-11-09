@@ -5,7 +5,7 @@ A navigable, working test harness for the CopilotKit LangGraph (Python) integrat
 | | |
 |---|---|
 | **Doc sync date** | Machine-maintained — `doc-snapshot/manifest.json` → `syncedAt`, shown on `/` and `/doc-sync`, rewritten on every sync |
-| **CopilotKit packages** | `@copilotkit/react-core` 1.66.2 · `@copilotkit/runtime` 1.66.2 · `@copilotkit/a2ui-renderer` 1.66.2 · `@copilotkit/voice` 1.66.2 |
+| **CopilotKit packages** | `@copilotkit/react-core` · `runtime` · `a2ui-renderer` · `voice` `^1.85.0`, `@ag-ui/client`/`core` 1.0.2 (bumped from 1.70.0 for Components and surfaces, §9 item 34) |
 | **CopilotKit Python SDK** | `copilotkit` 0.1.94 · `ag-ui-langgraph` 0.0.42 |
 | **LangGraph / LangChain** | `langgraph` 1.2.10 · `langchain` 1.3.14 · `langchain-openai` 1.4.1 |
 | **Frontend** | Next.js 16.3.0 (App Router) · React 19.2 · TypeScript · Tailwind 4 |
@@ -286,6 +286,24 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/generative-ui/a2ui/fixed-schema`** — A flight card from a JSON schema. **Try:** `Find me a flight from SFO to JFK`. **Pass:** an itinerary card with both airport codes, an airline badge, a price and a Book button. **Fail:** raw JSON — the `catalogId` does not match.
 
+**`/generative-ui/components`** — `standardUI` on the provider; the runtime adds `render_ui` and the agent streams real components, served by the repo-authored `genui` graph (the page's runtime is a TanStack `BuiltInAgent`). **Try:** `Compare the Starter, Team, and Enterprise plans in a table` then `add a column for support`. **Pass:** a table streams in and the follow-up edits it in place. **Fail:** plain markdown — `render_ui` never reached the model.
+
+**`/generative-ui/components/surfaces`** — `GenerativeUISurface` page targets the chat fills, limits, scrolls to and replaces. **Try:** `Show me cheap running shoes in the featured row.` then `Show the featured products again.` **Pass:** `search_products` runs, the page's row is replaced by a ProductGrid, and the second prompt brings it back. **Fail:** the grid lands in the chat (the target's description never reached the agent).
+
+**`/generative-ui/components/catalogs`** — `createGenerativeUI` catalogs: typed props, zod and Valibot, `extends`, `parameterOrder`, `exportA2UICatalog`. **Try:** `Show me three running shoes as product cards.` **Pass:** ProductCards whose values match the `search_products` result; the Export tab lists `component, title, children, color`. **Fail:** standard components such as Table appear on `shopUI`.
+
+**`/generative-ui/components/standard-catalog`** — `standardUI` as is, extended, with `omit`, and with a `Card` override. **Try:** `Show the Eiffel Tower and the Louvre on a map.` **Pass:** a MapLibre map on `standardUI`, none on the omit variant. **Fail:** a plain list on `standardUI` (`maplibre-gl` did not load).
+
+**`/generative-ui/components/state-and-actions`** — `bind` from app state, functions on click, events sent to the agent, writable props. **Try:** `Show product cards for p1 Trail Runner and p2 City Sneaker.` (after adding p1 twice) **Pass:** "In cart: 2" / "In cart: 0" from app state; Add to cart updates the Cart panel with no chat message. **Fail:** a chat message on click.
+
+**`/generative-ui/components/theming`** — `theme` variables, a typed theme file, dark overrides, map styles, `.a2ui-surface` CSS. **Try:** `Show a card with a primary button, a slider, and a bar chart of three months.` **Pass:** amber `#d97706` accent on the button and slider. **Fail:** the default accent on the Provider theme variant. The Map variant's basemap is blank by design (placeholder URLs on the page).
+
+**`/generative-ui/components/transports`** — The `render_ui` tool transport vs `a2ui` fences in markdown, with `generativeUI: true` and `agentIds`. **Try:** `Compare the Starter, Team, and Enterprise plans in a table.` **Pass:** a table component (tool), a table inside the reply (markdown), plain text as `default` under `agentIds: ["shop"]`. **Fail:** UI as `default`.
+
+**`/generative-ui/components/markdown-mode`** — The agent writes A2UI operations in `a2ui` code blocks in its reply. **Try:** `Give me a seat-count slider that shows the monthly price at $29 per seat.` **Pass:** prose with a live slider card in the middle. **Fail:** raw JSON in a code block. The `sendContext: false` variant shows no UI by design.
+
+**`/generative-ui/components/from-a2ui`** — The A2UI 1.0 "After" catalog (`Airport`, `Arrow`) on the new engine. **Try:** `Show a flight card from SFO (San Francisco) to JFK (New York) with a Book button.` **Pass:** two Airport components with an Arrow and a Button. **Fail:** a rejection naming a v0.9 shape.
+
 ### App Control
 
 **`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
@@ -387,6 +405,15 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
+| `/langgraph-python/generative-ui/components` | `/generative-ui/components` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). Page's runtime is a TanStack `BuiltInAgent` (shown, not run); served by the repo-authored `genui` graph (§9 item 35). Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/surfaces` | `/generative-ui/components/surfaces` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). Product/ProductRow scaffolding and `search_products` are repo-authored. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/catalogs` | `/generative-ui/components/catalogs` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). Hero/Panel/cartUI scaffolding. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/standard-catalog` | `/generative-ui/components/standard-catalog` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). ProductCard/productSchema scaffolding. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/state-and-actions` | `/generative-ui/components/state-and-actions` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). Cart scaffolding around fragment snippets. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/theming` | `/generative-ui/components/theming` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). Placeholder mapStyle URLs draw no basemap. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/transports` | `/generative-ui/components/transports` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). The runtime's undefined `agent` is the `genui` graph, plus a `shop` entry. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/markdown-mode` | `/generative-ui/components/markdown-mode` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). `sendContext: false` variant renders no UI (its backend is a raw `input.forwarded_props` snippet). Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/components/from-a2ui` | `/generative-ui/components/from-a2ui` | ⚠️ Partial | New 2026-11; needs CopilotKit ≥ 1.85 (bumped, §9 item 34). Ported from CPK-LangGraph-TS (via aws-strands-ts). Airport/Arrow scaffolding. Not yet checked in a browser. |
 | `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
@@ -551,7 +578,15 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
+**34. Components and surfaces needs CopilotKit 1.85; this repo was on 1.70.0**
+
+The nine [Components and surfaces](https://docs.copilotkit.ai/langgraph-python/generative-ui/components) pages import `@copilotkit/react-core/v2/generative-ui` (`standardUI`, `createGenerativeUI`, `GenerativeUISurface`, …), which 1.70.0 does not ship. Since the 2026-11 doc sync `frontend/package.json` pins `@copilotkit/react-core`, `runtime`, `a2ui-renderer` and `voice` at `^1.85.0` and `@ag-ui/client` / `@ag-ui/core` at `1.0.2` (the exact version 1.85 pins, in `dependencies` and `overrides`, so one copy is installed). `tsc --noEmit` over the whole existing frontend stays clean after the bump, but no route was re-run in a browser, so behaviour changes between 1.70 and 1.85 elsewhere are unverified. The routes also add `valibot`, `@valibot/to-json-schema` (Catalogs' schema-library sample) and `maplibre-gl` (Map component). Root `zod` stays 3.25.76.
+
 ### Things the docs reference but never define
+
+**35. Components and surfaces publishes no LangGraph agent**
+
+The pages are framework-neutral: the overview's runtime is a TanStack `BuiltInAgent` factory, and the others change nothing on the runtime (the provider's catalog makes the runtime add `render_ui` and its guide to each run). `backend/src/graphs/genui.py` is therefore **repo-authored**: the docs' plain `create_agent` + `CopilotKitMiddleware` (which exposes `render_ui` and folds the guide into the prompt) plus a `search_products` tool ported from CPK-LangGraph-TS (`genui.ts`, itself from aws-strands-ts), because the Catalogs/Surfaces/State pages ask for product data no page defines. The demos, their scaffolding components and the two runtime routes (`/api/copilotkit-genui`, `/api/copilotkit-genui-transports`) are ported from CPK-LangGraph-TS, with the agent built by `buildAgents(["genui"])` so both transports work.
 
 **12. The Sub-Agents supervisor**
 
@@ -850,7 +885,7 @@ A few choices look arbitrary until they bite:
 
 **Input Modalities** — [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) · [Voice](https://docs.copilotkit.ai/langgraph-python/voice)
 
-**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)
+**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema) · [Components and surfaces](https://docs.copilotkit.ai/langgraph-python/generative-ui/components) · [Surfaces](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/surfaces) · [Catalogs](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/catalogs) · [Standard catalog](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/standard-catalog) · [State and actions](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/state-and-actions) · [Theming](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/theming) · [Transports](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/transports) · [Markdown mode](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/markdown-mode) · [Adopt from A2UI](https://docs.copilotkit.ai/langgraph-python/generative-ui/components/from-a2ui)
 
 **App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control)
 
