@@ -28,9 +28,9 @@ export default function Page() {
         </p>
         <div className="mt-4">
           <TryIt
-            prompts={["What's the weather in Tokyo?"]}
-            expect="A card shows “Calling weather API…” with Tokyo already visible, then fills in with 68°, Sunny — and the reply does not restate the numbers."
-            fail="Raw JSON, or nothing at all. The renderer's name does not match the tool name exactly, or no wildcard is registered."
+            prompts={["What's the weather in Tokyo?", "Find flights to JFK and roll a d20."]}
+            expect="A card shows “Calling weather API…” with Tokyo already visible, then fills in with 68°, Sunny — and the reply does not restate the numbers. The second prompt shows two default status cards (search_flights, roll_d20) from the wildcard."
+            fail="Raw JSON, or nothing at all (for the second prompt: no default cards for search_flights / roll_d20). The renderer's name does not match the tool name exactly, or no wildcard is registered."
           />
         </div>
       </Panel>
@@ -43,8 +43,21 @@ export default function Page() {
         <SourceCode file="frontend/src/app/generative-ui/tool-rendering/weather-card.tsx" />
       </Panel>
 
-      <Panel title="The backend tool">
+      <Panel title="The backend tools">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          From the page&apos;s demo Code tab, which carries all four tools; the
+          prose section still prints only <code>get_weather</code>.
+        </p>
         <SourceCode file="backend/src/graphs/tool_rendering.py" region="tool" />
+      </Panel>
+
+      <Panel title="The agent and its failure middleware">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          New in the Code tab: <code>stop_after_tool_failure</code> runs
+          before each model call and ends the turn with a fixed message when
+          the latest tool result has <code>status=&quot;error&quot;</code>.
+        </p>
+        <SourceCode file="backend/src/graphs/tool_rendering.py" region="agent" />
       </Panel>
 
       <Panel title="The two levels of catch-all">
@@ -58,6 +71,16 @@ export default function Page() {
           reads as &ldquo;the agent never called a tool&rdquo;.
         </p>
       </Panel>
+
+      <Callout tone="info" title="Grouping needs a newer CopilotKit">
+        <p>
+          The page now groups consecutive default-rendered calls into one card
+          (&ldquo;Used 3 tools&rdquo;) and lets you pick the display with{" "}
+          <code>messageView.toolCallDisplay</code>. That shipped after{" "}
+          <code>@copilotkit/react-core</code> 1.79; this repo is on 1.70.0, so
+          calls here still render one card each and the option is not wired.
+        </p>
+      </Callout>
     </>
   );
 }
