@@ -69,6 +69,10 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "chat-slots": RegisteredGraph(
         "chat", "chat_slots_graph", "/langgraph-python/custom-look-and-feel/slots"
     ),
+    "chat-markdown": RegisteredGraph(
+        "chat", "chat_markdown_graph",
+        "/langgraph-python/custom-look-and-feel/markdown",
+    ),
     "headless-simple": RegisteredGraph(
         "chat", "headless_simple_graph",
         "/langgraph-python/custom-look-and-feel/headless-ui",
