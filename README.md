@@ -397,7 +397,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ✅ Working | |
 | `/langgraph-python/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | The page's custom `chat_node` graph; only its elided node body was filled in. See §9 item 18. |
 | `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | Re-run now uses `copilotkit.runAgent({ agent })` per the 2026-11 page (was `agent.runAgent()`); not yet re-checked in a browser. |
-| `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. |
+| `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. The page's new `schema_keys` section is reference-only: no released package reads it (§9 item 32). |
 | `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. Tool emission is now the page's complete 2026-11 graph (verbatim; model and checkpointer redirected); not yet re-checked in a browser. |
 | `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. |
 | `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | Backend is now the page's Code-tab rulebook agent (2026-11); option values follow its prompt because `config-types.ts` is unpublished (§9 item 17). Not yet re-checked in a browser. |
@@ -550,6 +550,10 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 **11. The Quickstart's install line includes a package nothing imports**
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
+
+**32. `schema_keys` in the agent config is not read by any released package**
+
+[Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) now documents `LangGraphAGUIAgent(..., config={"schema_keys": {"output": ["steps"]}})` to emit state keys outside a narrow output schema, and says a malformed value is logged and ignored. Checked on 2026-11-09: `ag-ui-langgraph` 0.0.42 (installed) through 0.0.47 (latest on PyPI) and `copilotkit` 0.1.96 never read `schema_keys` from the config; `get_schema_keys` only introspects the graph. The snippet is shown as reference-only text on `/shared-state/state-inputs-outputs`; wiring it would be a silent no-op.
 
 ### Things the docs reference but never define
 
