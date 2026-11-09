@@ -29,7 +29,7 @@ export default function Page() {
               "Then switch to expert and ask the identical question",
             ]}
             expect="Visibly different answers — the beginner one defines terms and gives an example, the expert one skips preamble and goes to trade-offs."
-            fail="Identical answers. The context entry is not reaching the middleware, or read_config_value is rejecting its shape."
+            fail="Identical answers. The context entry is not reaching the model — CopilotKitMiddleware is missing from the graph."
           />
         </div>
       </Panel>
@@ -38,27 +38,23 @@ export default function Page() {
         <SourceCode file="frontend/src/app/agent-config/demo-chat/page.tsx" />
       </Panel>
 
-      <Panel title="Reading the config">
-        <SourceCode file="backend/src/graphs/agent_config.py" region="read-config" />
-      </Panel>
-
-      <Panel title="Rebuilding the prompt">
-        <SourceCode file="backend/src/graphs/agent_config.py" region="build-prompt" />
-      </Panel>
-
-      <Panel title="The graph">
+      <Panel
+        title="The graph — from the page's Code tab"
+        description="A static rulebook prompt; CopilotKitMiddleware supplies the current config as context each turn."
+      >
         <SourceCode file="backend/src/graphs/agent_config.py" region="agent" />
       </Panel>
 
-      <Callout tone="warn" title="build_system_prompt is called but never defined">
+      <Callout tone="info" title="The backend no longer rebuilds its prompt">
         <p>
-          The page&apos;s node calls it on every turn and prints{" "}
-          <code>read_config_value</code> in full, but the function that turns
-          three fields into actual directives appears nowhere. Its wording here
-          is therefore this repo&apos;s — only its job is the page&apos;s. If
-          your answers do not differ much between settings, that wording is the
-          first thing to make more forceful; vague directives produce vague
-          differences. See README §9.
+          Until November 2026 the page printed a <code>read_config_value</code>{" "}
+          helper and a node calling <code>build_system_prompt</code>, which it
+          never defined, so this route carried a repo-written prompt builder.
+          The page has dropped that half: its prose now shows a generic
+          &ldquo;read context, build prompt&rdquo; outline and sends you to the
+          Code tab&apos;s <code>agent_config_agent.py</code>, which is what runs
+          here. Option values in the UI follow that file&apos;s rulebook, since
+          the page&apos;s <code>config-types.ts</code> is not published.
         </p>
       </Callout>
 

@@ -400,7 +400,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. |
 | `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. |
 | `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. |
-| `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | `build_system_prompt` wording is this repo's. |
+| `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | Backend is now the page's Code-tab rulebook agent (2026-11); option values follow its prompt because `config-types.ts` is unpublished (§9 item 17). Not yet re-checked in a browser. |
 | `/langgraph-python/agent-app-context` | `/agent-app-context` | ✅ Working | |
 | `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Works, and disproves the page's filtering claim. Uses the page's deprecated `config_schema=` — doc-verbatim. |
 | `/langgraph-python/subgraphs` | `/subgraphs` | ⚠️ Partial | The page prints no agent code at all; the graph is this repo's. |
@@ -575,9 +575,9 @@ The page wires renderers for `get_weather`, `search_flights`, `get_stock_price` 
 
 [Shared State](https://docs.copilotkit.ai/langgraph-python/shared-state) publishes its `create_agent` literal in full, referencing both. Neither definition appears anywhere. Written here to what the page describes in prose and in its own system prompt.
 
-**17. `build_system_prompt`**
+**17. ~~`build_system_prompt`~~ — resolved 2026-11; Agent Config's option values still unpublished**
 
-[Agent Config](https://docs.copilotkit.ai/langgraph-python/agent-config)'s node calls it every turn and prints `read_config_value` in full, but never the function that turns three fields into directives. Its wording here is this repo's; only its job is the page's.
+[Agent Config](https://docs.copilotkit.ai/langgraph-python/agent-config) no longer prints `read_config_value`, `my_agent_node` or the call to the never-defined `build_system_prompt`; its prose now shows a pseudocode "backend flow" and points at the demo Code tab's `agent_config_agent.py` (a static rulebook `SYSTEM_PROMPT` plus `CopilotKitMiddleware`). `backend/src/graphs/agent_config.py` is now that file. Still missing: the Code tab imports `./config-types` (the `TONE_OPTIONS` etc. the selects use) but does not show it, so the route's option lists are taken from the values the published rulebook names (`professional`/`casual`/`enthusiastic`, `beginner`/`intermediate`/`expert`, `concise`/`detailed`).
 
 **18. The in-app read/write pages elide their node body**
 
