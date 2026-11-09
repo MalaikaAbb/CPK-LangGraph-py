@@ -40,6 +40,8 @@ export const AGENT_IDS = [
   // App control
   "frontend-tools",
   "hitl-in-chat",
+  "gen-ui-interrupt",
+  "governed-actions",
   "interrupt-flow",
   "programmatic-control",
   "interrupt-headless",

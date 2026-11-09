@@ -117,8 +117,20 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "frontend-tools": RegisteredGraph(
         "chat", "frontend_tools_graph", "/langgraph-python/frontend-tools"
     ),
+    # Served by the HITL Overview page's Code-tab agent since 2026-11; the
+    # older /human-in-the-loop route shares it.
     "hitl-in-chat": RegisteredGraph(
-        "chat", "hitl_in_chat_graph", "/langgraph-python/human-in-the-loop"
+        "hitl_in_chat", "graph", "/langgraph-python/human-in-the-loop"
+    ),
+    # Pausing the Agent for Input (useInterrupt): `schedule_meeting` calls
+    # LangGraph's interrupt(); agent from the showcase file the page excerpts.
+    "gen-ui-interrupt": RegisteredGraph(
+        "gen_ui_interrupt", "graph",
+        "/langgraph-python/human-in-the-loop/useInterrupt",
+    ),
+    "governed-actions": RegisteredGraph(
+        "chat", "governed_actions_graph",
+        "/langgraph-python/human-in-the-loop/governed-actions",
     ),
     # Native LangGraph `interrupt()` — the pattern with no ADK counterpart.
     "interrupt-flow": RegisteredGraph(
@@ -129,6 +141,8 @@ REGISTRY: dict[str, RegisteredGraph] = {
         "chat", "programmatic_control_graph",
         "/langgraph-python/programmatic-control",
     ),
+    # Also serves /human-in-the-loop/headless (Headless Interrupts publishes
+    # no backend; this graph interrupts with the same {topic, attendee, slots}).
     "interrupt-headless": RegisteredGraph(
         "interrupt_headless", "graph", "/langgraph-python/programmatic-control"
     ),

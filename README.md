@@ -290,9 +290,17 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
 
-**`/human-in-the-loop`** — `useHumanInTheLoop` suspending the run. **Try:** `Book an intro call with the sales team`. **Pass:** a picker renders and **nothing further streams** until you choose; the card then collapses to a green "Booked" badge.
+**`/human-in-the-loop`** — `useHumanInTheLoop` suspending the run. **Try:** `Schedule a call with Alice about the Q3 roadmap`. **Pass:** a picker renders and **nothing further streams** until you choose; the card then collapses to a green "Booked" badge.
 
 **`/human-in-the-loop/interrupt-flow`** — LangGraph's native `interrupt()`, the pattern with no counterpart in the other integrations. Two tabs, one per doc example. **Try:** `Hello! Who are you?` **Pass (Single interrupt):** the run halts, a form appears, answering resumes the graph. **Multiple interrupts** renders nothing — that is the doc bug, reproduced verbatim. See §9 item 1.
+
+**`/human-in-the-loop/index`** — The HITL Overview's own demo: `useHumanInTheLoop` registers `book_call` and the run pauses behind an in-chat time picker (Code-tab agent, which `hitl-in-chat` now runs for `/human-in-the-loop` too). **Try:** `Book a call with sales to discuss pricing`. **Pass:** a time-picker card appears; picking a slot makes the agent confirm it. **Fail:** the agent proposes a time in text with no card.
+
+**`/human-in-the-loop/useInterrupt`** — `schedule_meeting` calls LangGraph's `interrupt({topic, attendee, slots})`; `useInterrupt({ renderInChat: true })` draws the picker and `resolve()` resumes. **Try:** `Schedule a call with Alice about the Q3 roadmap`. **Pass:** the picker appears inline and the reply confirms the chosen slot (or the cancellation). **Fail:** the run ends with no card (agent id mismatch) or the tool returns "did not pick a time".
+
+**`/human-in-the-loop/headless`** — The same kind of interrupt resolved outside the chat by a hand-written `useHeadlessInterrupt` over `useAgent`. **Try:** `Schedule a call with Alice about the Q3 roadmap`. **Pass:** the picker appears in the app surface beside the chat, and choosing a slot resumes the run. **Fail:** nothing appears (no `on_interrupt` event reached the hook).
+
+**`/human-in-the-loop/governed-actions`** — A `useHumanInTheLoop` approval card gating a side-effecting action, built around the page's `GovernedAction` envelope. **Try:** `Refund order 1042 for $120`. **Pass:** an approval card appears and the agent reports the decision after you approve or reject. The verdict and reference fields are model-invented (§9 item 38).
 
 **`/programmatic-control`** — the page's `headless-complete` send pipeline (`addMessage` / `runAgent` / `stopAgent`), reproduced verbatim. **Pass:** an empty frame — the snippet ends after the handlers and never publishes any JSX, so there is no UI to reproduce. See §9 item 19.
 
@@ -390,6 +398,10 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
+| `/langgraph-python/human-in-the-loop/index` | `/human-in-the-loop/index` | ⚠️ Partial | New 2026-11. Code tab verbatim; `hitl-in-chat` repointed to this agent. Not yet checked in a browser. |
+| `/langgraph-python/human-in-the-loop/useInterrupt` | `/human-in-the-loop/useInterrupt` | ⚠️ Partial | New 2026-11. Page excerpts verbatim inside the showcase files they come from (§9 item 38). Not yet checked in a browser. |
+| `/langgraph-python/human-in-the-loop/headless` | `/human-in-the-loop/headless` | ⚠️ Partial | New 2026-11. Showcase demo file; page publishes no backend, served by the existing `interrupt-headless` graph. Not yet checked in a browser. |
+| `/langgraph-python/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | New 2026-11. Ported from CPK-LangGraph-TS (via aws-strands-ts); governance behind the card is unpublished (§9 item 38). Not yet checked in a browser. |
 | `/langgraph-python/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Renders nothing, faithfully — the published snippet ends after the handlers and never shows the JSX. Also destructures three undefined helpers. See §9 item 19. |
 | `/langgraph-python/shared-state` | `/shared-state` | ⚠️ Partial | The page never defines the `set_notes` tool or `PreferencesInjectorMiddleware` it references. Both written here from its prose. See §9 item 15. |
 | `/langgraph-python/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | |
@@ -552,6 +564,10 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
 ### Things the docs reference but never define
+
+**38. The new Human-in-the-loop pages print excerpts, not agents**
+
+[Pausing the Agent for Input](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/useInterrupt) prints `schedule_meeting` but not the model or `create_agent` call, and its `useInterrupt` render without `TimePickerCard`, `generateFallbackSlots` or the suggestions hook. The full files are the CopilotKit showcase's (`showcase/integrations/langgraph-python/src/agents/interrupt_agent.py` and the `gen-ui-interrupt` / `_shared` demo files @ a358fa0); the page's excerpts are their `@region` blocks, unchanged. [Headless Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/headless) prints the demo's main file but no backend; it runs on this repo's existing `interrupt-headless` graph. [Governed Action Approval UI](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/governed-actions) publishes no policy engine, no tool that emits a `GovernedAction`, and no `executeSideEffect`, so the card's verdict is whatever the model puts in the tool call; the route is ported from CPK-LangGraph-TS (via aws-strands-ts) and its `useInterrupt` variant is not built. The [HITL Overview](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/index) Code tab's 190-line showcase `route.ts` is not copied; its demo uses the main runtime.
 
 **12. The Sub-Agents supervisor**
 
@@ -852,7 +868,7 @@ A few choices look arbitrary until they bite:
 
 **Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)
 
-**App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control)
+**App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control) · [HITL Overview](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/index) · [Pausing the Agent for Input](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/useInterrupt) · [Headless Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/headless) · [Governed Action Approval UI](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/governed-actions)
 
 **Shared State** — [Overview](https://docs.copilotkit.ai/langgraph-python/shared-state) · [Render state in your app](https://docs.copilotkit.ai/langgraph-python/shared-state/rendering-in-app) · [State Streaming](https://docs.copilotkit.ai/langgraph-python/shared-state/streaming) · [Agent Read-Only Context](https://docs.copilotkit.ai/langgraph-python/shared-state/agent-readonly) · [Reading agent state](https://docs.copilotkit.ai/langgraph-python/shared-state/in-app-agent-read) · [Writing agent state](https://docs.copilotkit.ai/langgraph-python/shared-state/in-app-agent-write) · [Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) · [Predictive state updates](https://docs.copilotkit.ai/langgraph-python/shared-state/predictive-state-updates)
 

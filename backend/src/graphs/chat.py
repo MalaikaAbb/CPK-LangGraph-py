@@ -135,6 +135,9 @@ gen_ui_tool_based_graph = build_chat_graph(
     )
 )
 
+# No longer registered: since the 2026-11 sync `hitl-in-chat` is served by the
+# HITL Overview page's own Code-tab agent (src/agents/hitl_in_chat_agent.py).
+# Kept so the earlier prompt stays visible for comparison.
 hitl_in_chat_graph = build_chat_graph(
     system_prompt=(
         "You are a scheduling assistant. When the user asks to book, schedule "
@@ -144,6 +147,17 @@ hitl_in_chat_graph = build_chat_graph(
 )
 
 programmatic_control_graph = build_chat_graph()
+
+# `/human-in-the-loop/governed-actions` — the page publishes only frontend
+# code (a `useHumanInTheLoop` approval card); any graph that forwards frontend
+# tools serves it. Prompt is this repo's (same as CPK-LangGraph-TS's).
+governed_actions_graph = build_chat_graph(
+    system_prompt=(
+        "You are an operations assistant. Before any side-effecting action "
+        "(refunds, deletions, payments), call the approval tool the app registers "
+        "and wait for the user's decision; report the outcome afterwards."
+    )
+)
 
 
 # --- Subgraphs -----------------------------------------------------------
