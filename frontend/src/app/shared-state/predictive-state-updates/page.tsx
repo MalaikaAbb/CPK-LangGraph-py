@@ -56,7 +56,9 @@ Prebuilt agent ─  StateStreamingMiddleware(StateItem(…))`}
           the model&apos;s partially-generated <code>steps</code> argument into{" "}
           <code>observed_steps</code> as the tool call streams. Reach for this
           when the progress you want to show <em>is</em> what the model is
-          writing.
+          writing. Since November 2026 the page prints this variant as a whole
+          graph (tool, node, router, <code>ToolNode</code>, wiring), all
+          reproduced here.
         </p>
         <SourceCode
           file="backend/src/graphs/predictive_state_tool_emission.py"
@@ -138,8 +140,12 @@ Prebuilt agent ─  StateStreamingMiddleware(StateItem(…))`}
 
       <Callout tone="info" title="An empty tool body is not a stub">
         <p>
-          <code>step_progress_tool</code> has no implementation, in the docs and
-          here. It does not need one: the tool exists so the model has something
+          In the prebuilt variant <code>step_progress_tool</code> has no
+          implementation, in the docs and here. (The custom-graph tool-emission
+          variant gained a body in the page&apos;s November revision: it returns
+          a <code>Command</code> writing <code>observed_steps</code>, which makes
+          the streamed prediction the final value too.) The prebuilt one does
+          not need a body: the tool exists so the model has something
           to <em>call</em>, and the middleware harvests the streaming{" "}
           <code>steps</code> argument out of the call itself. The body would only
           run after the arguments were complete, which is exactly too late to be

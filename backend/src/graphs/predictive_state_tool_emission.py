@@ -9,65 +9,74 @@ The page nests two choices, and this is the second axis of the first one:
     Prebuilt agent ─ StateStreamingMiddleware → predictive_state_prebuilt.py
 
 The difference from the manual variant is *who decides when the UI updates*.
-There, the node calls `copilotkit_emit_state(config, state)` itself on a timer,
-tied to nothing in particular. Here nothing is emitted by hand at all:
-`copilotkit_customize_config` declares a mapping, and CopilotKit forwards the
-model's partially-generated `steps` argument into `observed_steps` as the tool
-call streams. The node never mentions emission again.
+There, the node calls `copilotkit_emit_state(config, state)` itself on a timer.
+Here `copilotkit_customize_config` declares a mapping, and CopilotKit forwards
+the model's partially-generated `steps` argument into `observed_steps` as the
+tool call streams.
 
-`frontend_actions_node`, the `step_progress_tool` and the `emit_intermediate_state`
-mapping are reproduced verbatim from the page.
+Since the page's 2026-11 revision this variant is a **complete graph** and is
+reproduced verbatim: `AgentState`, a `step_progress_tool` that returns a
+`Command` writing `observed_steps` plus a `ToolMessage`, a `chat_node` with
+`parallel_tool_calls=False`, `route_after_chat` (backend tool calls go to a
+`ToolNode`, frontend action calls end the run) and the `StateGraph` wiring.
+The repo-authored graph wiring that used to fill the gap is gone.
 
-**Two additions**, both of which the page defines elsewhere or omits entirely:
-
-  1. `AgentState` — printed in the page's earlier "Define the state" step as
-     `class AgentState(CopilotKitState): observed_steps: list[str]`.
-  2. The `StateGraph` wiring. The node returns `Command(goto=END, …)`, so it
-     needs a graph to be a node *of*; the page never shows one for this variant.
-
-**One deviation.** The page's node builds `ChatOpenAI(model="gpt-4")`. Unlike the
-`gpt-5.4` in most snippets that is a real model, but every graph in this repo
-runs on the shared `MODEL` constant so the suite is consistent and cheap to
-exercise. See README §9 item 5.
-
-Note what the tool's body is: nothing. `step_progress_tool` exists only so the
-model has something to *call* — the mapping harvests the streaming argument out
-of the call itself, long before any body would run.
+Two harness changes, as everywhere: the model literal is redirected to
+`_shared.MODEL`, and the page's `MemorySaver()` becomes the transport-aware
+`_shared.checkpointer()`.
 """
 
 from __future__ import annotations
 
-#region state
+from src.graphs._shared import MODEL, checkpointer
+
+#region imports
+import uuid
+
 from copilotkit import CopilotKitState
+from copilotkit.langgraph import copilotkit_customize_config
+from langchain.tools import ToolRuntime, tool
+from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
+from langchain_core.runnables import RunnableConfig
+from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import MemorySaver  # noqa: F401  (the page's import; see compile below)
+from langgraph.graph import END, START, StateGraph
+from langgraph.prebuilt import ToolNode
+from langgraph.types import Command
+#endregion
 
 
+#region state
 class AgentState(CopilotKitState):
-    observed_steps: list[str]  # Array of completed steps
+    observed_steps: list[str]
 #endregion
 
 
 #region node
-from langchain_core.messages import AIMessage, SystemMessage
-from langchain_core.runnables import RunnableConfig
-from langchain.tools import tool
-from langchain_openai import ChatOpenAI
-from langgraph.graph import END, START, StateGraph
-from langgraph.types import Command
-
-from copilotkit.langgraph import copilotkit_customize_config
-
-from src.graphs._shared import MODEL, checkpointer
-
-
-# Define a step progress tool for the llm to report the steps
 @tool
-def step_progress_tool(steps: list[str]):
-    """Reads and reports steps"""
+def step_progress_tool(steps: list[str], runtime: ToolRuntime) -> Command:
+    """Report the current steps being executed."""
+    return Command(
+        update={
+            "observed_steps": steps,
+            "messages": [
+                ToolMessage(
+                    content="Steps recorded to shared state.",
+                    name="step_progress_tool",
+                    id=str(uuid.uuid4()),
+                    tool_call_id=runtime.tool_call_id,
+                )
+            ],
+        }
+    )
 
+tools = [step_progress_tool]
+# Page: ChatOpenAI(model="gpt-6-luna", reasoning_effort="none"); redirected to
+# _shared.MODEL (README §9 item 5).
+model = ChatOpenAI(model=MODEL)
 
-async def frontend_actions_node(state: AgentState, config: RunnableConfig):
-    # Configure CopilotKit to treat step progress tool calls as predictive of the final state
-    config = copilotkit_customize_config(
+async def chat_node(state: AgentState, config: RunnableConfig):
+    streaming_config = copilotkit_customize_config(
         config,
         emit_intermediate_state=[
             {
@@ -75,52 +84,61 @@ async def frontend_actions_node(state: AgentState, config: RunnableConfig):
                 "tool": "step_progress_tool",
                 "tool_argument": "steps",
             },
-        ],
+        ]
     )
 
-    system_message = SystemMessage(
-        content="You are a task performer. Pretend doing tasks you are given, report the steps using step_progress_tool."
-    )
-
-    # Provide the actions to the LLM
-    model = ChatOpenAI(model=MODEL).bind_tools(
+    model_with_tools = model.bind_tools(
         [
             *state["copilotkit"]["actions"],
-            step_progress_tool,
-            # your other tools here
+            *tools,
         ],
+        parallel_tool_calls=False,
     )
 
-    # Call the model with CopilotKit's modified config
-    response = await model.ainvoke(
+    response = await model_with_tools.ainvoke(
         [
-            system_message,
+            SystemMessage(
+                content="You are a task performer. Report your steps "
+                "using step_progress_tool."
+            ),
             *state["messages"],
         ],
-        config,
+        streaming_config,
     )
+    return {"messages": [response]}
 
-    # Set the steps in state so they are persisted and communicated to the frontend
-    if (
-        isinstance(response, AIMessage)
-        and response.tool_calls
-        and response.tool_calls[0].get("name") == "step_progress_tool"
+def route_after_chat(state: AgentState):
+    last_message = state["messages"][-1]
+    if not isinstance(last_message, AIMessage) or not last_message.tool_calls:
+        return END
+
+    frontend_action_names = {
+        action["name"] for action in state["copilotkit"]["actions"]
+    }
+    if any(
+        call["name"] not in frontend_action_names
+        for call in last_message.tool_calls
     ):
-        return Command(
-            goto=END,
-            update={
-                "messages": response,
-                "observed_steps": response.tool_calls[0]
-                .get("args", None)
-                .get("steps"),
-            },
-        )
+        return "tool_node"
 
-    return Command(goto=END, update={"messages": response})
+    # Frontend action calls are returned to CopilotKit for execution in the UI.
+    return END
 
+workflow = (
+    StateGraph(AgentState)
+    .add_node("chat_node", chat_node)
+    .add_node("tool_node", ToolNode(tools))
+    .add_edge(START, "chat_node")
+    .add_edge("tool_node", "chat_node")
+    .add_conditional_edges(
+        "chat_node",
+        route_after_chat,
+        ["tool_node", END],
+    )
+)
 
-builder = StateGraph(AgentState)
-builder.add_node("frontend_actions_node", frontend_actions_node)
-builder.add_edge(START, "frontend_actions_node")
-graph = builder.compile(checkpointer=checkpointer())
+# Page: workflow.compile(checkpointer=MemorySaver()). The harness swaps in the
+# transport-aware checkpointer (MemorySaver under FastAPI, none under
+# langgraph dev, which rejects a graph that brings its own).
+graph = workflow.compile(checkpointer=checkpointer())
 #endregion
