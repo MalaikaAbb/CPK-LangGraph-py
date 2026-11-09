@@ -82,7 +82,7 @@ export default function Page() {
                 ],
                 [
                   "Runtime class",
-                  "LangGraphHttpAgent({ url })",
+                  "HttpAgent({ url })",
                   "LangGraphAgent({ deploymentUrl, graphId })",
                 ],
                 ["Routing by", "URL path", "graphId"],
@@ -197,7 +197,7 @@ export default function Page() {
 
       <Callout tone="info" title="Two credentials, two different jobs">
         <p>
-          <code>INTELLIGENCE_API_KEY</code> puts the runtime in Intelligence
+          <code>CPK_INTELLIGENCE_API_KEY</code> puts the runtime in Intelligence
           mode — that is what makes threads persist and the thread endpoints
           return real rows. A license is separate:{" "}
           <code>COPILOTKIT_LICENSE_TOKEN</code> on the runtime, or{" "}

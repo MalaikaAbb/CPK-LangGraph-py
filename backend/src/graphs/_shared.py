@@ -4,9 +4,13 @@
 docs build their agent with `ChatOpenAI(model="gpt-5.4")`. OpenAI publishes no
 such model, so those snippets cannot run as printed — the name is a placeholder
 carried over from CopilotKit's internal showcase repo. The one model the docs
-actually commit to is on the
+had committed to was on the
 [Quickstart](https://docs.copilotkit.ai/langgraph-python/quickstart), whose
-`mock_llm` node uses `gpt-4.1-mini`. That is what every agent here uses.
+`mock_llm` node used `gpt-4.1-mini`. That is what every agent here uses. In
+the 2026-11 revision the Quickstart (and most other pages) moved to
+`ChatOpenAI(model="gpt-6-luna", reasoning_effort="none")`; the harness has not
+verified that model against a standard key, so the default stays
+`gpt-4.1-mini` and `OPENAI_MODEL=gpt-6-luna` tries the docs' value.
 
 The two reasoning routes are the exception. Reasoning cards only appear when the
 model emits `REASONING_MESSAGE_*` events, and `gpt-4.1-mini` never does. Both

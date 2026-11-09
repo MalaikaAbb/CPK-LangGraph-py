@@ -5,7 +5,7 @@ import { KeyValue } from "./ui";
 /**
  * What the runtime in this checkout is actually configured with.
  *
- * A server component on purpose: `INTELLIGENCE_API_KEY` and
+ * A server component on purpose: `CPK_INTELLIGENCE_API_KEY` and
  * `COPILOTKIT_LICENSE_TOKEN` are server-side, so reading them here keeps them
  * out of the browser bundle while still letting the Quickstart page say
  * something true about the running app rather than describing the doc.
@@ -67,7 +67,7 @@ export function IntelligenceStatus() {
             />,
           ],
           [
-            "INTELLIGENCE_API_KEY",
+            "CPK_INTELLIGENCE_API_KEY",
             <Pill
               key="key"
               on={INTELLIGENCE_ENABLED}
@@ -122,7 +122,7 @@ export function IntelligenceStatus() {
           </>
         ) : (
           <>
-            No <code>INTELLIGENCE_API_KEY</code>, so the runtime is in SSE mode
+            No <code>CPK_INTELLIGENCE_API_KEY</code>, so the runtime is in SSE mode
             with an in-memory runner. Every chat route in this harness still
             works; the three Rich Threads routes have nothing durable to list.
             Set the key in <code>frontend/.env.local</code> and restart to
