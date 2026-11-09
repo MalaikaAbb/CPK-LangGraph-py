@@ -529,6 +529,26 @@ export const NAV: NavGroup[] = [
         statusNote:
           "All five snippets run unedited; two of them do nothing useful. CopilotKit drives the graph with astream_events, so OutputFirewall.awrap_model_call — published with its body elided to a comment — scrubs nothing, and ToolFirewall (sync wrap_tool_call only) raises NotImplementedError on the first tool call. See README §9 items 27 and 28.",
       },
+      {
+        path: "/deploy-agentcore",
+        title: "AWS AgentCore",
+        docPath: "/langgraph-python/deploy-agentcore",
+        summary:
+          "Putting a CopilotKit frontend on an agent hosted on AWS Bedrock AgentCore: CDK starter, or an HttpAgent + custom runner pointed at /invocations.",
+        status: "reference",
+        statusNote:
+          "Needs an AWS account (CDK, Cognito, AgentCore Runtime) — not testable locally. Page code kept verbatim in docs-verbatim/deploy-agentcore/.",
+      },
+      {
+        path: "/deploy-langsmith",
+        title: "LangSmith Platform",
+        docPath: "/langgraph-python/deploy-langsmith",
+        summary:
+          "Deploying a graph with langgraph deploy and pointing LangGraphAgent at the deployment URL.",
+        status: "reference",
+        statusNote:
+          "Needs a LangSmith deployment — not testable locally. The LangGraphAgent wiring is the same as this repo's langsmith transport. Page code kept verbatim in docs-verbatim/deploy-langsmith/.",
+      },
     ],
   },
   {
