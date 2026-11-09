@@ -1,0 +1,7 @@
+.a2ui-surface {
+  --a2ui-color-surface: #fafafa; /* card, modal, chip and button backgrounds */
+  --a2ui-color-border: #e5e5e5; /* borders, tab rule, divider */
+  --a2ui-color-muted: #737373; /* captions and secondary text */
+  --a2ui-color-error: #dc2626; /* validation errors */
+  --a2ui-primary-color: #2563eb; /* primary buttons, selected chips, active tab */
+}

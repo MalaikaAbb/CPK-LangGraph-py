@@ -287,6 +287,16 @@ export const NAV: NavGroup[] = [
         status: "working",
       },
       {
+        path: "/generative-ui/a2ui",
+        title: "A2UI",
+        docPath: "/langgraph-python/generative-ui/a2ui",
+        summary:
+          "The A2UI overview: three operations, two approaches, two ways to switch it on, and the surface color variables.",
+        status: "reference",
+        statusNote:
+          "Overview page. Its setup paths are exercised by the Dynamic Schema (catalog on provider) and Fixed Schema (runtime a2ui block + copilotkit.a2ui helpers) routes; the no-catalog injectA2UITool: true combination and the CSS variables are shown, not run.",
+      },
+      {
         path: "/generative-ui/a2ui/dynamic-schema",
         hasDemo: true,
         agentId: "declarative-gen-ui",

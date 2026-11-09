@@ -282,6 +282,8 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/generative-ui/state-rendering`** — A document assembling live beside a docked chat. **Try:** `Write a short blog post about…` **Pass:** the main pane fills progressively with a LIVE badge; the text never appears as a chat message.
 
+**`/generative-ui/a2ui`** — Reference overview (new 2026-11): the three operations, the two approaches and the two ways to switch A2UI on, each mapped to the route here that runs it. **Pass:** every code panel renders; the linked Dynamic/Fixed Schema routes carry the live checks.
+
 **`/generative-ui/a2ui/dynamic-schema`** — A secondary LLM designs the whole surface. **Try:** `Build me a dashboard for a SaaS company's Q3…` **Pass:** cards, metric tiles, a table and a chart, assembled differently each prompt. **Fail:** a wall of JSON — the middleware is not attached.
 
 **`/generative-ui/a2ui/fixed-schema`** — A flight card from a JSON schema. **Try:** `Find me a flight from SFO to JFK`. **Pass:** an itinerary card with both airport codes, an airline badge, a price and a Book button. **Fail:** raw JSON — the `catalogId` does not match.
@@ -385,6 +387,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | |
 | `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | `get_weather` only — the page defines no other backend tool, but its prompt advertises three more. |
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
+| `/langgraph-python/generative-ui/a2ui` | `/generative-ui/a2ui` | 📖 Reference | Overview page. Snippets verbatim in `docs-verbatim/a2ui/`; its setup paths run on the Dynamic/Fixed Schema routes. Ported from CPK-LangGraph-TS. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
 | `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
@@ -763,6 +766,7 @@ langgraph-python/
 │       ├── declarative_gen_ui.py
 │       └── a2ui_schemas/             # flight_schema.json · booked_schema.json
 │
+├── docs-verbatim/                    # published code shown on reference-only routes; never imported or compiled
 ├── doc-snapshot/                     # ★ the doc-drift baseline — committed
 │   ├── manifest.json                 # ★ per-page sha256; the diff basis
 │   ├── CHANGELOG.md                  # ★ what changed and where — survives re-syncs
@@ -850,7 +854,7 @@ A few choices look arbitrary until they bite:
 
 **Input Modalities** — [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) · [Voice](https://docs.copilotkit.ai/langgraph-python/voice)
 
-**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)
+**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema) · [A2UI](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui)
 
 **App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control)
 
