@@ -396,7 +396,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/shared-state/streaming` | `/shared-state/streaming` | ✅ Working | |
 | `/langgraph-python/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ✅ Working | |
 | `/langgraph-python/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | The page's custom `chat_node` graph; only its elided node body was filled in. See §9 item 18. |
-| `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | |
+| `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | Re-run now uses `copilotkit.runAgent({ agent })` per the 2026-11 page (was `agent.runAgent()`); not yet re-checked in a browser. |
 | `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. |
 | `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. |
 | `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. |

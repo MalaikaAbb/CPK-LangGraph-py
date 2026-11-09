@@ -5,6 +5,7 @@ import {
   UseAgentUpdate,
   useAgent,
   useConfigureSuggestions,
+  useCopilotKit,
 } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
@@ -14,8 +15,10 @@ import { DemoFrame } from "@/components/demo-frame";
  *
  * The page shows the same handler twice. The basic version calls `setState` and
  * stops: the new value is used "next time the agent runs". The Advanced Usage
- * version adds `agent.runAgent()` immediately after, to re-run with the updated
- * state rather than waiting for the user's next message.
+ * version adds `copilotkit.runAgent({ agent })` immediately after (the page's
+ * 2026-11 revision; it used to be `agent.runAgent()`), to re-run with the
+ * updated state rather than waiting for the user's next message. Running
+ * through `copilotkit` also sends frontend tools and context with the run.
  *
  * Both buttons are here because the difference between them is the entire
  * lesson, and it is invisible unless you can compare.
@@ -36,6 +39,8 @@ function Layout() {
     agentId: "shared-state-language",
     updates: [UseAgentUpdate.OnStateChanged, UseAgentUpdate.OnRunStatusChanged],
   });
+
+  const { copilotkit } = useCopilotKit();
 
   const language = (agent.state?.language as string) ?? "english";
 
@@ -58,7 +63,7 @@ function Layout() {
     agent.setState({ language: newLanguage });
 
     // re-run the agent with updated state
-    void agent.runAgent();
+    void copilotkit.runAgent({ agent });
   };
 
   return (
@@ -105,7 +110,7 @@ function Layout() {
           </button>
           <p className="text-xs text-slate-500">
             Writes state, then calls{" "}
-            <code className="font-mono">agent.runAgent()</code> — the agent
+            <code className="font-mono">copilotkit.runAgent(&#123; agent &#125;)</code> — the agent
             responds again straight away.
           </p>
         </div>
