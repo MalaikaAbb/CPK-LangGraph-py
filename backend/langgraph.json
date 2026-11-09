@@ -24,6 +24,7 @@
     "a2ui-fixed-schema": "./src/graphs/a2ui_fixed.py:graph",
     "declarative-gen-ui": "./src/graphs/declarative_gen_ui.py:graph",
     "frontend-tools": "./src/graphs/chat.py:frontend_tools_graph",
+    "webmcp": "./src/graphs/chat.py:webmcp_graph",
     "hitl-in-chat": "./src/graphs/chat.py:hitl_in_chat_graph",
     "interrupt-flow": "./src/graphs/interrupt_flow.py:graph",
     "programmatic-control": "./src/graphs/chat.py:programmatic_control_graph",

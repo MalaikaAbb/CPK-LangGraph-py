@@ -290,6 +290,8 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
 
+**`/webmcp`** — A `useFrontendTool` with a `webmcp` option meant to mirror it onto `document.modelContext`, plus the core-only `CopilotKitCore` registration. **Try:** `Find my open orders`. **Pass:** the agent calls `searchOrders` (stub data) and answers. The WebMCP half cannot work here: the option needs CopilotKit 1.71+ (§9 item 37), and WebMCP itself needs Chrome 149+ with the flag.
+
 **`/human-in-the-loop`** — `useHumanInTheLoop` suspending the run. **Try:** `Book an intro call with the sales team`. **Pass:** a picker renders and **nothing further streams** until you choose; the card then collapses to a green "Booked" badge.
 
 **`/human-in-the-loop/interrupt-flow`** — LangGraph's native `interrupt()`, the pattern with no counterpart in the other integrations. Two tabs, one per doc example. **Try:** `Hello! Who are you?` **Pass (Single interrupt):** the run halts, a form appears, answering resumes the graph. **Multiple interrupts** renders nothing — that is the doc bug, reproduced verbatim. See §9 item 1.
@@ -388,6 +390,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
 | `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
+| `/langgraph-python/webmcp` | `/webmcp` | ⚠️ Partial | New 2026-11. Snippets verbatim; `searchOrders` stub and route ported from CPK-LangGraph-TS. `webmcp` option suppressed and ignored on 1.70.0 (§9 item 37); chat path only. Not yet checked in a browser. |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
 | `/langgraph-python/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Renders nothing, faithfully — the published snippet ends after the handlers and never shows the JSX. Also destructures three undefined helpers. See §9 item 19. |
@@ -550,6 +553,10 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 **11. The Quickstart's install line includes a package nothing imports**
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
+
+**37. WebMCP's `webmcp` option needs CopilotKit 1.71+**
+
+[WebMCP](https://docs.copilotkit.ai/langgraph-python/webmcp) adds `webmcp: { annotations: { readOnlyHint: true } }` to `useFrontendTool` and to a `CopilotKitCore` tool so the tool is also registered on `document.modelContext`. `@copilotkit/react-core` / `@copilotkit/core` 1.70.0 (this repo's pin) have no WebMCP support (it first appears in 1.71.0). Both snippets are verbatim in `frontend/src/app/webmcp/_demo/` with `@ts-expect-error` on the `webmcp` line; at runtime the option is ignored. The page also never defines `searchOrders`; the stub comes from CPK-LangGraph-TS (via aws-strands-ts).
 
 ### Things the docs reference but never define
 
@@ -852,7 +859,7 @@ A few choices look arbitrary until they bite:
 
 **Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)
 
-**App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control)
+**App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control) · [WebMCP](https://docs.copilotkit.ai/langgraph-python/webmcp)
 
 **Shared State** — [Overview](https://docs.copilotkit.ai/langgraph-python/shared-state) · [Render state in your app](https://docs.copilotkit.ai/langgraph-python/shared-state/rendering-in-app) · [State Streaming](https://docs.copilotkit.ai/langgraph-python/shared-state/streaming) · [Agent Read-Only Context](https://docs.copilotkit.ai/langgraph-python/shared-state/agent-readonly) · [Reading agent state](https://docs.copilotkit.ai/langgraph-python/shared-state/in-app-agent-read) · [Writing agent state](https://docs.copilotkit.ai/langgraph-python/shared-state/in-app-agent-write) · [Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) · [Predictive state updates](https://docs.copilotkit.ai/langgraph-python/shared-state/predictive-state-updates)
 
