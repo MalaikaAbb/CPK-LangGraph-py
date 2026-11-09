@@ -276,7 +276,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/generative-ui/reasoning`** — The whole reasoning card replaced. **Pass:** an always-open banner tagged "Reasoning" rather than a collapsible card.
 
-**`/generative-ui/tool-based`** — `useComponent` registering a bar chart as a tool. **Try:** `Chart the number of days in each month of 2026`. **Pass:** a chart renders inline and the reply does not repeat the numbers.
+**`/generative-ui/tool-based`** — `useComponent` registering a bar chart as a tool. **Try:** `Chart the number of days in each month of 2026`. **Pass:** a chart renders inline and the reply does not repeat the numbers. The route page's **Rendering in a headless chat** panel is a hand-built list using `CopilotChatToolCallsView`: ask the same question there — **Pass:** the chart appears under the reply. **Fail:** the reply mentions a chart but nothing renders (tool calls not painted).
 
 **`/generative-ui/tool-rendering`** — A named renderer for `get_weather` plus the wildcard. **Try:** `What's the weather in Tokyo?` **Pass:** a card shows "Calling weather API…" then fills in with 68°, Sunny. **Note:** asking for flights or stock prices produces prose — see §9.
 
@@ -382,7 +382,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. |
 | `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_API_KEY` on the frontend; sample-audio button works without. |
 | `/langgraph-python/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | Same reasoning-model dependency. |
-| `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | |
+| `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | New headless `CopilotChatToolCallsView` panel (2026-11) not yet checked in a browser; its surrounding chat is harness glue. |
 | `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | `get_weather` only — the page defines no other backend tool, but its prompt advertises three more. |
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
