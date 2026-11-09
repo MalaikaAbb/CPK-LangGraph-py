@@ -14,18 +14,6 @@
   More detail: [Inspector](/langgraph-python/inspector).
 </Callout>
 
-<Callout type="info" title="See this in Inspector">
-  Open Inspector on localhost. Go to **Inspect**, then **Event Snippets**.
-  You can compile a tool call, reasoning, text, or activity, run it on the live
-  agent, and save it. Saved snippets are grouped by recipe. On localhost chat,
-  **Save as snippet** uses the recipe for the thing you click and fills the form.
-  On a tool call, generative UI, or A2UI, the bookmark sits to the right of the
-  block (or to the left if there is no room on the right).
-  Run of a `generateSandboxedUi` tool call paints the sandbox UI in chat.
-
-  More detail: [Inspector](/langgraph-python/inspector).
-</Callout>
-
 
 ## What is this?
 
@@ -68,7 +56,7 @@ from langchain_openai import ChatOpenAI
 from copilotkit import CopilotKitMiddleware
 
 graph = create_agent(
-    model=ChatOpenAI(model="gpt-5.4"),
+    model=ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"),
     tools=[],
     middleware=[CopilotKitMiddleware()],
     system_prompt="You are a helpful, concise assistant.",
@@ -124,5 +112,30 @@ what happened.
       return { status: "success" };
     },
 ```
+
+## Registering a list of tools
+
+`useFrontendTool` registers one tool per call, so it cannot be called in a loop
+over a list whose length changes between renders. When the set of tools comes
+from state, from props, or from a backend response, use
+[`useFrontendTools`](/reference/hooks/useFrontendTools) instead. It takes an
+array and runs a single effect over it, so the array can be empty on one render
+and hold twenty entries on the next.
+
+```tsx
+useFrontendTools(
+  reports.map((report) => ({
+    name: `open_${report.id}`,
+    description: `Open the ${report.title} report`,
+    handler: async () => navigate(`/reports/${report.id}`),
+  })),
+  [navigate],
+);
+```
+
+Tools that leave the array are unregistered, tools that join it are registered,
+and a re-render that produces an equal list does not re-register anything. A
+description built from your data stays current on its own. The second argument
+is for values a handler closes over, such as `navigate` above.
 
 <IntegrationGrid path="frontend-tools" />

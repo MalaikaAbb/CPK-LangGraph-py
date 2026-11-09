@@ -59,7 +59,7 @@ Think of it as "props for the agent".
     
 ~~~~python title="readonly_state_agent_context.py"
 graph = create_agent(
-    model=ChatOpenAI(model="gpt-5.4"),
+    model=ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"),
     tools=[],
     middleware=[CopilotKitMiddleware()],
     system_prompt=(

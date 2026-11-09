@@ -39,7 +39,8 @@ The simplest entry point: call `useDefaultRenderTool()` with no arguments.
 CopilotKit registers its built-in `DefaultToolCallRenderer` as the `*`
 wildcard: every tool call renders as a tidy status card (tool name, live
 **Running → Done** pill, collapsible arguments/result) without you writing
-any UI.
+any UI. Calls the agent makes in a row are grouped into one card; see
+[Grouping tool calls](#grouping-tool-calls).
 
 Without this hook the runtime has no `*` renderer and tool calls are
 invisible; the user only sees the assistant's final text summary.
@@ -92,6 +93,54 @@ Here's the branded catch-all in action, where every tool call gets the same on-b
 <!-- interactive demo: tool-rendering-custom-catchall -->
 
 
+## Grouping tool calls
+
+Agents often call several tools in a row. By default, CopilotKit collapses
+each run of calls drawn by the built-in card from `useDefaultRenderTool()` into
+one card that reads "Used 3 tools". While a call runs, the card names it
+("Running read_file src/app.ts"), and opening it shows a row per call. Calls
+drawn by your own renderers always show on their own and split the group
+around them, unless the renderer opts in with `group: true`:
+
+```tsx title="page.tsx"
+useDefaultRenderTool({ render: MyToolRow, group: true });
+```
+
+Pick how calls show with `toolCallDisplay` on the message view:
+
+```tsx title="page.tsx"
+// "grouped" (default) | "line" | "stacked" | "turn" | "separate"
+<CopilotChat messageView={{ toolCallDisplay: "line" }} />
+```
+
+| Display      | What the user sees                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| `"grouped"`  | One card per run of calls, collapsed to "Used 3 tools". Opens to a row per call.          |
+| `"line"`     | The same grouping as a quiet line of text, like "Thought for 4 seconds".                  |
+| `"stacked"`  | The latest call on top of a stack of the earlier ones. Opens into a card per call.        |
+| `"turn"`     | The agent works in the open, then everything before the reply folds into "Worked for 9s". |
+| `"separate"` | Every call gets its own card.                                                             |
+
+To compare the displays side by side, run the
+[Tool call display stories](https://github.com/CopilotKit/CopilotKit/blob/main/examples/v2/react/storybook/stories/ToolCallDisplay.stories.tsx)
+in the React Storybook. They play a scripted run through the real message view,
+with a control to switch `toolCallDisplay`.
+
+To restyle or replace the group, use the `group` slot of the tool-calls view
+(it applies to the grouped, line and stacked displays):
+
+```tsx title="page.tsx"
+// ToolTimeline: your component, given the group's `calls` and a `renderCall` function
+<CopilotChat
+  messageView={{
+    assistantMessage: { toolCallsView: { group: ToolTimeline } },
+  }}
+/>
+```
+
+See [`CopilotChatToolCallGroup`](/reference/components/CopilotChatToolCallGroup)
+for its props and an example replacement.
+
 ## Per-tool renderers
 
 The most expressive path is one renderer per tool name. The primary
@@ -99,6 +148,22 @@ The most expressive path is one renderer per tool name. The primary
 `WeatherCard`, `search_flights` draws a `FlightListCard`. Each renderer
 receives the tool's parsed arguments, a live `status`, and (once the agent
 returns) the `result`:
+
+### Tool inputs and results are separate
+
+In `useRenderTool`, `parameters` contains the **inputs** the agent sent to the
+tool. It does not change into the tool's return value when `status` becomes
+`"complete"`. The completed output arrives separately as `result`, a string.
+For a tool that returns JSON, parse that string before reading its fields.
+
+For example, `get_weather` might receive `{ "location": "Paris" }` and return
+`{ "temperature": 22 }`. Read `parameters.location` for the requested city and
+the parsed `result.temperature` for the temperature. Adding `temperature` to
+the renderer's `parameters` schema does not copy it from the result.
+
+If a card says **complete** but still shows placeholder details, check whether
+those details come from `parameters` instead of the parsed `result`. Completion
+reports that the tool returned; it does not fill the card's props for you.
 
 The frontend pattern is the same for every backend. This shared, docs-only
 example includes every component, type, and helper that its renderers use:
@@ -341,8 +406,11 @@ the same name paint the card.
 from random import choice, randint
 
 from langchain.agents import create_agent
+from langchain.agents.middleware import AgentState, before_model
 from langchain.tools import tool
+from langchain_core.messages import AIMessage, ToolMessage
 from langchain_openai import ChatOpenAI
+from langgraph.runtime import Runtime
 from copilotkit import CopilotKitMiddleware
 
 # Multi-tool-per-question prompt.
