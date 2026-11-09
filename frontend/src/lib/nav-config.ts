@@ -310,6 +310,30 @@ export const NAV: NavGroup[] = [
         statusNote:
           "The Book button is inert — a2ui.render in copilotkit 0.1.94 takes no action_handlers. The schema JSON is this repo's; no page prints it.",
       },
+      {
+        path: "/generative-ui/mcp-apps",
+        hasDemo: true,
+        agentId: "mcp_apps",
+        title: "MCP Apps",
+        docPath: "/langgraph-python/generative-ui/mcp-apps",
+        summary:
+          "An MCP server's UI resources rendered inline in the chat as sandboxed iframes, wired by the runtime's mcpApps.servers.",
+        status: "partial",
+        statusNote:
+          "The page's Code tab (Python agent, runtime route, demo page) pointed at the public Excalidraw MCP server; route builds agents via buildAgents. ./chat and its suggestions are borrowed from the CopilotKit showcase (via CPK-LangGraph-TS). Needs network access to mcp.excalidraw.com. Not yet checked in a browser.",
+      },
+      {
+        path: "/generative-ui/open-generative-ui",
+        hasDemo: true,
+        agentId: "open_gen_ui",
+        title: "Open Generative UI",
+        docPath: "/langgraph-python/generative-ui/open-generative-ui",
+        summary:
+          "generateSandboxedUi streaming agent-written HTML/CSS/JS into a sandboxed iframe; an advanced variant adds sandbox functions that call back into the host.",
+        status: "partial",
+        statusNote:
+          "The page's Code tab (two Python agents, runtime route, both demo pages); route builds agents via buildAgents. ./chat, ./design-skill and the minimal demo's suggestions are borrowed from the CopilotKit showcase (via CPK-LangGraph-TS). Advanced variant at /generative-ui/open-generative-ui/advanced. Not yet checked in a browser.",
+      },
     ],
   },
   {

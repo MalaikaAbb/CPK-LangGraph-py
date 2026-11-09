@@ -286,6 +286,10 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/generative-ui/a2ui/fixed-schema`** — A flight card from a JSON schema. **Try:** `Find me a flight from SFO to JFK`. **Pass:** an itinerary card with both airport codes, an airline badge, a price and a Book button. **Fail:** raw JSON — the `catalogId` does not match.
 
+**`/generative-ui/mcp-apps`** — The runtime's `mcpApps.servers` turns an MCP server's UI resources into sandboxed iframes in the chat (public Excalidraw server; override with `MCP_SERVER_URL`). **Try:** `Draw a simple flowchart of a login process in Excalidraw`. **Pass:** an Excalidraw canvas renders inline. **Fail:** text only (tool not called / middleware off) or a runtime error reaching `mcp.excalidraw.com`.
+
+**`/generative-ui/open-generative-ui`** — `openGenerativeUI` on the runtime gives the agent `generateSandboxedUi`, which streams HTML/CSS/JS into a sandboxed iframe; the advanced variant (`/generative-ui/open-generative-ui/advanced`) adds sandbox functions the iframe can call. **Try:** `Visualize how a neural network forward pass works, animated`. **Pass:** a placeholder, then a live visualisation in an iframe. **Fail:** plain text, or nothing (agent not listed under `openGenerativeUI.agents`).
+
 ### App Control
 
 **`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
@@ -387,6 +391,8 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
+| `/langgraph-python/generative-ui/mcp-apps` | `/generative-ui/mcp-apps` | ⚠️ Partial | New 2026-11. Code tab verbatim except `buildAgents` in the route and `_shared.MODEL`; `./chat` + suggestions borrowed from the showcase (§9 item 36). Needs network. Not yet checked in a browser. |
+| `/langgraph-python/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | New 2026-11. Two Code-tab agents, route and both demos; `./chat`, `./design-skill`, suggestions borrowed from the showcase (§9 item 36). Not yet checked in a browser. |
 | `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
@@ -552,6 +558,10 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
 ### Things the docs reference but never define
+
+**36. MCP Apps and Open Generative UI demos import files their Code tabs don't show**
+
+The [MCP Apps](https://docs.copilotkit.ai/langgraph-python/generative-ui/mcp-apps) and [Open Generative UI](https://docs.copilotkit.ai/langgraph-python/generative-ui/open-generative-ui) Code tabs publish the Python agents, the runtime routes and the demo pages, but the demo pages import `./chat` (both), `./suggestions` and `./design-skill` (`VISUALIZATION_DESIGN_SKILL`), which the tabs never show. Those come from the CopilotKit showcase (`showcase/integrations/langgraph-typescript/src/app/demos/{mcp-apps,open-gen-ui}/` @ a358fa0, via CPK-LangGraph-TS), labelled at the top of each file. The MCP Apps route also registers a `headless_complete` graph; this repo's id is `headless-complete`, so that entry is unused. Both routes hardcode `LangGraphAgent` and were switched to `buildAgents` for the FastAPI transport.
 
 **12. The Sub-Agents supervisor**
 
@@ -850,7 +860,7 @@ A few choices look arbitrary until they bite:
 
 **Input Modalities** — [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) · [Voice](https://docs.copilotkit.ai/langgraph-python/voice)
 
-**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)
+**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema) · [MCP Apps](https://docs.copilotkit.ai/langgraph-python/generative-ui/mcp-apps) · [Open Generative UI](https://docs.copilotkit.ai/langgraph-python/generative-ui/open-generative-ui)
 
 **App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control)
 

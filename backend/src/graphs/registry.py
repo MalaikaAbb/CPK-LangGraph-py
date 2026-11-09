@@ -113,6 +113,19 @@ REGISTRY: dict[str, RegisteredGraph] = {
         "/langgraph-python/generative-ui/a2ui/dynamic-schema",
     ),
 
+    # Generative UI › Open-ended (MCP Apps, Open Generative UI). Ids are the
+    # graph ids the pages' Code-tab runtime routes name.
+    "mcp_apps": RegisteredGraph(
+        "mcp_apps", "graph", "/langgraph-python/generative-ui/mcp-apps",
+    ),
+    "open_gen_ui": RegisteredGraph(
+        "open_gen_ui", "graph", "/langgraph-python/generative-ui/open-generative-ui",
+    ),
+    "open_gen_ui_advanced": RegisteredGraph(
+        "open_gen_ui_advanced", "graph",
+        "/langgraph-python/generative-ui/open-generative-ui",
+    ),
+
     # --- App control -----------------------------------------------------
     "frontend-tools": RegisteredGraph(
         "chat", "frontend_tools_graph", "/langgraph-python/frontend-tools"
