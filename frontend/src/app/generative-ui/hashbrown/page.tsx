@@ -36,7 +36,9 @@ export default function Page() {
           JSON Render, the runtime route takes its agent from{" "}
           <code>buildAgents</code> and the model is{" "}
           <code>_shared.MODEL</code>. Layout follows the CPK-LangGraph-TS
-          harness&apos;s version of this page.
+          harness&apos;s version of this page. The Code tab&apos;s <code>suggestions.ts</code> (suggestion chips)
+          is a demo extra and was not copied; <code>chat.tsx</code> keeps its
+          import and call as <code>// doc:</code> comments.
         </p>
       </Callout>
 

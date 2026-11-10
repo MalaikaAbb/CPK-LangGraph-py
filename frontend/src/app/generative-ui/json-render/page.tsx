@@ -39,7 +39,9 @@ export default function Page() {
           repo&apos;s FastAPI/LangSmith switch (the Code tab hardcodes{" "}
           <code>LangGraphAgent</code>), and the model is{" "}
           <code>_shared.MODEL</code>. This page and its layout follow the
-          CPK-LangGraph-TS harness&apos;s version.
+          CPK-LangGraph-TS harness&apos;s version. The Code tab&apos;s <code>suggestions.ts</code> (suggestion chips)
+          is a demo extra and was not copied; <code>chat.tsx</code> keeps its
+          import and call as <code>// doc:</code> comments.
         </p>
       </Callout>
 

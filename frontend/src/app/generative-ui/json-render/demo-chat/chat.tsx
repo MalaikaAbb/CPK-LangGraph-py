@@ -5,12 +5,12 @@ import {
   CopilotChatAssistantMessage,
 } from "@copilotkit/react-core/v2";
 import { JsonRenderAssistantMessage } from "./json-render-renderer";
-import { useByocJsonRenderSuggestions } from "./suggestions";
+// doc: import { useByocJsonRenderSuggestions } from "./suggestions"; (suggestion chips, showcase-only — not copied)
 
 export const AGENT_ID = "byoc_json_render";
 
 export function Chat() {
-  useByocJsonRenderSuggestions();
+  // doc: useByocJsonRenderSuggestions();
 
   return (
     <CopilotChat

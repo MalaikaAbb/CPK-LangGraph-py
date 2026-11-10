@@ -320,7 +320,7 @@ export const NAV: NavGroup[] = [
           "An agent-emitted { root, elements } spec drawn by @json-render/react against a Zod component catalog.",
         status: "partial",
         statusNote:
-          "The page's full Code tab, verbatim (own runtime route + own <CopilotKit>), except the route builds its agent via buildAgents and the model is _shared.MODEL. Type-checks; not yet checked in a browser.",
+          "The page's full Code tab, verbatim (own runtime route + own <CopilotKit>), except the route builds its agent via buildAgents and the model is _shared.MODEL. Suggestion chips (./suggestions) not copied; chat.tsx keeps that import/call as doc: comments. Type-checks; not yet checked in a browser.",
       },
       {
         path: "/generative-ui/hashbrown",
@@ -332,7 +332,7 @@ export const NAV: NavGroup[] = [
           "Streamed structured output parsed progressively by @hashbrownai/react and rendered through a component catalog.",
         status: "partial",
         statusNote:
-          "The page's full Code tab, verbatim, on @hashbrownai 0.7.0 exactly (nested @ag-ui 1.0.2). Route builds its agent via buildAgents; model is _shared.MODEL. Type-checks; not yet checked in a browser.",
+          "The page's full Code tab, verbatim, on @hashbrownai 0.7.0 exactly (nested @ag-ui 1.0.2). Route builds its agent via buildAgents; model is _shared.MODEL. Suggestion chips (./suggestions) not copied; chat.tsx keeps that import/call as doc: comments. Type-checks; not yet checked in a browser.",
       },
     ],
   },
