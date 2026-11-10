@@ -20,7 +20,7 @@ import {
   useConfigureSuggestions,
 } from "@copilotkit/react-core/v2";
 import { openGenUiSandboxFunctions } from "./sandbox-functions";
-import { openGenUiSuggestions } from "./suggestions";
+// doc: import { openGenUiSuggestions } from "./suggestions"; (suggestion chips, demo-only — not copied)
 
 export default function OpenGenUiAdvancedDemo() {
   return (
@@ -42,10 +42,10 @@ export default function OpenGenUiAdvancedDemo() {
 }
 
 function Chat() {
-  useConfigureSuggestions({
-    suggestions: openGenUiSuggestions,
-    available: "always",
-  });
+  // doc: useConfigureSuggestions({
+  // doc:   suggestions: openGenUiSuggestions,
+  // doc:   available: "always",
+  // doc: });
 
   return (
     <div className="flex h-full w-full flex-col p-3">

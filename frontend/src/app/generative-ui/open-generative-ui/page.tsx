@@ -38,8 +38,14 @@ export default function Page() {
           Both agents, the runtime route and both demo pages are the
           page&apos;s Code tab. The minimal demo imports <code>./chat</code>{" "}
           and <code>./design-skill</code>, which the tab does not show. They
-          and the chat&apos;s <code>suggestions.ts</code> come from the
-          CopilotKit showcase (via the CPK-LangGraph-TS harness). The agents are the
+          come from the CopilotKit showcase (via the CPK-LangGraph-TS
+          harness): <code>chat.tsx</code> as a bare{" "}
+          <code>&lt;CopilotChat&gt;</code>, and <code>design-skill.ts</code>,
+          whose prompt feeds the <code>openGenerativeUI.designSkill</code> prop
+          the page teaches. The showcase suggestion chips (both demos&apos;{" "}
+          <code>suggestions.ts</code>) were not copied; the advanced
+          page&apos;s <code>useConfigureSuggestions</code> call is kept as{" "}
+          <code>// doc:</code> comments. The agents are the
           Code tab&apos;s Python files and the runtime route builds them with{" "}
           <code>buildAgents</code>. See README
           §9.

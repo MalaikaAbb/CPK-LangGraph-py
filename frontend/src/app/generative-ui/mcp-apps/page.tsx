@@ -29,8 +29,9 @@ export default function Page() {
         <p>
           Agent, runtime route and demo page are the page&apos;s Code tab. The
           demo imports <code>./chat</code>, which the tab does not show, so{" "}
-          <code>chat.tsx</code> and <code>suggestions.ts</code> come from the
-          CopilotKit showcase (via the CPK-LangGraph-TS harness). The agent is
+          a minimal <code>chat.tsx</code> (a bare <code>&lt;CopilotChat&gt;</code>)
+          is adapted from the CopilotKit showcase (via the CPK-LangGraph-TS
+          harness), without the showcase&apos;s suggestion chips. The agent is
           the Code tab&apos;s Python file; the runtime route builds its agents
           with <code>buildAgents</code> so the FastAPI transport works. The runtime
           route also registers a <code>headless_complete</code> graph that this
