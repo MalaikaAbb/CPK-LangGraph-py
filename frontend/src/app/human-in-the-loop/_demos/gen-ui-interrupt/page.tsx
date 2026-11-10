@@ -13,7 +13,8 @@ import {
 import type { TimeSlot } from "./_components/time-picker-card";
 import { TimePickerCard } from "./_components/time-picker-card";
 import { generateFallbackSlots } from "../_shared/interrupt-fallback-slots";
-import { useGenUiInterruptSuggestions } from "./suggestions";
+// Harness change: the showcase's suggestion chips (./suggestions) are demo-only and not copied.
+// doc: import { useGenUiInterruptSuggestions } from "./suggestions";
 
 export default function GenUiInterruptDemo() {
   return (
@@ -28,7 +29,7 @@ export default function GenUiInterruptDemo() {
 }
 
 function Chat() {
-  useGenUiInterruptSuggestions();
+  // doc: useGenUiInterruptSuggestions();
 
   // `useInterrupt` is the low-level primitive for handling LangGraph
   // `interrupt(...)` events. The backend's `schedule_meeting` tool surfaces

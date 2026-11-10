@@ -100,7 +100,7 @@ export default function Page() {
 
       <Panel
         title="The demo and the card it renders"
-        description="Both are the doc's code. Only the suggestions, the <CopilotChat> and the agentId are this repo's."
+        description="Both are the doc's code. Only the <CopilotChat> and the agentId are this repo's."
       >
         <SourceCodeGroup
           files={[

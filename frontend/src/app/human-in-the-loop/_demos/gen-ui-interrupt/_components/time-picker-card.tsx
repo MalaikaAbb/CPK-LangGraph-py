@@ -1,19 +1,12 @@
 "use client";
 
-// Borrowed from the CopilotKit showcase:
-// https://github.com/CopilotKit/CopilotKit/blob/a358fa06ee1ee05a2e8a61f85461bdbabffbbd77/showcase/integrations/langgraph-typescript/src/app/demos/gen-ui-interrupt/_components/time-picker-card.tsx
-// The doc page publishes the @region parts of this file verbatim.
+// Harness stand-in, not from the doc: the page's `useInterrupt` render imports
+// `TimePickerCard` / `TimeSlot` from here but never prints them. Same exported
+// names and props as the CopilotKit showcase's card
+// (showcase/integrations/langgraph-typescript/src/app/demos/gen-ui-interrupt/_components/time-picker-card.tsx @ a358fa0),
+// without its styled Card/Button/Badge primitives.
 
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./card";
-import { Button } from "./button";
-import { Badge } from "./badge";
 
 export interface TimeSlot {
   label: string;
@@ -29,12 +22,6 @@ export interface TimePickerCardProps {
   ) => void;
 }
 
-/**
- * Renders an in-chat "Book a call" card with a small grid of time slots.
- * Used by `useInterrupt`: when the backend's `schedule_meeting` tool calls
- * `interrupt(...)`, this card appears as a chat message bubble. The user's
- * picked slot (or cancellation) is fed back to the agent via `resolve(...)`.
- */
 export function TimePickerCard({
   topic,
   attendee,
@@ -43,79 +30,45 @@ export function TimePickerCard({
 }: TimePickerCardProps) {
   const [picked, setPicked] = useState<TimeSlot | null>(null);
   const [cancelled, setCancelled] = useState(false);
-  const disabled = picked !== null || cancelled;
 
   if (cancelled) {
-    return (
-      <Card className="max-w-md" data-testid="time-picker-cancelled">
-        <CardContent className="flex items-center gap-2 p-4 pt-4">
-          <Badge variant="destructive">Cancelled</Badge>
-          <span className="text-sm text-neutral-600">No time picked.</span>
-        </CardContent>
-      </Card>
-    );
+    return <p className="text-sm">Cancelled. No time picked.</p>;
   }
-
   if (picked) {
-    return (
-      <Card
-        className="max-w-md border-emerald-200 bg-emerald-50/40"
-        data-testid="time-picker-picked"
-      >
-        <CardContent className="flex items-center gap-2 p-4 pt-4">
-          <Badge variant="success">Booked</Badge>
-          <span className="text-sm text-neutral-800">
-            <span className="font-semibold">{picked.label}</span>
-          </span>
-        </CardContent>
-      </Card>
-    );
+    return <p className="text-sm">Booked: {picked.label}</p>;
   }
 
   return (
-    <Card className="max-w-md" data-testid="time-picker-card">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <Badge variant="outline">Book a call</Badge>
-          {attendee && (
-            <span className="text-xs text-neutral-500">With {attendee}</span>
-          )}
-        </div>
-        <CardTitle className="pt-1">{topic}</CardTitle>
-        <CardDescription>Pick a time that works for you.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-2">
-          {slots.map((s) => (
-            <Button
-              key={s.iso}
-              variant="outline"
-              disabled={disabled}
-              data-testid="time-picker-slot"
-              onClick={() => {
-                setPicked(s);
-                onSubmit({ chosen_time: s.iso, chosen_label: s.label });
-              }}
-              className="justify-start"
-            >
-              {s.label}
-            </Button>
-          ))}
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          disabled={disabled}
+    <div className="max-w-md space-y-2 rounded border p-4">
+      <p className="text-sm font-medium">
+        {topic}
+        {attendee ? ` with ${attendee}` : ""}: pick a time
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {slots.map((s) => (
+          <button
+            key={s.iso}
+            type="button"
+            className="rounded border px-3 py-1 text-sm"
+            onClick={() => {
+              setPicked(s);
+              onSubmit({ chosen_time: s.iso, chosen_label: s.label });
+            }}
+          >
+            {s.label}
+          </button>
+        ))}
+        <button
+          type="button"
+          className="rounded border px-3 py-1 text-sm"
           onClick={() => {
             setCancelled(true);
             onSubmit({ cancelled: true });
           }}
-          className="mt-3 w-full text-neutral-500"
-          data-testid="time-picker-cancel"
         >
           None of these work
-        </Button>
-      </CardContent>
-    </Card>
+        </button>
+      </div>
+    </div>
   );
 }

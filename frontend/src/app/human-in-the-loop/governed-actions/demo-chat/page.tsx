@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CopilotChat, useConfigureSuggestions } from "@copilotkit/react-core/v2";
+import { CopilotChat } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
 
@@ -21,8 +21,8 @@ import { GovernedActionCard } from "../governed-action-card";
  * "executing", Complete: "complete" }` — the same three strings the repo's
  * other approval route compares against as literals.
  *
- * Everything the harness added is below `GovernedActionTool`: the suggestions,
- * the `<CopilotChat>`, and the `agentId`. The published block ends at the
+ * Everything the harness added is below `GovernedActionTool`: the
+ * `<CopilotChat>` and the `agentId`. The published block ends at the
  * hook's `return null` with no chat surface of its own.
  *
  * What is NOT real here is the governance. `verdict`, `reference` and `id`
@@ -96,21 +96,6 @@ function GovernedActionTool() {
 }
 
 function Chat() {
-  useConfigureSuggestions({
-    suggestions: [
-      {
-        title: "Send a refund email",
-        message:
-          "Email carol@northwind.test to confirm her refund of $420 on order NW-8812.",
-      },
-      {
-        title: "Apply a discount",
-        message: "Apply a 30% discount to account NW-8812 for the next quarter.",
-      },
-    ],
-    available: "always",
-  });
-
   return (
     <>
       <GovernedActionTool />
