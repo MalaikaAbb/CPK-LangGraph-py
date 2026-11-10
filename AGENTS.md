@@ -40,6 +40,19 @@ is a bug in the harness.
       missing, status `broken`.
    Every borrowed or missing piece goes in the doc-gap entry, the README's
    Known issues, and the "Doc gaps / borrowed code" part of your final message.
+   **Borrow only what the feature needs to work.** A Code tab, sibling route
+   or showcase demo is not a list of files to copy. For every borrowed file,
+   function, component, tool or dependency, ask: *is this needed for this
+   page's hook/component to work?* and *why?*
+   - **Needed by the package API** (the hook or component the page teaches
+     won't run without it: a prop it requires, the agent/tool the page's
+     snippet calls, the runtime route it talks to) → integrate it.
+   - **Needed only by the showcase demo project** (demo styling, extra demo
+     tools the page doesn't call, suggestion chips, design-skill prompts,
+     decorative custom components, aimock/mock-LLM fixtures or headers when
+     this harness doesn't use aimock, diagnostic logging, e2e/test helpers)
+     → leave it out. At most mention it in the doc-gap entry.
+   Keep the code the page itself shows verbatim; trim only the extras around it.
 3. **If a working remedy already exists, keep it.** Some routes have the
    verbatim doc class in one `#region` and a remedy subclass in a separate
    `#region <name>-remedy`. Update the verbatim part from the docs. Leave the
