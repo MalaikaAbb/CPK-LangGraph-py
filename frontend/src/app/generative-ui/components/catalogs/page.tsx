@@ -35,7 +35,7 @@ export default function Page() {
         <div className="mt-4 space-y-3">
           <TryIt
             prompts={["Show me three running shoes as product cards"]}
-            expect="On shopUI: the agent calls search_products first, then a ProductGrid holding three ProductCards whose name, price and image match that tool result."
+            expect="On shopUI: a ProductGrid holding three ProductCards with a name, price and image each (the model makes the values up; no page publishes a products tool)."
             fail="Standard components such as Table or Card appear — they are not in this catalog, so the run should have rejected them."
           />
           <TryIt
@@ -104,10 +104,8 @@ export default function Page() {
           <li>
             · <strong>ProductCard&apos;s description</strong> says to copy values
             &ldquo;from a product of a tool result&rdquo;, but no page publishes a
-            tool that returns products. The <code>genui</code> agent carries a
-            repo-authored <code>search_products</code>{" "}
-            (<code>backend/src/agents/genui-tools.ts</code>) so there is a result
-            to copy from.
+            tool that returns products, and this repo doesn&apos;t add one, so the
+            model fills the props itself.
           </li>
         </ul>
       </Callout>

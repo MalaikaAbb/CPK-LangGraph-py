@@ -76,9 +76,8 @@ export default function Page() {
             the product picker are scaffolding.
           </li>
           <li>
-            · No page gives the agent products. The <code>genui</code> agent&apos;s
-            repo-authored <code>search_products</code> tool supplies ten (shoes, socks and mugs), with
-            fixed Unsplash product photos.
+            · No page gives the agent products, and this repo doesn&apos;t add a
+            products tool, so the model invents the products it renders.
           </li>
         </ul>
       </Callout>

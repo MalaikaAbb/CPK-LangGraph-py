@@ -332,7 +332,7 @@ export const NAV: NavGroup[] = [
           "GenerativeUISurface page targets the chat can fill, limit, scroll to, and replace, with per-component error boundaries.",
         status: "partial",
         statusNote:
-          "Ported from CPK-LangGraph-TS (via aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). All published snippets run. Product, ProductRow and the product list are repo scaffolding; ./catalog is taken to be the Catalogs page's shopUI; products come from a repo-authored search_products tool.",
+          "Ported from CPK-LangGraph-TS (via aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). All published snippets run. Product, ProductRow and the product list are repo scaffolding; ./catalog is taken to be the Catalogs page's shopUI; the model invents the products (no products tool).",
       },
       {
         path: "/generative-ui/components/catalogs",
