@@ -9,7 +9,6 @@ import { CopilotChat } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
 
-import { ModelContextStatus } from "../_demo/model-context-status";
 import { OrderSearch } from "../_demo/OrderSearch";
 
 /**
@@ -21,7 +20,6 @@ export default function Page() {
   return (
     <DemoFrame parentPath="/webmcp" subtitle="agent: webmcp · tool: searchOrders">
       <div className="flex h-full flex-col">
-        <ModelContextStatus />
         <p className="shrink-0 border-b border-slate-200 px-4 py-1.5 text-xs text-slate-500 dark:border-slate-800">
           React frontend tool.{" "}
           <Link href="/webmcp/demo-chat/core-only" className="text-[var(--accent)] underline underline-offset-4">

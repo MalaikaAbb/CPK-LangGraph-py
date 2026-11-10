@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
 
-import { ModelContextStatus } from "../../_demo/model-context-status";
 
 /**
  * "WebMCP only, with no agent": loads the page's `webmcp.ts` module, whose
@@ -35,7 +34,6 @@ export default function Page() {
   return (
     <DemoFrame parentPath="/webmcp" subtitle="CopilotKitCore · no agent">
       <div className="flex h-full flex-col">
-        <ModelContextStatus />
         <div className="space-y-3 p-4 text-sm">
           <p>
             Core instance {loaded ? "created" : "loading…"}.{" "}

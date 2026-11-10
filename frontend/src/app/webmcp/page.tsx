@@ -27,8 +27,8 @@ export default function Page() {
               "Which of my orders have shipped?",
               "(Chrome 149+, WebMCP flag) Call searchOrders with status \"open\" from the Model Context Tool Inspector.",
             ]}
-            expect="In any browser: the CopilotKit agent calls searchOrders and lists A-1002 and A-1004. In a WebMCP browser: the banner turns green, and the inspector lists searchOrders with its schema and readOnlyHint and returns the open order A-1001. On the core-only page, the button returns the two shipped orders."
-            fail="The banner is amber in a browser that should support WebMCP: check the flag or origin trial. If the inspector shows no tool, the description or the webmcp option did not reach the registry."
+            expect="In any browser: the CopilotKit agent calls searchOrders and lists A-1002 and A-1004. In a WebMCP browser: the inspector lists searchOrders with its schema and readOnlyHint and returns the open order A-1001. On the core-only page, the button returns the two shipped orders."
+            fail="If the inspector shows no tool in a browser that should support WebMCP, check the flag or origin trial; otherwise the description or the webmcp option did not reach the registry."
           />
         </div>
       </Panel>
@@ -56,7 +56,6 @@ export default function Page() {
         <SourceCodeGroup
           files={[
             { file: `${DIR}/search-orders.ts` },
-            { file: `${DIR}/model-context-status.tsx` },
             { file: "frontend/src/app/webmcp/demo-chat/page.tsx" },
             { file: "frontend/src/app/webmcp/demo-chat/core-only/page.tsx" },
           ]}
