@@ -32,6 +32,8 @@ export const NESTED_PROVIDER_ROUTES = [
   "/voice/demo-chat",
   "/generative-ui/a2ui/fixed-schema/demo-chat",
   "/generative-ui/a2ui/dynamic-schema/demo-chat",
+  "/generative-ui/json-render/demo-chat",
+  "/generative-ui/hashbrown/demo-chat",
 ] as const;
 
 /**

@@ -288,6 +288,10 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/generative-ui/a2ui/fixed-schema`** — A flight card from a JSON schema. **Try:** `Find me a flight from SFO to JFK`. **Pass:** an itinerary card with both airport codes, an airline badge, a price and a Book button. **Fail:** raw JSON — the `catalogId` does not match.
 
+**`/generative-ui/json-render`** — The agent answers with a `{ root, elements }` JSON spec and `@json-render/react` draws it through a custom `assistantMessage` slot (own `<CopilotKit>` and runtime at `/api/copilotkit-declarative-json-render`). **Try:** `Show me the sales dashboard with metrics and a revenue chart`. **Pass:** a metric card and a bar chart in place of the assistant text. **Fail:** raw JSON in the bubble (spec failed to parse/validate), or a 500 from the runtime route (agent `byoc_json_render` not mounted — restart the backend).
+
+**`/generative-ui/hashbrown`** — Streaming structured output: the agent emits a `{ "ui": [...] }` envelope that `@hashbrownai/react` parses as tokens arrive (own runtime at `/api/copilotkit-declarative-hashbrown`). **Try:** `Build a sales dashboard: total revenue, revenue by quarter as a bar chart, and share by product as a pie chart`. **Pass:** cards and charts fill in while the reply streams. **Fail:** raw JSON, or a bundle error like "Export prompt doesn't exist" (Hashbrown drifted past 0.7.0).
+
 ### App Control
 
 **`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates. The **Registering a list of tools** panel is text only (needs CopilotKit ≥ 1.74).
@@ -394,7 +398,9 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
-| `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | The page's new `useFrontendTools` section is reference-only: the hook needs CopilotKit ≥ 1.74 (§9 item 31). |
+| `/langgraph-python/generative-ui/json-render` | `/generative-ui/json-render` | ⚠️ Partial | New 2026-11. Page's full Code tab (Python agent + frontend) verbatim; runtime route uses `buildAgents` instead of a hardcoded `LangGraphAgent`; model → `_shared.MODEL`. Type-checks; not yet checked in a browser (§9 item 33). |
+| `/langgraph-python/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ⚠️ Partial | New 2026-11. Code tab verbatim on `@hashbrownai/*` 0.7.0 exactly, with a nested `@ag-ui` 1.0.2 override (§9 item 33). Same two harness changes as JSON Render. Type-checks; not yet checked in a browser. |
+| `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
 | `/langgraph-python/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Renders nothing, faithfully — the published snippet ends after the handlers and never shows the JSX. Also destructures three undefined helpers. See §9 item 19. |
@@ -559,13 +565,9 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
-**31. Basics pages now document APIs newer than this repo's CopilotKit (1.70.0)**
+**33. JSON Render and Hashbrown: dependencies and the runtime route the pages don't spell out**
 
-The 2026-11 doc sync added three APIs that `@copilotkit/react-core` 1.70.0 (the version in `package-lock.json`) does not have. Checked against the published packages: `maxConcurrentUploads` first appears in 1.71.0, `useFrontendTools` in 1.74.0, and `toolCallDisplay` (tool-call grouping, linked from [Slots](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/slots)) after 1.79.0. Bumping CopilotKit is an infra change of its own (PR_GUIDELINES §1), so this sync does not do it:
-- [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) "Registering a list of tools": `useFrontendTools` is not exported, so importing it would fail the bundle. The snippet is shown as reference-only text on `/frontend-tools`.
-- [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) "Upload concurrency": the `maxConcurrentUploads: 3` example is wired verbatim with `@ts-expect-error` (unknown property on 1.70). It is ignored at runtime, so files still upload one at a time.
-- [Open, close, and feedback](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/chat-controls) now leads with controlled `open` / `onOpenChange` on `CopilotSidebar`/`CopilotPopup`, which first ship in 1.71.0. Shown as reference-only text on `/prebuilt-components/chat-controls`; the demo keeps the `useCopilotChatConfiguration` pattern the page still documents.
-- `toolCallDisplay` is only linked from Slots, not shown, so nothing is wired.
+[JSON Render](https://docs.copilotkit.ai/langgraph-python/generative-ui/json-render) and [Hashbrown](https://docs.copilotkit.ai/langgraph-python/generative-ui/hashbrown) publish complete demos in their Code tabs but no install line. This repo added `@json-render/core` + `@json-render/react` ^0.21.4, `zod4` (`npm:zod@^4.6.7`, imported by the json-render catalog; root `zod` stays 3.25.76 for A2UI, see item 24) and `@hashbrownai/core` + `@hashbrownai/react` **exactly 0.7.0** (the code uses `prompt` and `useUiKit({ examples })`, removed in 0.8). Hashbrown 0.7.0 pins `@ag-ui/core`/`client` 1.0.2 while CopilotKit 1.70.0 pins 0.0.57, so `package.json` has a nested override giving Hashbrown its own 1.0.2 copy; CopilotKit's agents never touch it. Both Code-tab runtime routes hardcode `new LangGraphAgent({ deploymentUrl, graphId })`, which only works against `langgraph dev`; here they call `buildAgents` (as Voice and A2UI do) so the default FastAPI transport works. The Python agents live at the docs' own paths under `backend/src/agents/`, re-exported by `src/graphs/byoc_*.py`. Each Code tab's `chat.tsx` also imports `./suggestions` (suggestion chips); those files are showcase demo extras, not needed for rendering, so they were not copied and the import/call lines are kept as `// doc:` comments.
 
 ### Things the docs reference but never define
 
@@ -867,7 +869,7 @@ A few choices look arbitrary until they bite:
 
 **Input Modalities** — [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) · [Voice](https://docs.copilotkit.ai/langgraph-python/voice)
 
-**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)
+**Generative UI** — [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/langgraph-python/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema) · [JSON Render](https://docs.copilotkit.ai/langgraph-python/generative-ui/json-render) · [Hashbrown](https://docs.copilotkit.ai/langgraph-python/generative-ui/hashbrown)
 
 **App Control** — [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop) · [Interrupts](https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/interrupt-flow) · [Programmatic Control](https://docs.copilotkit.ai/langgraph-python/programmatic-control)
 
