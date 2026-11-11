@@ -236,7 +236,7 @@ export const NAV: NavGroup[] = [
           "A second runtime carrying a TranscriptionService, which is what makes the composer grow a mic button.",
         status: "partial",
         statusNote:
-          "The mic transcribes through OpenAI Whisper, so it needs OPENAI_API_KEY in the frontend process. Without one the route still runs via the doc's sample-audio button.",
+          "The mic transcribes through OpenAI Whisper, so it needs OPENAI_TRANSCRIPTION_API_KEY in the frontend process (the page's 2026-11 name). Without it the mic button is hidden and the route still runs via the doc's sample-audio button.",
       },
     ],
   },
@@ -271,10 +271,10 @@ export const NAV: NavGroup[] = [
         title: "Tool Call Rendering",
         docPath: "/langgraph-python/generative-ui/tool-rendering",
         summary:
-          "A named renderer for the get_weather tool, plus the wildcard catch-all from useDefaultRenderTool.",
+          "A named renderer for the get_weather tool, plus the wildcard catch-all from useDefaultRenderTool that paints the other three backend tools.",
         status: "partial",
         statusNote:
-          "get_weather only. The page wires four renderers but defines just this one backend tool; the other three are not invented here.",
+          "Backend is now the page's Code-tab agent (all four tools + stop_after_tool_failure). Frontend still has only the get_weather card; flights, stocks and d20 render through the default wildcard. The Code tab's flight/stock/d20 cards and retry view are not ported. Not yet checked in a browser.",
       },
       {
         path: "/generative-ui/state-rendering",
@@ -466,7 +466,7 @@ export const NAV: NavGroup[] = [
           "A supervisor delegating to research, writing and critique sub-agents, with a live delegation log.",
         status: "partial",
         statusNote:
-          "The page prints the sub-agents and their delegation tools but never the supervisor; that create_agent call is this repo's.",
+          "The page prints the sub-agents and their delegation tools but never the supervisor; that create_agent call is this repo's. Its operator.add reducer contradicts the page's own merge-by-id callout, so the log doubles on a continued thread (README §9 item 30).",
       },
     ],
   },
@@ -500,10 +500,10 @@ export const NAV: NavGroup[] = [
         title: "Configurable",
         docPath: "/langgraph-python/configurable",
         summary:
-          "Per-run execution parameters forwarded through forwardedProps.config.configurable — auth tokens and session metadata that are not state.",
+          "Server-owned execution settings: a request-local LangGraphAGUIAgent built by build_agent(tenant_id); the browser sends no config.",
         status: "partial",
         statusNote:
-          "Works, but disproves the page on two points: config_schema is deprecated, and undeclared configurables are NOT filtered out.",
+          "build_agent and the node are verbatim; the reply node, per-request endpoint and tenant stand-in are harness glue (README §9 item 3). FastAPI transport only. Not yet checked in a browser.",
       },
       {
         path: "/subgraphs",

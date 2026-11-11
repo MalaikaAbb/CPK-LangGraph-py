@@ -48,7 +48,7 @@ import { RestOnlyThreadStores } from "./rest-only-thread-stores";
  * neither, the drawer renders its locked "Upgrade" view even when threads are
  * working, because it gates on the reported license status rather than on
  * whether thread endpoints respond. It is genuinely public — unlike
- * INTELLIGENCE_API_KEY, which must never be prefixed NEXT_PUBLIC_.
+ * CPK_INTELLIGENCE_API_KEY, which must never be prefixed NEXT_PUBLIC_.
  */
 
 const RUNTIME_URL = "/api/copilotkit";
@@ -83,6 +83,9 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <CopilotKitProvider
       runtimeUrl={RUNTIME_URL}
+      // The Quickstart's 2026-11 provider pins the multi-route transport
+      // explicitly, matching the catch-all `createCopilotRuntimeHandler` route.
+      useSingleEndpoint={false}
       headers={IDENTITY_HEADERS}
       // Spread rather than passed as `publicLicenseKey={undefined}`: an
       // explicit undefined is still a supplied prop, and the provider treats a
