@@ -60,7 +60,9 @@ export default function Page() {
               // here so the rejection path is easy to trigger with a .zip.
               accept: "image/*,audio/*,video/*,application/pdf",
               maxSize: 10 * 1024 * 1024, // 10MB (default is 20MB)
-              
+              // From the page's "Upload concurrency" section (2026-11).
+              // @ts-expect-error maxConcurrentUploads ships in @copilotkit/react-core 1.71+; this repo is on 1.70.0, so it is an unknown property and ignored at runtime (README §9 item 31)
+              maxConcurrentUploads: 3, // three files at a time
             }}
           />
         </div>

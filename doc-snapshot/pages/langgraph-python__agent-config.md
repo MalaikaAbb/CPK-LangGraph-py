@@ -43,7 +43,7 @@ How agent config flows from the UI into the agent's reasoning loop depends on yo
     
 ~~~~python title="agent_config_agent.py"
 graph = create_agent(
-    model=ChatOpenAI(model="gpt-5.4", temperature=0.4),
+    model=ChatOpenAI(reasoning_effort="none", model="gpt-6-luna", temperature=0.4),
     tools=[],
     middleware=[CopilotKitMiddleware()],
     system_prompt=SYSTEM_PROMPT,
@@ -83,41 +83,14 @@ function ConfigContextRelay({ config }: { config: AgentConfig }) {
 
 
 
-The backend half is also a single node. Read the latest config context at the top of every run and use it to build the system prompt for that turn:
+The framework setup above shows the exact backend bridge for the selected
+agent. In every framework, the flow is the same: read the latest valid context
+from the current run and use it to build the system prompt for that turn.
 
-```python title="backend/agent.py — agent reads config and rebuilds the system prompt"
-import json
-
-CONFIG_KEYS = ("tone", "expertise", "responseLength")
-
-def read_config_value(entry):
-    value = entry.get("value")
-    if isinstance(value, str):
-        try:
-            value = json.loads(value)
-        except json.JSONDecodeError:
-            return None
-    if not isinstance(value, dict):
-        return None
-    if any(key in value for key in CONFIG_KEYS):
-        return value
-    return None
-
-async def my_agent_node(state: AgentState, config: RunnableConfig):
-    context_entries = state.get("copilotkit", {}).get("context", [])
-    cfg = next(
-        (
-            value
-            for entry in reversed(context_entries)
-            if (value := read_config_value(entry)) is not None
-        ),
-        {},
-    )
-    tone = cfg.get("tone", "professional")
-    expertise = cfg.get("expertise", "intermediate")
-    response_length = cfg.get("responseLength", "concise")
-    system_prompt = build_system_prompt(tone, expertise, response_length)
-    # ...
+```text title="Backend flow"
+config = latestValidConfig(currentRun.context)
+systemPrompt = buildSystemPrompt(config)
+model.invoke(systemPrompt, currentUserRequest)
 ```
 
 The agent reads the latest typed config at the start of every turn, rebuilds the system prompt, runs the turn. This is the same shape as the [shared-state write-side pattern](/langgraph-python/shared-state#writing-to-agent-state); agent config is just a specific use of that pattern with a UI-owned typed object on top.

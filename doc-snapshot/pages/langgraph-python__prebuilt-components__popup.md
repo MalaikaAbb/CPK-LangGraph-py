@@ -32,6 +32,17 @@ session, and agent registry) and render `<CopilotPopup>` as a sibling of
 your main content. The example below opens the popup by default and
 customizes the input placeholder via `labels`:
 
+```tsx
+import { CopilotKit, CopilotPopup } from "@copilotkit/react-core/v2";
+import "@copilotkit/react-core/v2/styles.css";
+```
+
+<Callout type="warn">
+  `@copilotkit/react-ui` also exports a component named `CopilotPopup`. That one
+  is the [deprecated v1 popup](/langgraph-python/migrate/v2). This page documents the v2 popup,
+  which you import from `@copilotkit/react-core/v2`.
+</Callout>
+
 ```typescript
 // src/app/demos/prebuilt-popup/page.tsx
     <CopilotKit runtimeUrl="/api/copilotkit" agent="prebuilt-popup">

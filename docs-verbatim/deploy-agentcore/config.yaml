@@ -1,0 +1,2 @@
+stack_name_base: my-agentcore-app   # prefix for all AWS resources (max 35 chars)
+admin_user_email: you@example.com   # where your Cognito invite will be sent

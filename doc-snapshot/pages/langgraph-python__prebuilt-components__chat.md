@@ -33,6 +33,17 @@ Wrap your app in `<CopilotKit>` once (the provider wires the runtime, session,
 and agent registry) and render `<CopilotChat>` inside the layout of your
 choosing:
 
+```tsx
+import { CopilotKit, CopilotChat } from "@copilotkit/react-core/v2";
+import "@copilotkit/react-core/v2/styles.css";
+```
+
+<Callout type="warn">
+  `@copilotkit/react-ui` also exports a component named `CopilotChat`. That one
+  is the [deprecated v1 chat](/langgraph-python/migrate/v2). This page documents the v2 chat,
+  which you import from `@copilotkit/react-core/v2`.
+</Callout>
+
 ```typescript
 // src/app/demos/agentic-chat/page.tsx
     <CopilotKit runtimeUrl="/api/copilotkit" agent="agentic_chat">

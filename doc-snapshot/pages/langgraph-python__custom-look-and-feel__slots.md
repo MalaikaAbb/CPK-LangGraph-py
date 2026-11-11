@@ -198,6 +198,49 @@ Override a specific button inside the assistant message toolbar:
 />
 ```
 
+### Tool calls
+
+The `assistantMessage` slot holds `toolCallsView`, which renders the tool calls
+of one assistant message. Wrap the default `CopilotChatToolCallsView` to change
+the container while keeping your registered tool renderers:
+
+```tsx title="page.tsx"
+import {
+  CopilotChat,
+  CopilotChatToolCallsView,
+  type CopilotChatToolCallsViewProps,
+} from "@copilotkit/react-core/v2";
+
+const CustomToolCallsView = (props: CopilotChatToolCallsViewProps) => (
+  <div className="rounded-lg border border-dashed p-2">
+    <CopilotChatToolCallsView {...props} />
+  </div>
+);
+
+export function Chat() {
+  return (
+    <CopilotChat
+      messageView={{
+        assistantMessage: { toolCallsView: CustomToolCallsView },
+      }}
+    />
+  );
+}
+```
+
+To see `CopilotChatToolCallsView` in progress, complete, expanded, and failed
+states, open the
+[`CopilotChatToolCallsView` stories](https://github.com/CopilotKit/CopilotKit/blob/main/examples/v2/react/storybook/stories/CopilotChatToolCallsView.stories.tsx)
+in the React Storybook.
+
+To change how calls are grouped (a card, a line of text, a stack, or one
+summary per turn) without writing a component, set `toolCallDisplay` on the
+message view. See [Grouping tool calls](/langgraph-python/generative-ui/tool-rendering#grouping-tool-calls).
+
+The `assistantMessage` slot also holds `markdownRenderer`, which controls how
+assistant markdown is rendered. It has its own guide:
+[Markdown Rendering](/langgraph-python/custom-look-and-feel/markdown).
+
 ## Labels
 
 Customize any text string in the UI via the `labels` prop. This is a separate convenience prop on `CopilotChat`, `CopilotSidebar`, and `CopilotPopup`, not part of the slot system.

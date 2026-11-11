@@ -5,25 +5,16 @@ import {
   UseAgentUpdate,
   useAgent,
 } from "@copilotkit/react-core/v2";
-import { useEffect } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
 
 /**
- * The doc's Configurable cell.
+ * The doc's Configurable cell, after the page's trust-boundary rewrite.
  *
- * `forwardedProps.config.configurable` carries per-run execution parameters —
- * auth tokens, session metadata — that are deliberately *not* agent state: they
- * do not persist, the agent cannot write them back, and they never appear in
- * `agent.state`.
- *
- * The page's warning about `runAgent` is reproduced in the effect below:
- * calling it in the component body would fire on every render and produce
- * "thread is already processing" errors. An empty-dependency `useEffect` runs
- * it once.
- *
- * Two keys are forwarded on purpose — one declared in `ConfigSchema`, one not —
- * so the route can show what actually survives the trip. See the notes page.
+ * The browser no longer sends any execution config: no `runAgent` with
+ * `forwardedProps.config`. The FastAPI backend builds a request-local agent
+ * with the page's `build_agent(tenant_id)`, and the graph echoes what it was
+ * given into `received_config` so this panel can show it.
  */
 export default function Page() {
   return (
@@ -39,22 +30,6 @@ function Layout() {
     updates: [UseAgentUpdate.OnStateChanged, UseAgentUpdate.OnRunStatusChanged],
   });
 
-  // Do not call runAgent directly in the component body: it would run on every
-  // render and can trigger errors such as "thread is already processing".
-  useEffect(() => {
-    agent.runAgent({
-      forwardedProps: {
-        config: {
-          configurable: {
-            authToken: "example-token"
-          },
-          recursion_limit: 50,
-        },
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const received = (agent.state?.received_config ?? {}) as Record<
     string,
     unknown
@@ -64,26 +39,26 @@ function Layout() {
     <div className="grid h-full grid-cols-1 gap-4 p-4 lg:grid-cols-[380px_1fr]">
       <div className="overflow-y-auto rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-          What the graph received
+          What the server gave the graph
         </h2>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Read from{" "}
-          <code className="font-mono text-xs">config[&apos;configurable&apos;]</code>{" "}
-          inside the node and echoed back into state so it is visible here.
+          <code className="font-mono text-xs">config</code> inside the graph
+          and echoed back into state. Empty until the first run finishes.
         </p>
 
         <div className="mt-4 space-y-2">
           <Row
-            label="authToken"
-            note="declared in ConfigSchema"
-            value={received.authToken}
+            label="configurable.tenant_id"
+            note="set by build_agent on the server"
+            value={received.tenant_id}
+          />
+          <Row
+            label="recursion_limit"
+            note="set by build_agent on the server"
+            value={received.recursion_limit}
           />
         </div>
-
-        <p className="mt-6 text-xs text-slate-500">
-          Ask the agent about its auth token in the chat — it was told what it
-          is for this run.
-        </p>
       </div>
 
       <div className="min-h-[24rem] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
@@ -116,7 +91,7 @@ function Row({
               : "border-slate-300 bg-white text-slate-500 dark:border-slate-700 dark:bg-slate-900"
           }`}
         >
-          {arrived ? "arrived" : "absent"}
+          {arrived ? "set" : "not yet"}
         </span>
       </div>
       <p className="mt-0.5 text-[11px] text-slate-500">{note}</p>

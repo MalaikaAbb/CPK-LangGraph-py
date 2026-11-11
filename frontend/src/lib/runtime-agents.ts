@@ -1,4 +1,5 @@
-import { LangGraphAgent, LangGraphHttpAgent } from "@copilotkit/runtime/langgraph";
+import { HttpAgent } from "@ag-ui/client";
+import { LangGraphAgent } from "@copilotkit/runtime/langgraph";
 
 import {
   LANGGRAPH_URL,
@@ -13,7 +14,11 @@ import {
  * The Quickstart publishes both halves of this and they differ in exactly one
  * way — which agent class wraps the graph:
  *
- *   FastAPI    `new LangGraphHttpAgent({ url })`
+ *   FastAPI    `new HttpAgent({ url })` from `@ag-ui/client`
+ *              (the Quickstart's 2026-11 revision; it used to be
+ *              `LangGraphHttpAgent` from `@copilotkit/runtime/langgraph`, which
+ *              in the installed `@ag-ui/langgraph` is an empty subclass of
+ *              `HttpAgent`, so behaviour is unchanged).
  *              One HTTP endpoint per graph. `backend/main.py` mounts each at
  *              `/{agent_id}`, so the URL carries the routing.
  *
@@ -30,7 +35,7 @@ import {
  */
 export function buildAgents(
   ids: readonly string[],
-): Record<string, LangGraphAgent | LangGraphHttpAgent> {
+): Record<string, LangGraphAgent | HttpAgent> {
   if (TRANSPORT === "langsmith") {
     return Object.fromEntries(
       ids.map((id) => [
@@ -47,14 +52,14 @@ export function buildAgents(
   return Object.fromEntries(
     ids.map((id) => [
       id,
-      new LangGraphHttpAgent({ url: `${LANGGRAPH_URL}/${id}` }),
+      new HttpAgent({ url: `${LANGGRAPH_URL}/${id}` }),
     ]),
   );
 }
 
 export interface TransportDescription {
   transport: Transport;
-  agentClass: "LangGraphAgent" | "LangGraphHttpAgent";
+  agentClass: "LangGraphAgent" | "HttpAgent";
   deploymentUrl: string;
   /** Example resolved endpoint, so the wiring is visible on `/status`. */
   exampleTarget: string;
@@ -66,7 +71,7 @@ export function describeTransport(): TransportDescription {
   const langsmith = TRANSPORT === "langsmith";
   return {
     transport: TRANSPORT,
-    agentClass: langsmith ? "LangGraphAgent" : "LangGraphHttpAgent",
+    agentClass: langsmith ? "LangGraphAgent" : "HttpAgent",
     deploymentUrl: LANGGRAPH_URL,
     exampleTarget: langsmith
       ? `${LANGGRAPH_URL} (graphId: agentic_chat)`

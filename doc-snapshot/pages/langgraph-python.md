@@ -1,62 +1,32 @@
 # Introduction
 
-> Bring your LangGraph agents to your users with CopilotKit via AG-UI.
+> Redirect notice for a landing page that is served from a data record.
 
-<FrameworkOverview
-  frameworkName="LangGraph"
-  frameworkIcon={<LanggraphIcon className="h-14 w-14" />}
-  header="Bring your LangGraph agents to your users"
-  subheader="Give your LangGraph agents real user-interactivity using CopilotKit and AG-UI. Build rich, interactive, agent-powered applications."
-  bannerVideo="https://cdn.copilotkit.ai/docs/copilotkit/videos/coagents/overview.mp4"
-  guideLink="/langgraph/quickstart"
-  initCommand="npx copilotkit@latest init"
-  featuresLink="https://feature-viewer.copilotkit.ai/langgraph/feature/agentic_chat"
-  supportedFeatures={[
-    {
-      title: "Generative UI",
-      description: "Render your agent's state, progress, outputs, and tool calls with custom UI components in real-time. Bridges the gap between AI agents and user interfaces.",
-      documentationLink: "/langgraph/generative-ui",
-      demoLink: "https://feature-viewer.copilotkit.ai/langgraph/feature/tool_based_generative_ui",
-      videoUrl: "https://cdn.copilotkit.ai/docs/copilotkit/videos/coagents/haiku.mp4"
-    },
-    {
-      title: "Human in the Loop",
-      description: "Empower users to guide agents at key checkpoints. Combine the best of AI and human judgment for more reliable and controllable agent behavior.",
-      documentationLink: "/langgraph/human-in-the-loop",
-      demoLink: "https://examples-coagents-ai-travel-app.vercel.app/",
-      videoUrl: "https://cdn.copilotkit.ai/docs/copilotkit/images/coagents/human-in-the-loop-example.mp4"
-    },
-    {
-      title: "Shared State",
-      description: "Keep your agent and your app in sync. Your agent can see everything in your app, and your app can react to your agent in real-time.",
-      documentationLink: "/langgraph/shared-state",
-      demoLink: "https://feature-viewer.copilotkit.ai/langgraph/feature/shared_state",
-      videoUrl: "https://cdn.copilotkit.ai/docs/copilotkit/videos/coagents/shared-state.mp4"
-    }
-  ]}
-  architectureImage="https://cdn.copilotkit.ai/docs/copilotkit/images/coagents/coagents-highlevel-overview.png"
-  liveDemos={[
-    {
-      type: "saas",
-      title: "SaaS Copilot",
-      description: "A traditional SaaS application enhanced with AI agents. These copilots integrate seamlessly into existing workflows, providing intelligent assistance for specific business processes. Perfect for customer service, sales automation, project management, and domain-specific tasks where users need guided, step-by-step AI assistance.",
-      iframeUrl: "https://examples-coagents-ai-travel-app.vercel.app?copilotOpen=true"
-    },
-    {
-      type: "canvas",
-      title: "Canvas Copilot",
-      description: "An infinite canvas interface where users collaborate with AI agents in a spatial, visual environment. These copilots excel at research, brainstorming, content creation, and complex problem-solving where information needs to be organized, connected, and explored in a non-linear, creative way.",
-      iframeUrl: "https://examples-coagents-research-canvas-ui.vercel.app/"
-    }
-  ]}
-  afterFeatures={
-    <OpsPlatformCTA
-      variant="card"
-      title="Bring your LangGraph agents to production"
-      body="Add persistent threads and the inspector with CopilotKit Intelligence."
-      ctaLabel="Create a free account"
-      surface="docs_langgraph_overview"
-    />
-  }
-  tutorialLink="/langgraph/tutorials/ai-travel-app"
-/>
+{/*
+  This folder's landing page is not served from here.
+
+  Every slug that uses it (`langgraph-python` and its variants) is `docs_mode:
+  generated` and has an entry in `src/data/frameworks/`, and the framework root
+  route gates on `overview && docsMode === "generated"` — so the record wins and
+  this file's `<FrameworkOverview>` never rendered. It still carried a full copy
+  of the landing page, which drifted: this file said "Bring your LangGraph
+  agents", the record rendered "Bring your LangChain agents", and only the
+  record was ever on screen.
+
+  Edit `src/data/frameworks/langgraph-python.ts` instead.
+*/}
+
+
+<div className="reference-content">
+
+## Already have LangGraph conversations?
+
+When you add a user-facing app to an existing LangGraph agent, your users may need to open and continue conversations they already started. [CopilotKit Intelligence](/langgraph-python/intelligence/overview) can import supported LangGraph history as threads so your app does not start with an empty thread list.
+
+The importer reads LangGraph Server, LangGraph Platform, or LangSmith Deployment thread and run APIs. It does not import standalone LangChain message stores, LangSmith traces, or embedded checkpointers that are not exposed through those APIs.
+
+Import history once; future CopilotKit-mediated runs synchronize with Intelligence and continue through LangGraph's native persistence path when your durable checkpointer or Platform deployment remains configured. This is not a continuous mirror of runs made outside CopilotKit.
+
+[Import and synchronize LangGraph threads](/langgraph-python/threads-import) for source setup, agent mapping, and thread continuity.
+
+</div>

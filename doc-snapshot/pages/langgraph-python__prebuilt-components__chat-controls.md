@@ -5,11 +5,52 @@
 Two common controls for the prebuilt chat are opening it from your own UI and
 capturing thumbs-up / thumbs-down feedback on assistant messages.
 
+## Control the open state from your own UI
+
+Pass `open` and `onOpenChange` to `<CopilotSidebar>` or `<CopilotPopup>` to own
+the open state yourself. This is the controlled pattern: the surface renders
+whatever `open` says, and every request to open or close (the toggle button,
+click-outside on the popup) arrives on `onOpenChange` instead of moving the
+surface directly.
+
+```tsx
+import { useState } from "react";
+import { CopilotSidebar } from "@copilotkit/react-core/v2";
+
+function Layout() {
+  const [chatOpen, setChatOpen] = useState(false);
+
+  return (
+    <>
+      <nav>
+        <button onClick={() => setChatOpen(true)}>Ask the assistant</button>
+      </nav>
+
+      <CopilotSidebar open={chatOpen} onOpenChange={setChatOpen} />
+    </>
+  );
+}
+```
+
+The button lives outside the sidebar, which is the point: nothing has to be
+rendered inside the chat subtree to open or close it. Because `open` is the
+source of truth, you can also keep the chat in sync with a route, a keyboard
+shortcut, or any other state you already have.
+
+<Callout type="info">
+`onOpenChange` reports a request, not a change. If you do not feed the new value
+back into `open`, the surface stays where it is. That is what makes it possible
+to gate opening the chat, for example behind a sign-in check. You can also pass
+`onOpenChange` on its own, without `open`: the surface keeps managing itself and
+you are notified each time it opens or closes.
+</Callout>
+
 ## Programmatically open or close the chat
 
-The modal/open state for `<CopilotPopup>` and `<CopilotSidebar>` lives in the
-**chat configuration context**. Read it with `useCopilotChatConfiguration()` and
-call `setModalOpen(true | false)` from anywhere inside the provider:
+If you would rather not lift the state into your own component, the open state
+for `<CopilotPopup>` and `<CopilotSidebar>` also lives in the **chat
+configuration context**. Read it with `useCopilotChatConfiguration()` and call
+`setModalOpen(true | false)` from anywhere inside the provider:
 
 ```tsx
 import { useCopilotChatConfiguration } from "@copilotkit/react-core/v2";
@@ -46,18 +87,23 @@ exists. See the
 [`useCopilotChatConfiguration` reference](/reference/hooks/useCopilotChatConfiguration#modal-state-management).
 </Callout>
 
-You can also set the **initial** open state declaratively. The prebuilt surfaces
-accept a `defaultOpen` prop:
+You can also set the **initial** open state declaratively, and then let the
+surface manage itself. The prebuilt surfaces accept a `defaultOpen` prop:
 
 ```tsx
-<CopilotSidebar defaultOpen />
+<CopilotSidebar defaultOpen={false} />
 ```
+
+`defaultOpen` and `open` are the usual uncontrolled/controlled pair: use
+`defaultOpen` for a starting point, and `open` when your own state decides. When
+both are passed, `open` wins.
 
 ## Capture message feedback (thumbs up / down)
 
 The assistant-message toolbar can show thumbs-up and thumbs-down buttons. In v2
 you opt in by passing `onThumbsUp` / `onThumbsDown` to the **assistant message
-slot**. The buttons only render when a handler is provided:
+slot**. Without Automatic Learning capture, the buttons only render when a
+handler or a custom thumb slot is provided:
 
 ```tsx
 import { CopilotChat } from "@copilotkit/react-core/v2";
@@ -91,6 +137,15 @@ The button labels come from the chat labels (`assistantMessageToolbarThumbsUpLab
 defaults to `"Good response"`, `assistantMessageToolbarThumbsDownLabel` to
 `"Bad response"`); override them via
 [chat labels](/reference/hooks/useCopilotChatConfiguration#copilotchatlabels).
+
+With [Automatic Learning capture](/langgraph-python/intelligence/capture-interactions#collect-reply-ratings)
+on and a Trajectory started, the buttons appear without handlers in every chat
+that renders messages with `CopilotChatMessageView` inside a
+`CopilotChatConfigurationProvider`, as `CopilotChat`, `CopilotPopup`, and
+`CopilotSidebar` do. A rating then also goes to the active
+Trajectory, the user can add a comment, and clicking the chosen thumb again
+removes the rating. Your handlers run when a rating is given, not when it is
+removed.
 
 <Callout type="info">
 Building a fully custom message component instead of using the slot? The
