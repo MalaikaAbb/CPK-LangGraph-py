@@ -50,6 +50,16 @@ export default function Page() {
         <SourceCode file="backend/src/graphs/agent_app_context.py" region="lookup" />
       </Panel>
 
+      <Callout tone="info" title="Context values arrive as JSON text">
+        <p>
+          AG-UI types a context value as a string, so <code>useAgentContext</code>{" "}
+          stringifies any object or array before sending it. A custom node that
+          indexes the raw value gets characters, not entries — hence the{" "}
+          <code>json.loads</code> in the lookup above, which the page added in
+          its November update. Plain string values pass through untouched.
+        </p>
+      </Callout>
+
       <Callout tone="info" title="Matching on description is brittle by nature">
         <p>
           The custom-graph lookup keys off the exact string{" "}

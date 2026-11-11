@@ -2,54 +2,39 @@
 
 https://docs.copilotkit.ai/langgraph-python/configurable
 
-The page's contribution is two snippets: a `ConfigSchema` TypedDict, and a node
-that reads `config['configurable'].get('authToken', None)`. Both are reproduced.
-The surrounding graph is assembled here, since the page prints only the fragment
-(`async def agent_node(state, config): ... return state`).
+The November 2026 rewrite of the page turns it from "send execution config
+from the browser" into "pick the right channel". Browser-supplied
+`forwardedProps.config` is now called untrusted: UI preferences go through
+agent context (Agent Config), credentials through an `Authorization` header
+(Authentication), and graph execution settings are set by the trusted backend.
 
-The mechanism is worth stating plainly because it is easy to confuse with shared
-state: `configurable` is **per-run execution config**, not state. It does not
-persist, the agent cannot write it back, and it never appears in `agent.state`.
-Auth tokens and session metadata belong here; anything the UI wants to observe
-afterwards belongs in state.
+The Python tab publishes two snippets for that third channel, both reproduced
+verbatim below:
 
-**Two things the page gets wrong on LangGraph 1.2.10.** Both are reproduced as
-published rather than corrected, so this file matches the doc:
+1. `build_agent(tenant_id)` — a request-local `LangGraphAGUIAgent` whose
+   `config` carries `configurable.tenant_id` and `recursion_limit`. The page
+   titles it `main.py`; it lives here because it closes over this module's
+   `graph`, and `backend/main.py` calls it once per request.
+2. `agent_node` reading `config["configurable"]["tenant_id"]`.
 
-1. It writes `StateGraph(AgentState, config_schema=ConfigSchema)`.
-   `config_schema` was deprecated in LangGraph 1.0 in favour of
-   `context_schema`:
+Everything else is harness glue, labelled as such:
 
-       LangGraphDeprecatedSinceV10: `config_schema` is deprecated and will be
-       removed. Please use `context_schema` instead.
+- The page leaves `graph` and `AgentState` undefined and its node replies with
+  nothing (`return state`). `reply_node` is repo-authored so the run produces a
+  message and echoes what the server set into `received_config`, which is the
+  only way the route can show it.
+- The page says to create the agent "after authentication for each request"
+  and defers to the auth guide. This harness has no auth, so `main.py` stands
+  in a server-side env var (`CONFIGURABLE_TENANT_ID`, default `tenant-demo`)
+  for "the tenant resolved from a validated request".
 
-   Kept as `config_schema=` below. It works and warns today; it will break on
-   LangGraph 2.
-
-2. It claims "any item passed to 'configurables' which is not included in the
-   schema will be filtered out". It is not. Declaring the schema and then
-   forwarding an undeclared key leaves that key fully readable in
-   `config['configurable']` — verified against 1.2.10. The schema is a typing
-   and introspection aid, not an allow-list, so do not rely on it to strip
-   anything security-relevant.
-
-The route forwards one declared key (`authToken`) and one undeclared key side
-by side so you can see both arrive, which is what disproves point 2. See
-README §9.
+Only the FastAPI transport serves this route the page's way. Under
+`langgraph dev` there is no request-local agent, so `tenant_id` is never set
+and `agent_node` raises `KeyError` (the page's tab is self-hosted only).
 """
 
 from __future__ import annotations
 
-from typing import TypedDict
-
-#region schema
-# define which properties will be allowed in the configuration
-class ConfigSchema(TypedDict):
-    authToken: str
-#endregion
-
-
-#region agent
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
@@ -61,47 +46,66 @@ from src.graphs._shared import MODEL, checkpointer
 
 
 class AgentState(CopilotKitState):
-    #: Echoed back so the route can render what actually arrived. Reading the
-    #: config is invisible otherwise — it is not part of state by default.
+    #: Echoed back so the route can render what the server set. Config is not
+    #: part of state, so it is invisible otherwise. Harness glue.
     received_config: dict
 
 
+#region node
 async def agent_node(state: AgentState, config: RunnableConfig):
-    auth_token = config["configurable"].get("authToken", None)
-    print("Auth Token: ", auth_token)
-    # Everything the app forwarded, declared or not. `configurable` also
-    # carries LangGraph's own bookkeeping (thread_id, checkpoint_ns, …), so
-    # those are dropped — but undeclared *app* keys are deliberately kept, to
-    # show that `context_schema` did not filter them.
-    runtime_keys = {"thread_id", "checkpoint_id", "checkpoint_ns", "checkpoint_map"}
-    forwarded = {
-        key: value
-        for key, value in config["configurable"].items()
-        if key not in runtime_keys and not key.startswith("__")
-    }
+    tenant_id = config["configurable"]["tenant_id"]
+    return state
+#endregion
 
+
+#region reply
+# Harness glue — the page's node returns state unchanged, so on its own the run
+# ends with an empty chat. This second node re-reads the same server-owned
+# config and answers with it.
+async def reply_node(state: AgentState, config: RunnableConfig):
+    tenant_id = config["configurable"].get("tenant_id")
+    recursion_limit = config.get("recursion_limit")
     system_message = SystemMessage(
         content=(
-            "You are a helpful, concise assistant running with a per-run "
-            "execution config. Your auth token for this run is "
-            f"{auth_token!r}. If the user asks about it, tell them whether one "
-            "was supplied and what it is — it is a demo value, not a secret."
+            "You are a helpful, concise assistant. The trusted server running "
+            f"you set tenant_id={tenant_id!r} and recursion_limit="
+            f"{recursion_limit!r} for this run. If the user asks, report those "
+            "two values exactly."
         )
     )
-    response = await model_call(system_message, state, config)
+    response = await ChatOpenAI(model=MODEL).ainvoke(
+        [system_message, *state["messages"]], config
+    )
+    return {
+        "messages": response,
+        "received_config": {
+            "tenant_id": tenant_id,
+            "recursion_limit": recursion_limit,
+        },
+    }
 
-    return {"messages": response, "received_config": forwarded}
 
-
-async def model_call(system_message, state, config):
-    model = ChatOpenAI(model=MODEL)
-    return await model.ainvoke([system_message, *state["messages"]], config)
-
-
-# when defining the state graph, apply the config schema
-workflow = StateGraph(AgentState, config_schema=ConfigSchema)
+workflow = StateGraph(AgentState)
 workflow.add_node("agent_node", agent_node)
+workflow.add_node("reply_node", reply_node)
 workflow.add_edge(START, "agent_node")
-workflow.add_edge("agent_node", END)
+workflow.add_edge("agent_node", "reply_node")
+workflow.add_edge("reply_node", END)
 graph = workflow.compile(checkpointer=checkpointer())
+#endregion
+
+
+#region build-agent
+from copilotkit import LangGraphAGUIAgent
+
+def build_agent(tenant_id: str) -> LangGraphAGUIAgent:
+    return LangGraphAGUIAgent(
+        name="sample_agent",
+        description="Tenant-scoped agent",
+        graph=graph,
+        config={
+            "configurable": {"tenant_id": tenant_id},
+            "recursion_limit": 50,
+        },
+    )
 #endregion
