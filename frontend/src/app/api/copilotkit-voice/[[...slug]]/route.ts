@@ -1,12 +1,7 @@
 import type { NextRequest } from "next/server";
-import {
-  TranscriptionService,
-  createCopilotRuntimeHandler,
-} from "@copilotkit/runtime/v2";
-import type { TranscribeFileOptions } from "@copilotkit/runtime/v2";
-import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
-import OpenAI from "openai";
+import { createCopilotRuntimeHandler } from "@copilotkit/runtime/v2";
 
+import { createTranscriptionService } from "@/lib/transcription-service";
 import { buildRuntime } from "@/lib/copilot-runtime";
 import { buildAgents } from "@/lib/runtime-agents";
 
@@ -32,47 +27,19 @@ import { buildAgents } from "@/lib/runtime-agents";
  * `new LangGraphAgent({ deploymentUrl, graphId: "sample_agent" })`. This repo
  * routes it through `buildAgents` instead so the voice endpoint honours the
  * same FastAPI/LangSmith transport switch as everything else.
- */
-
-/**
- * Transcription service wrapper that reports a clean, typed auth error when
- * OPENAI_API_KEY is not configured. When the key is present we delegate to
- * the real OpenAI-backed service; any upstream Whisper error keeps its
- * natural categorization.
  *
- * `baseURL` is pinned to real OpenAI (or `OPENAI_TRANSCRIPTION_BASE_URL` when
- * explicitly set) rather than inheriting `OPENAI_BASE_URL`, so pointing the
- * chat model at a proxy never silently reroutes real microphone audio.
+ * Since the 2026-11 revision the page no longer wraps the service in a guard
+ * class that throws a 401 without a key. `createTranscriptionService()` (in
+ * `lib/transcription-service.ts`, as the page lays it out) returns
+ * `undefined` without `OPENAI_TRANSCRIPTION_API_KEY`, the mic button is
+ * hidden, and a direct `POST /transcribe` answers 503
+ * `service_not_configured`.
  */
-class GuardedOpenAITranscriptionService extends TranscriptionService {
-  private delegate: TranscriptionServiceOpenAI | null;
-
-  constructor() {
-    super();
-    const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL =
-      process.env.OPENAI_TRANSCRIPTION_BASE_URL ?? "https://api.openai.com/v1";
-    this.delegate = apiKey
-      ? new TranscriptionServiceOpenAI({
-          openai: new OpenAI({ apiKey, baseURL }),
-        })
-      : null;
-  }
-
-  async transcribeFile(options: TranscribeFileOptions): Promise<string> {
-    if (!this.delegate) {
-      // "api key" substring → handleTranscribe maps to AUTH_FAILED → 401.
-      throw new Error(
-        "OPENAI_API_KEY not configured for this deployment (api key missing). " +
-          "Set OPENAI_API_KEY to enable voice transcription.",
-      );
-    }
-    return this.delegate.transcribeFile(options);
-  }
-}
 
 // Cache the runtime + handler across invocations so the transcription service
-// is constructed once per Node process instead of per request.
+// is constructed once per Node process instead of per request. A missing
+// OPENAI_TRANSCRIPTION_API_KEY leaves the service undefined (transcription
+// disabled), so construction is safe at first request.
 let cachedHandler: ((req: Request) => Promise<Response>) | null = null;
 
 function getHandler(): (req: Request) => Promise<Response> {
@@ -85,7 +52,7 @@ function getHandler(): (req: Request) => Promise<Response> {
       // The page mounts <CopilotKit agent="voice-demo">.
       "voice-demo",
     ]),
-    transcriptionService: new GuardedOpenAITranscriptionService(),
+    transcriptionService: createTranscriptionService(),
   });
 
   cachedHandler = createCopilotRuntimeHandler({

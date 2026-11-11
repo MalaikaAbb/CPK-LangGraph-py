@@ -2,6 +2,8 @@ import { RouteHeader } from "@/components/route-header";
 import { SourceCode } from "@/components/source-code";
 import { Callout, CodeBlock, Panel, TryIt } from "@/components/ui";
 
+import { ToolCallsDemo } from "./tool-calls-slot";
+
 const LEVELS = `// 1. Tailwind classes — merged with the default component's own
 <CopilotChat messageView="bg-gray-50 p-4" input="border-2 rounded-xl" />
 
@@ -46,6 +48,20 @@ export default function Page() {
 
       <Panel title="Wiring them up">
         <SourceCode file="frontend/src/app/custom-look-and-feel/slots/demo-chat/page.tsx" />
+      </Panel>
+
+      <Panel title="Tool calls slot — assistantMessage.toolCallsView">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          New on the page: wrap the default <code>CopilotChatToolCallsView</code>{" "}
+          to change the container around one message&apos;s tool calls while
+          keeping the registered renderers. Ask about the weather; the card
+          should sit inside a dashed border. The <code>agentId</code> and the
+          weather tool are the harness&apos;s (the page names neither).
+        </p>
+        <ToolCallsDemo />
+        <div className="mt-4">
+          <SourceCode file="frontend/src/app/custom-look-and-feel/slots/tool-calls-slot.tsx" />
+        </div>
       </Panel>
 
       <Panel title="Available slots">

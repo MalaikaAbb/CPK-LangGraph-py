@@ -76,6 +76,10 @@ class AgentState(BaseAgentState):
     step. Use an Annotated key to handle multiple values.").
     """
 
+    # Verbatim. The page's newer callout says to merge delegations by `id`
+    # instead, because the client echoes shared state back as run input and
+    # an append reducer doubles the log on a continued thread. The page's own
+    # code was not updated to match; kept as published (README §9 item 30).
     delegations: Annotated[list[Delegation], operator.add]
 
 
@@ -86,6 +90,8 @@ class AgentState(BaseAgentState):
 # Each sub-agent is a full-fledged `create_agent(...)` with its own
 # system prompt. They don't share memory or tools with the supervisor —
 # the supervisor only sees their return value.
+# Page: ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"); redirected to
+# _shared.MODEL like every graph here (README §9 item 5).
 _sub_model = ChatOpenAI(model=MODEL)
 
 _research_agent = create_agent(

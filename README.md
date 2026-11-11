@@ -170,7 +170,7 @@ cp .env.example frontend/.env.local
 | `AGENT_HOST` / `AGENT_PORT` | `backend/.env` | Where the FastAPI server listens. Defaults `0.0.0.0:8123`. |
 | `LOG_LEVEL` | `backend/.env` | Uvicorn/LangGraph log level. Defaults `INFO`. |
 | `OPENAI_MODEL` / `OPENAI_REASONING_MODEL` | `backend/.env` | Optional overrides. Default `gpt-4.1-mini` / `o4-mini`. |
-| `OPENAI_API_KEY` | `frontend/.env.local` | Optional. Whisper transcription for the `/voice` mic only. |
+| `OPENAI_TRANSCRIPTION_API_KEY` | `frontend/.env.local` | Optional. Whisper transcription for the `/voice` mic only. Without it the mic button is hidden. |
 | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR` | `frontend/.env.local` | Optional. Set to `off` to disable the Inspector app-wide. |
 
 **Default ports:** frontend **3000**, agent server **8123**.
@@ -260,7 +260,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/custom-look-and-feel/css`** — v2 shadcn tokens plus `.copilotKit*` class hooks, scoped to one wrapper. **Pass:** warm parchment surface, square corners, your messages in mono behind a copper `→`.
 
-**`/custom-look-and-feel/slots`** — All three override levels. **Pass:** a gradient welcome panel before sending; afterwards each reply sits in a tinted card with a "slot" badge and the disclaimer is custom.
+**`/custom-look-and-feel/slots`** — All three override levels. **Pass:** a gradient welcome panel before sending; afterwards each reply sits in a tinted card with a "slot" badge and the disclaimer is custom. The **Tool calls slot** panel (page's `toolCallsView` example) is a second chat: ask `What's the weather in Lisbon?` — **Pass:** the weather card renders inside a dashed border. **Fail:** the card has no border (slot ignored) or no card at all (tool not registered).
 
 **`/custom-look-and-feel/headless-ui`** — A chat with zero CopilotKit components. **Pass:** tokens stream into hand-written bubbles.
 
@@ -270,15 +270,15 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/multimodal-attachments`** — `attachments={{ enabled: true }}`. ⚠️ **Currently fails by upstream bug** — any image attachment 400s before reaching the model. The client-side rejection half still works: attach a `.zip` and an amber banner names it `invalid-type`. See §9 item 2.
 
-**`/voice`** — A second runtime carrying a `TranscriptionService`. **Try:** the 🎙 sample-audio button. **Pass:** text lands in the composer and the agent answers in spoken-length prose. The mic itself needs `OPENAI_API_KEY` on the frontend. **Fail:** no mic button at all — the runtime has no transcription service, or `basePath` is wrong.
+**`/voice`** — A second runtime carrying a `TranscriptionService`. **Try:** the 🎙 sample-audio button. **Pass:** text lands in the composer and the agent answers in spoken-length prose. The mic itself needs `OPENAI_TRANSCRIPTION_API_KEY` in `frontend/.env.local`; without it the mic button is hidden (expected). **Fail:** no mic button even with the key set — the runtime has no transcription service, or `basePath` is wrong.
 
 ### Generative UI
 
 **`/generative-ui/reasoning`** — The whole reasoning card replaced. **Pass:** an always-open banner tagged "Reasoning" rather than a collapsible card.
 
-**`/generative-ui/tool-based`** — `useComponent` registering a bar chart as a tool. **Try:** `Chart the number of days in each month of 2026`. **Pass:** a chart renders inline and the reply does not repeat the numbers.
+**`/generative-ui/tool-based`** — `useComponent` registering a bar chart as a tool. **Try:** `Chart the number of days in each month of 2026`. **Pass:** a chart renders inline and the reply does not repeat the numbers. The route page's **Rendering in a headless chat** panel is a hand-built list using `CopilotChatToolCallsView`: ask the same question there — **Pass:** the chart appears under the reply. **Fail:** the reply mentions a chart but nothing renders (tool calls not painted).
 
-**`/generative-ui/tool-rendering`** — A named renderer for `get_weather` plus the wildcard. **Try:** `What's the weather in Tokyo?` **Pass:** a card shows "Calling weather API…" then fills in with 68°, Sunny. **Note:** asking for flights or stock prices produces prose — see §9.
+**`/generative-ui/tool-rendering`** — A named renderer for `get_weather` plus the wildcard. **Try:** `What's the weather in Tokyo?` **Pass:** a card shows "Calling weather API…" then fills in with 68°, Sunny. **Try:** `Find flights to JFK and roll a d20.` **Pass:** two default status cards (`search_flights`, `roll_d20`) from the wildcard. **Fail:** prose only — the backend is missing the Code-tab tools.
 
 **`/generative-ui/state-rendering`** — A document assembling live beside a docked chat. **Try:** `Write a short blog post about…` **Pass:** the main pane fills progressively with a LIVE badge; the text never appears as a chat message.
 
@@ -288,7 +288,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 ### App Control
 
-**`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
+**`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates. The **Registering a list of tools** panel is text only (needs CopilotKit ≥ 1.74).
 
 **`/human-in-the-loop`** — `useHumanInTheLoop` suspending the run. **Try:** `Book an intro call with the sales team`. **Pass:** a picker renders and **nothing further streams** until you choose; the card then collapses to a green "Booked" badge.
 
@@ -316,15 +316,15 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 ### Multi-Agent
 
-**`/multi-agent/subagents`** — Supervisor → research → write → critique. **Try:** `Write a short paragraph explaining why agent-native UIs beat chatbots`. **Pass:** three log cards in order with role chips lighting up. **Fail:** the log stays empty, or the critic card stacks repeatedly.
+**`/multi-agent/subagents`** — Supervisor → research → write → critique. **Try:** `Write a short paragraph explaining why agent-native UIs beat chatbots`. **Pass:** three log cards in order with role chips lighting up. **Fail:** the log stays empty, or the critic card stacks repeatedly. On a continued thread the earlier cards repeat — that is the page's own reducer contradicting its new merge-by-id callout (§9 item 30), not a harness bug.
 
 ### LangGraph Runtime
 
 **`/agent-config`** — A typed config object published as runtime context. **Try:** ask the same question at `expertise=beginner` then `expert`. **Pass:** visibly different answers.
 
-**`/agent-app-context`** — Live app state shared with `useAgentContext`. **Try:** `Draft a short email to the person I have selected`. **Pass:** it addresses whoever is selected, and follows when you change it.
+**`/agent-app-context`** — Live app state shared with `useAgentContext`. **Try:** `Draft a short email to the person I have selected`. **Pass:** it addresses whoever is selected, and follows when you change it. The page now warns that non-string context values reach the agent as JSON text; the custom-graph lookup (`find_context_entry`) parses them with `json.loads`, as the page's updated snippet does.
 
-**`/configurable`** — Per-run execution parameters. **Pass:** both forwarded keys show "arrived" — which disproves the page's filtering claim. See §9.
+**`/configurable`** — Server-owned graph execution settings: FastAPI builds a request-local agent with the page's `build_agent(tenant_id)`; the browser sends no config. **Try:** `What tenant and recursion limit did the server give you?` **Pass:** the panel and the reply show `tenant-demo` (or `CONFIGURABLE_TENANT_ID`) and `50`. **Fail:** `KeyError: 'tenant_id'` — the request missed the per-request endpoint (or you are on `langgraph dev`). See §9 item 3.
 
 **`/subgraphs`** — A nested graph streaming its state live. **Pass:** the stage chip advances and findings appear in two waves *before* the summary. **Fail:** everything lands at once at the end.
 
@@ -374,20 +374,20 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/prebuilt-components/chat` | `/prebuilt-components/chat` | ✅ Working | |
 | `/langgraph-python/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | |
 | `/langgraph-python/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | |
-| `/langgraph-python/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | |
+| `/langgraph-python/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | The page's new controlled `open`/`onOpenChange` pattern is reference-only (needs CopilotKit ≥ 1.71, §9 item 31); the context pattern still works. |
 | `/langgraph-python/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | v2 tokens; the page's `--copilot-kit-*` set is v1 and inert here. |
-| `/langgraph-python/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | |
+| `/langgraph-python/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | New `toolCallsView` panel added 2026-11 (not yet checked in a browser); `toolCallDisplay` needs CopilotKit ≥ 1.80 (§9 item 31). |
 | `/langgraph-python/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Minimal example; the "complete" one is on Programmatic Control. |
 | `/langgraph-python/custom-look-and-feel/reasoning-messages` | `/custom-look-and-feel/reasoning-messages` | ⚠️ Partial | Needs a reasoning model, which no doc page enables. This repo does. |
-| `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. |
-| `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_API_KEY` on the frontend; sample-audio button works without. |
+| `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. `maxConcurrentUploads: 3` (new on the page) is wired but ignored on 1.70 (§9 item 31). |
+| `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_TRANSCRIPTION_API_KEY` on the frontend (renamed by the 2026-11 page, which also dropped the guard class for `createTranscriptionService()`); sample-audio button works without. Not yet re-checked in a browser. |
 | `/langgraph-python/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | Same reasoning-model dependency. |
-| `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | |
-| `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | `get_weather` only — the page defines no other backend tool, but its prompt advertises three more. |
+| `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | New headless `CopilotChatToolCallsView` panel (2026-11) not yet checked in a browser; its surrounding chat is harness glue. |
+| `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | Backend is the page's Code-tab agent (4 tools + failure middleware). Frontend has the `get_weather` card only; the other three use the default wildcard (§9 item 13). Not yet checked in a browser. |
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
-| `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
+| `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | The page's new `useFrontendTools` section is reference-only: the hook needs CopilotKit ≥ 1.74 (§9 item 31). |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
 | `/langgraph-python/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Renders nothing, faithfully — the published snippet ends after the handlers and never shows the JSX. Also destructures three undefined helpers. See §9 item 19. |
@@ -399,10 +399,10 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | |
 | `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. |
 | `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. |
-| `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. |
+| `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. Its `operator.add` reducer contradicts the page's new merge-by-id callout, so the log doubles on a continued thread (§9 item 30). |
 | `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | `build_system_prompt` wording is this repo's. |
 | `/langgraph-python/agent-app-context` | `/agent-app-context` | ✅ Working | |
-| `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Works, and disproves the page's filtering claim. Uses the page's deprecated `config_schema=` — doc-verbatim. |
+| `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Page rewritten 2026-11 (trust boundary). `build_agent` + node verbatim; reply node, per-request endpoint and tenant stand-in are harness glue (§9 item 3). FastAPI transport only. Not yet checked in a browser. |
 | `/langgraph-python/subgraphs` | `/subgraphs` | ⚠️ Partial | The page prints no agent code at all; the graph is this repo's. |
 | `/langgraph-python/guardrails` | `/guardrails` | ✅ Working | All four boundaries screen, verified against the compiled graph via `ainvoke()`. Two of the page's five snippets do not work as published — `OutputFirewall` scrubs nothing, `ToolFirewall` kills every tool call — so the route displays them verbatim and installs two subclasses that add the missing async methods. See §9 items 27–28. |
 | — (tooling, not a doc page) | `/doc-sync` | ✅ Working | Fetches all 36 tracked doc pages and diffs them against `doc-snapshot/`. Verified: 36-page baseline in ~4s; code/heading/prose edits classify High/Medium/Low. |
@@ -508,17 +508,16 @@ the composer sends carries metadata and fails. Left unpatched so the harness rep
 real state of the integration; a `wrap_model_call` middleware stripping the key is the
 obvious workaround if you need attachments today.
 
-**3. The `configurable` schema does not filter anything**
+**3. Configurable publishes only part of the server-side wiring**
 
-[The Configurable page](https://docs.copilotkit.ai/langgraph-python/configurable) claims "any item passed to 'configurables' which is not included in the schema, will be filtered out". Verified false on LangGraph 1.2.10: forwarding a key absent from `ConfigSchema` leaves it fully readable in `config['configurable']`. The `/configurable` route forwards one declared and one undeclared key side by side to demonstrate it. Do not rely on the schema to strip anything security-relevant.
+The [Configurable page](https://docs.copilotkit.ai/langgraph-python/configurable) was rewritten in November 2026: browser-supplied `forwardedProps.config` is now untrusted, and graph execution settings belong to the backend. Its Python tab prints `build_agent(tenant_id)` (a request-local `LangGraphAGUIAgent` with `config={"configurable": {"tenant_id": …}, "recursion_limit": 50}`) and a node that reads `config["configurable"]["tenant_id"]` and returns state unchanged. Both are verbatim in `backend/src/graphs/configurable.py`. The page leaves `graph` and `AgentState` undefined, never shows the endpoint that calls `build_agent` per request (it points at the Authentication guide), and its node produces no reply. The harness fills those in, labelled as glue: a `reply_node` that answers with the values, a hand-written `POST /configurable` in `backend/main.py` shaped like the [Authentication page's](https://docs.copilotkit.ai/langgraph-python/auth) self-hosted endpoint, and a `CONFIGURABLE_TENANT_ID` env var (default `tenant-demo`) standing in for "the tenant resolved after authentication". The old claims this section used to dispute (schema filtering, `config_schema=`) are gone from the page. Under `langgraph dev` the route raises `KeyError: 'tenant_id'`, because only the FastAPI transport builds the request-local agent.
 
-**4. Two deprecated LangGraph constructor keywords**
+**4. A deprecated LangGraph constructor keyword**
 
-`StateGraph(OverallState, input=…, output=…)` on [Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) and `StateGraph(AgentState, config_schema=…)` on Configurable both warn:
+`StateGraph(OverallState, input=…, output=…)` on [Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) warns (Configurable used to add `config_schema=`; its November rewrite dropped it):
 
 ```
 LangGraphDeprecatedSinceV05: `input` is deprecated … Please use `input_schema` instead.
-LangGraphDeprecatedSinceV10: `config_schema` is deprecated … Please use `context_schema` instead.
 ```
 
 Kept as published. Note that Python suppresses `DeprecationWarning` outside `__main__` by default, so these are **silent** on a normal boot — run the backend with `python -W default::DeprecationWarning main.py` to see them. They work today and will break on LangGraph 2.
@@ -551,6 +550,14 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
+**31. Basics pages now document APIs newer than this repo's CopilotKit (1.70.0)**
+
+The 2026-11 doc sync added three APIs that `@copilotkit/react-core` 1.70.0 (the version in `package-lock.json`) does not have. Checked against the published packages: `maxConcurrentUploads` first appears in 1.71.0, `useFrontendTools` in 1.74.0, and `toolCallDisplay` (tool-call grouping, linked from [Slots](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/slots)) after 1.79.0. Bumping CopilotKit is an infra change of its own (PR_GUIDELINES §1), so this sync does not do it:
+- [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) "Registering a list of tools": `useFrontendTools` is not exported, so importing it would fail the bundle. The snippet is shown as reference-only text on `/frontend-tools`.
+- [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) "Upload concurrency": the `maxConcurrentUploads: 3` example is wired verbatim with `@ts-expect-error` (unknown property on 1.70). It is ignored at runtime, so files still upload one at a time.
+- [Open, close, and feedback](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/chat-controls) now leads with controlled `open` / `onOpenChange` on `CopilotSidebar`/`CopilotPopup`, which first ship in 1.71.0. Shown as reference-only text on `/prebuilt-components/chat-controls`; the demo keeps the `useCopilotChatConfiguration` pattern the page still documents.
+- `toolCallDisplay` is only linked from Slots, not shown, so nothing is wired.
+
 ### Things the docs reference but never define
 
 **12. The Sub-Agents supervisor**
@@ -559,9 +566,9 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 
 It also imports `HeaderForwardingMiddleware` from `src.agents._header_forwarding_middleware`, a module no page shows. Its own comment explains it propagates `x-aimock-context` headers so CopilotKit's recorded-fixture test harness keeps matching — CI infrastructure, not part of the pattern. Dropped rather than reconstructed.
 
-**13. Three of Tool Rendering's four backend tools**
+**13. ~~Three of Tool Rendering's four backend tools~~ — resolved 2026-11**
 
-The page wires renderers for `get_weather`, `search_flights`, `get_stock_price` and `roll_d20`, and defines only `get_weather`. The other three are not invented here. Its `SYSTEM_PROMPT` is reproduced verbatim and still advertises all four, so asking for a flight or a stock price produces prose rather than a tool call — the faithful consequence.
+The page's prose still prints only the head of its agent (imports, prompt, `get_weather`), but its demo **Code tab** carries the whole `tool_rendering_agent.py`: `search_flights`, `get_stock_price`, `roll_d20` and a `before_model` middleware, `stop_after_tool_failure`. `backend/src/graphs/tool_rendering.py` is now that file (model and checkpointer redirected as everywhere else), so the prompt no longer advertises tools that don't exist. Still open: the Code tab's frontend has per-tool cards for flights, stocks and d20 plus a retry view, and imports `./stock-card`, `./d20-card` and `./suggestions`, which are not among its tabs; none of that is ported, so those three tools render through the default wildcard card. Grouping (`toolCallDisplay`) needs CopilotKit > 1.79 (§9 item 31 on the Basics sync).
 
 **14. Both A2UI schema files**
 
@@ -716,12 +723,12 @@ Unlike almost every other Python page in this set, this one names a model that e
 | Shared state resets on restart | `MemorySaver` | In-memory by design. Swap in a real checkpointer to persist. |
 | Reasoning card never appears | Model did not deliberate, or is not a reasoning model | Only `o4-mini` here emits reasoning tokens, and only for prompts that need working out. |
 | No mic button on `/voice` | Runtime has no `transcriptionService`, or `basePath` ≠ route directory | Both are required for `/info` to advertise `audioFileTranscriptionEnabled`. |
-| Mic returns an error | No `OPENAI_API_KEY` on the **frontend** | Transcription is a separate Whisper call. Use the sample-audio button instead. |
+| No mic button, `/transcribe` answers 503 `service_not_configured` | No `OPENAI_TRANSCRIPTION_API_KEY` on the **frontend**, so `createTranscriptionService()` returned `undefined` | Transcription is a separate Whisper call. Set the key in `frontend/.env.local`, or use the sample-audio button. Posting to `/transcribe` yourself: multipart field must be `audio`; JSON needs `mimeType`. |
 | A2UI surface renders as raw JSON | `catalogId` mismatch, or middleware not attached | The backend's `createSurface.catalogId` must equal the frontend `createCatalog` id. |
 | **Browser tab or dev server hangs on a route** | **Two inspectors mounted on one page** | Only one provider per page may enable it. See §9 item 25. |
 | `npm install` ERESOLVE on zod | `zod` bumped to 4 | See §9 item 23. Stay on `^3.25.76`. |
 | Attachment sends → 400 `Unexpected keys in a message content image dict` | `ag-ui-langgraph` 0.0.42 adds `metadata` to media content blocks | Upstream bug, deliberately unpatched. See §9 item 2. |
-| Want to see the deprecation warnings | Python hides `DeprecationWarning` by default | `python -W default::DeprecationWarning main.py`. Expected — see §9 item 3. |
+| Want to see the deprecation warnings | Python hides `DeprecationWarning` by default | `python -W default::DeprecationWarning main.py`. Expected — see §9 item 4. |
 
 ---
 
