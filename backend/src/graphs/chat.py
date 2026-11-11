@@ -154,6 +154,9 @@ gen_ui_tool_based_graph = build_chat_graph(
     )
 )
 
+# No longer registered: since the 2026-11 sync `hitl-in-chat` is served by the
+# HITL Overview page's own Code-tab agent (src/agents/hitl_in_chat_agent.py).
+# Kept so the earlier prompt stays visible for comparison.
 hitl_in_chat_graph = build_chat_graph(
     system_prompt=(
         "You are a scheduling assistant. When the user asks to book, schedule "
@@ -163,6 +166,11 @@ hitl_in_chat_graph = build_chat_graph(
 )
 
 programmatic_control_graph = build_chat_graph()
+
+# `/human-in-the-loop/governed-actions` publishes no backend. It runs on the
+# HITL section's own `frontend_tools.py` snippet (tools=[], default prompt),
+# which forwards the page's `approve_governed_action` frontend tool.
+governed_actions_graph = build_chat_graph()
 
 
 # --- Subgraphs -----------------------------------------------------------

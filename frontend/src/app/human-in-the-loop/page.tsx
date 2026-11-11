@@ -87,9 +87,12 @@ export default function Page() {
           Again <code>tools=[]</code>: <code>book_call</code> is defined entirely
           on the frontend and forwarded by <code>CopilotKitMiddleware</code>. The
           only backend-side addition is a prompt telling the model to reach for
-          it when asked to schedule something.
+          it when asked to schedule something. Since the 2026-11 sync the{" "}
+          <code>hitl-in-chat</code> graph is the HITL Overview page&apos;s Code
+          tab agent (shared with <code>/human-in-the-loop/index</code>), instead
+          of this repo&apos;s <code>build_chat_graph</code> instance.
         </p>
-        <SourceCode file="backend/src/graphs/chat.py" region="factory" />
+        <SourceCode file="backend/src/agents/hitl_in_chat_agent.py" />
       </Panel>
 
       

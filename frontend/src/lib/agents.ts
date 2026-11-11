@@ -48,6 +48,8 @@ export const AGENT_IDS = [
   "frontend-tools",
   "webmcp",
   "hitl-in-chat",
+  "gen-ui-interrupt",
+  "governed-actions",
   "interrupt-flow",
   "programmatic-control",
   "interrupt-headless",
