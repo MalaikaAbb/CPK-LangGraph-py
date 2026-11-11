@@ -13,6 +13,7 @@
     "chat-controls": "./src/graphs/chat.py:chat_controls_graph",
     "chat-customization-css": "./src/graphs/chat.py:chat_customization_css_graph",
     "chat-slots": "./src/graphs/chat.py:chat_slots_graph",
+    "chat-markdown": "./src/graphs/chat.py:chat_markdown_graph",
     "headless-simple": "./src/graphs/chat.py:headless_simple_graph",
     "headless-complete": "./src/graphs/chat.py:headless_complete_graph",
     "reasoning-default": "./src/graphs/chat.py:reasoning_default_graph",
