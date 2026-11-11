@@ -21,13 +21,19 @@ import {
  * Server-side only, and deliberately not `NEXT_PUBLIC_`. A project key prefixed
  * for the browser would ship in the JS bundle.
  */
-const INTELLIGENCE_API_KEY = process.env.INTELLIGENCE_API_KEY;
+//
+// The Quickstart renamed the variable from INTELLIGENCE_API_KEY to
+// CPK_INTELLIGENCE_API_KEY in its 2026-11 revision (`npx copilotkit@latest
+// project select` writes that name). The old name is still read as a fallback
+// so an existing frontend/.env.local keeps working.
+const CPK_INTELLIGENCE_API_KEY =
+  process.env.CPK_INTELLIGENCE_API_KEY ?? process.env.INTELLIGENCE_API_KEY;
 
 /**
  * A SECOND, SEPARATE credential — and one of the two things that unlock the
  * Threads Drawer's UI.
  *
- * `INTELLIGENCE_API_KEY` authorizes the runtime against the platform: it is
+ * `CPK_INTELLIGENCE_API_KEY` authorizes the runtime against the platform: it is
  * what makes `/info` report intelligence mode and what makes the thread REST
  * endpoints return real rows. It does NOT advertise a license.
  *
@@ -44,8 +50,8 @@ const INTELLIGENCE_API_KEY = process.env.INTELLIGENCE_API_KEY;
  */
 const LICENSE_TOKEN = process.env.COPILOTKIT_LICENSE_TOKEN;
 
-/** True when `INTELLIGENCE_API_KEY` is set. Read by the Quickstart page. */
-export const INTELLIGENCE_ENABLED = Boolean(INTELLIGENCE_API_KEY);
+/** True when `CPK_INTELLIGENCE_API_KEY` is set. Read by the Quickstart page. */
+export const INTELLIGENCE_ENABLED = Boolean(CPK_INTELLIGENCE_API_KEY);
 
 /** True when either license credential is configured. */
 export const LICENSE_CONFIGURED = Boolean(
@@ -62,14 +68,14 @@ type SharedRuntimeOptions = {
 /**
  * Build a runtime in whichever mode the environment supports.
  *
- * Without `INTELLIGENCE_API_KEY` the runtime falls back to SSE with an
+ * Without `CPK_INTELLIGENCE_API_KEY` the runtime falls back to SSE with an
  * in-memory runner. Chat still works on every route in this harness; the three
  * Rich Threads routes degrade, and the key is never read. That degradation is
  * deliberate — the harness has to stay runnable by someone who only has an
  * OpenAI key and a LangGraph server.
  */
 export function buildRuntime(options: SharedRuntimeOptions): CopilotRuntime {
-  if (!INTELLIGENCE_API_KEY) {
+  if (!CPK_INTELLIGENCE_API_KEY) {
     return new CopilotRuntime({
       ...options,
       runner: new InMemoryAgentRunner(),
@@ -82,7 +88,7 @@ export function buildRuntime(options: SharedRuntimeOptions): CopilotRuntime {
     ...(LICENSE_TOKEN ? { licenseToken: LICENSE_TOKEN } : {}),
     intelligence: new CopilotKitIntelligence({
       // apiUrl and wsUrl default to the managed platform — leave them unset.
-      apiKey: INTELLIGENCE_API_KEY,
+      apiKey: CPK_INTELLIGENCE_API_KEY,
     }),
     // Threads are per-user. Without this, every visitor shares one history.
     // `Providers` sends these headers so the harness has a stable identity to
