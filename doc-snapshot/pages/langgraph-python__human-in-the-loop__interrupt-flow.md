@@ -157,7 +157,7 @@ We're going to have the agent ask us to name it, so we'll need a state property 
                     content=f"You are a helpful assistant named {state.get('agent_name')}..."
                 )
 
-                response = ChatOpenAI(model="gpt-5.4").invoke(
+                response = ChatOpenAI(model="gpt-6-luna", reasoning_effort="none").invoke(
                     [system_message, *state["messages"]],
                     config
                 )
@@ -190,7 +190,7 @@ We're going to have the agent ask us to name it, so we'll need a state property 
                     content: `You are a helpful assistant named ${agentName}...`,
                 });
 
-                const response = await new ChatOpenAI({ model: "gpt-5.4" }).invoke(
+                const response = await new ChatOpenAI({ modelKwargs: { reasoning_effort: "none" }, model: "gpt-6-luna" }).invoke(
                     [systemMessage, ...state.messages],
                     config
                 );
@@ -287,7 +287,7 @@ For this reason, the hook can take an `enabled` argument which will apply it con
                     content=f"You are a helpful assistant..."
                   )
 
-                  response = ChatOpenAI(model="gpt-5.4").invoke(
+                  response = ChatOpenAI(model="gpt-6-luna", reasoning_effort="none").invoke(
                     [system_message, *state["messages"]],
                     config
                   )
@@ -318,7 +318,7 @@ For this reason, the hook can take an `enabled` argument which will apply it con
                     content: `You are a helpful assistant...`,
                   });
 
-                  const response = await new ChatOpenAI({ model: "gpt-5.4" }).invoke(
+                  const response = await new ChatOpenAI({ modelKwargs: { reasoning_effort: "none" }, model: "gpt-6-luna" }).invoke(
                     [systemMessage, ...state.messages],
                     config
                   );

@@ -1,6 +1,7 @@
 # Readables
 
 > Share app specific context with your agent.
+
 One of the most common use cases for CopilotKit is to register app state and context using `useAgentContext`.
 This way, you can notify CopilotKit of what is going on in your app in real time.
 Some examples might be: the current user, the current page, etc.
@@ -11,6 +12,23 @@ This context can then be shared with your LangGraph agent.
 <Callout>
     Check out the [Frontend Data documentation](/langgraph-python/agent-app-context) to understand what this is and how to use it.
 </Callout>
+
+<Callout type="warn" title="Context values arrive as JSON strings">
+  The AG-UI protocol defines a context value as a string. Therefore
+  `useAgentContext` calls `JSON.stringify` on any `value` that is not already a
+  string, and your agent receives the JSON text instead of the object or the
+  array.
+
+  Parse the value before you read a field from it. Use `json.loads(item["value"])`
+  in Python, or `JSON.parse(item.value)` in TypeScript. If you skip the parse
+  step, an index such as `colleagues[0]` returns a single character, and a shape
+  check such as `isinstance(value, list)` can never pass.
+
+  Do not stringify the value again, because that produces double encoding. A
+  `value` that is already a string is sent unchanged, so no parse step is needed
+  for it.
+</Callout>
+
 
 <TailoredContent
     className="step"
@@ -96,9 +114,15 @@ This context can then be shared with your LangGraph agent.
                 The state of a LangGraph agent is the "hub" for applicative information used by the agent.
                 Naturally, the context from CopilotKit will be injected there.
 
+                In both Python and TypeScript, the CopilotKit state key is lowercase
+                `copilotkit`. Read `state.copilotkit.context` in TypeScript; the
+                SDK's state schema does not define a `copilotKit` field.
+
                 <Tabs groupId="language_langgraph_agent" items={['Python', 'TypeScript']} default="Python" persist>
                     <Tab value="Python">
                         ```python title="agent.py"
+                        import json # [!code highlight]
+
                         from langchain_core.runnables import RunnableConfig
                         from langchain_core.messages import SystemMessage
                         from langchain_openai import ChatOpenAI
@@ -114,15 +138,23 @@ This context can then be shared with your LangGraph agent.
                                 (item for item in state["copilotkit"]["context"] if item.get("description") == "The current user's colleagues"),
                                 None
                             )
-                            colleagues = colleagues_context_item.get("value") if colleagues_context_item else []
+
+                            # [!code highlight:7]
+                            # The value is a JSON string, so parse it to read the fields
+                            colleagues = []
+                            if colleagues_context_item:
+                                colleagues = json.loads(colleagues_context_item["value"])
+
+                            # Now each entry is a dict, so colleague["name"] works
+                            colleague_list = ", ".join(f"{c['name']} ({c['role']})" for c in colleagues)
 
                             # Provide the list of colleagues to the LLM
                             system_message = SystemMessage(
                                 content=f"""You are a helpful assistant that can help emailing colleagues.
-                                The user's colleagues are: {colleagues}"""
+                                The user's colleagues are: {colleague_list}"""
                             )
 
-                            response = ChatOpenAI(model="gpt-5.4").invoke(
+                            response = ChatOpenAI(model="gpt-6-luna", reasoning_effort="none").invoke(
                                 [system_message, *state["messages"]],
                                 config
                             )
@@ -147,18 +179,25 @@ This context can then be shared with your LangGraph agent.
 
                         async function chat_node(state: AgentState, config: RunnableConfig) {
                           // Extract the colleagues from CopilotKit context
-                          const copilotKitContext = state.copilotKit.context
-                          const colleaguesContextItem = copilotKitContext.find(contextItem => contextItem.description === 'The current user\'s colleagues"')
+                          const copilotKitContext = state.copilotkit.context
+                          const colleaguesContextItem = copilotKitContext.find(contextItem => contextItem.description === "The current user's colleagues")
+
+                          // [!code highlight:5]
+                          // The value is a JSON string, so parse it to read the fields
+                          const colleagues = colleaguesContextItem ? JSON.parse(colleaguesContextItem.value) : [];
+
+                          // Now each entry is an object, so colleague.name works
+                          const colleagueList = colleagues.map((c) => `${c.name} (${c.role})`).join(", ");
 
                           // Provide the list of colleagues to the LLM
                           const systemMessage = new SystemMessage({
                             content: `
                               You are a helpful assistant that can help emailing colleagues.
-                              The user's colleagues are: ${colleaguesContextItem.value}
+                              The user's colleagues are: ${colleagueList}
                             `,
                           });
 
-                          const response = await new ChatOpenAI({ model: "gpt-5.4" }).invoke(
+                          const response = await new ChatOpenAI({ modelKwargs: { reasoning_effort: "none" }, model: "gpt-6-luna" }).invoke(
                             [systemMessage, ...state.messages],
                             config
                           );
@@ -226,11 +265,12 @@ This context can then be shared with your LangGraph agent.
                 <Tabs groupId="language_langgraph_agent" items={['Python', 'TypeScript']} default="Python" persist>
                     <Tab value="Python">
                         ```python title="agent.py"
+                        from langchain_openai import ChatOpenAI
                         from langchain.agents import create_agent
                         from copilotkit import CopilotKitMiddleware, CopilotKitState # [!code highlight]
 
                         graph = create_agent( # create_agent supersedes the deprecated create_react_agent, which accepts neither middleware= nor system_prompt=
-                            model="openai:gpt-5.4",
+                            model=ChatOpenAI(model="gpt-6-luna", reasoning_effort="none"),
                             tools=[],  # Backend tools go here
                             middleware=[CopilotKitMiddleware()], # [!code highlight]
                             system_prompt="You are a helpful assistant.",
@@ -244,7 +284,7 @@ This context can then be shared with your LangGraph agent.
                         import { copilotkitMiddleware } from "@copilotkit/sdk-js/langgraph"; // [!code highlight]
 
                         export const agenticChatGraph = createAgent({ // createAgent supersedes the deprecated createReactAgent, which accepts neither middleware nor systemPrompt
-                          model: "openai:gpt-5.4",
+                          model: "openai:gpt-6-luna",
                           tools: [],  // Backend tools go here
                           middleware: [copilotkitMiddleware], // [!code highlight]
                           systemPrompt: "You are a helpful assistant.",
@@ -252,6 +292,59 @@ This context can then be shared with your LangGraph agent.
                         ```
                     </Tab>
                 </Tabs>
+            </Step>
+
+            <Step>
+                ### Serve the agent with FastAPI (Python)
+
+                If you deploy with LangSmith, skip this step. The LangGraph API server supplies persistence, so do not pass a `checkpointer`.
+
+                If you run the agent in your own FastAPI app, nothing supplies persistence. `ag-ui-langgraph` reads thread state with `graph.aget_state(...)`, which raises `ValueError: No checkpointer set` without a checkpointer. Pass one to `create_agent`.
+
+                `create_agent` comes from `langchain` 1.x. Install it explicitly, together with the FastAPI packages:
+
+                ```bash
+                uv add "langchain>=1" langchain-openai ag-ui-langgraph fastapi uvicorn copilotkit python-dotenv
+                ```
+
+                ```python title="main.py" doctest="server"
+                from langchain_openai import ChatOpenAI
+                from dotenv import load_dotenv
+                from ag_ui_langgraph import add_langgraph_fastapi_endpoint
+                from copilotkit import CopilotKitMiddleware, CopilotKitState, LangGraphAGUIAgent
+                from fastapi import FastAPI
+                from langchain.agents import create_agent
+                from langgraph.checkpoint.memory import MemorySaver
+                import uvicorn
+
+                load_dotenv()
+
+                graph = create_agent(
+                    model=ChatOpenAI(model="gpt-6-luna", reasoning_effort="none"),
+                    tools=[],  # Backend tools go here
+                    middleware=[CopilotKitMiddleware()],
+                    system_prompt="You are a helpful assistant.",
+                    state_schema=CopilotKitState,
+                    checkpointer=MemorySaver(), # [!code highlight]
+                )
+
+                app = FastAPI()
+
+                add_langgraph_fastapi_endpoint(
+                    app=app,
+                    agent=LangGraphAGUIAgent(
+                        name="sample_agent",
+                        description="An agent that reads context from the app.",
+                        graph=graph,
+                    ),
+                    path="/",
+                )
+
+                if __name__ == "__main__":
+                    uvicorn.run("main:app", host="0.0.0.0", port=8123, reload=True)
+                ```
+
+                `MemorySaver` keeps state in process memory only. For production, use a durable saver, for example Postgres. The [quickstart](/langgraph-python/quickstart) shows the runtime route and provider that connect to this server on port `8123`.
             </Step>
 
             <Step>

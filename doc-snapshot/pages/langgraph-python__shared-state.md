@@ -60,7 +60,7 @@ updates in the UI are reflected in the agent's execution.
     
 ~~~~python title="shared_state_read_write.py"
 graph = create_agent(
-    model=ChatOpenAI(model="gpt-5.4"),
+    model=ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"),
     tools=[set_notes],
     middleware=[CopilotKitMiddleware(), PreferencesInjectorMiddleware()],
     state_schema=AgentState,
@@ -261,7 +261,7 @@ def write_document(document: str, runtime: ToolRuntime) -> Command:
 
 
 graph = create_agent(
-    model=ChatOpenAI(model="gpt-5.4"),
+    model=ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"),
     tools=[write_document],
     middleware=[
         CopilotKitMiddleware(),
