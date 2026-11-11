@@ -2,6 +2,8 @@ import { RouteHeader } from "@/components/route-header";
 import { SourceCode } from "@/components/source-code";
 import { Callout, Panel, TryIt } from "@/components/ui";
 
+import { HeadlessToolCalls } from "./headless-tool-calls";
+
 export default function Page() {
   return (
     <>
@@ -70,6 +72,31 @@ export default function Page() {
           <code>bar_chart</code> often does not.
         </p>
       </Callout>
+
+      <Callout tone="warn" title="Leave out parameters and the props arrive empty">
+        <p>
+          The page now spells out that the Zod schema <em>is</em> the tool&apos;s
+          parameter definition. <code>parameters</code> is optional, but
+          without it the tool is advertised with an empty object schema, the
+          model calls it with no arguments, and the component renders with no
+          props. <code>render_bar_chart</code> passes a schema, so it is not
+          affected.
+        </p>
+      </Callout>
+
+      <Panel title="Rendering in a headless chat">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          New on the page: without <code>CopilotChat</code>, nothing paints a
+          registered component, so a headless list has to render each assistant
+          message&apos;s tool calls with <code>CopilotChatToolCallsView</code>.
+          Ask for a chart below; the bar chart should appear under the reply.
+          The chat around that one line is the harness&apos;s.
+        </p>
+        <HeadlessToolCalls />
+        <div className="mt-4">
+          <SourceCode file="frontend/src/app/generative-ui/tool-based/headless-tool-calls.tsx" />
+        </div>
+      </Panel>
     </>
   );
 }

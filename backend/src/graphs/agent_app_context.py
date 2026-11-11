@@ -6,14 +6,17 @@ The page splits into "Custom graph" and "Prebuilt agent" tabs. The prebuilt tab
 is a one-liner and is reproduced verbatim:
 
     graph = create_agent(
-        model="openai:gpt-5.4",
+        model=ChatOpenAI(model="gpt-6-luna", reasoning_effort="none"),
         tools=[],
         middleware=[CopilotKitMiddleware()],
         system_prompt="You are a helpful assistant.",
         state_schema=CopilotKitState
     )
 
-That is the whole backend. `useAgentContext` entries are threaded in by the
+That is the whole backend. (The model literal is redirected to `_shared.MODEL`
+like every other graph here; see README §9. The page's new "Serve the agent with
+FastAPI" step passes `checkpointer=MemorySaver()`, which `_shared.checkpointer()`
+already supplies under the FastAPI transport.) `useAgentContext` entries are threaded in by the
 middleware, so the agent reads them without any lookup code.
 
 The custom-graph tab, by contrast, shows the manual lookup — pulling an entry
@@ -24,6 +27,13 @@ out of `state["copilotkit"]["context"]` by matching its `description`:
          if item.get("description") == "The current user's colleagues"),
         None
     )
+    colleagues = []
+    if colleagues_context_item:
+        colleagues = json.loads(colleagues_context_item["value"])
+
+The page now warns that `useAgentContext` JSON-stringifies any non-string
+`value` (AG-UI context values are strings), so the lookup has to `json.loads`
+before it can read fields like `c["name"]`.
 
 The route renders both halves. This module exports the prebuilt graph (which is
 what actually serves the route) plus `find_context_entry`, the custom-graph
@@ -38,6 +48,7 @@ mechanism, two framings — both routes exist because both doc pages do.
 
 from __future__ import annotations
 
+import json
 from typing import Any, Optional
 
 #region lookup
@@ -58,7 +69,19 @@ def find_context_entry(state: dict, description: str) -> Optional[Any]:
         (e for e in entries if e.get("description") == description),
         None,
     )
-    return item.get("value") if item else None
+    if not item:
+        return None
+    # The value is a JSON string (AG-UI context values are strings, and
+    # useAgentContext stringifies objects/arrays), so parse it before reading
+    # fields — the page's `json.loads(colleagues_context_item["value"])`.
+    value = item["value"]
+    if not isinstance(value, str):
+        return value
+    try:
+        return json.loads(value)
+    except ValueError:
+        # A value that was already a plain string is sent unchanged.
+        return value
 #endregion
 
 

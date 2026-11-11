@@ -22,6 +22,7 @@ export const AGENT_IDS = [
   // Custom look and feel
   "chat-customization-css",
   "chat-slots",
+  "chat-markdown",
   "headless-simple",
   "headless-complete",
   "reasoning-default",
@@ -39,6 +40,9 @@ export const AGENT_IDS = [
   "mcp_apps",
   "open_gen_ui",
   "open_gen_ui_advanced",
+  "genui",
+  "byoc_json_render",
+  "byoc_hashbrown",
 
   // App control
   "frontend-tools",
@@ -78,7 +82,7 @@ export type AgentId = (typeof AGENT_IDS)[number];
  *
  *   `fastapi`   — `backend/main.py` mounts each graph with
  *                 `add_langgraph_fastapi_endpoint(..., path="/{id}")`, and the
- *                 runtime reaches it with `LangGraphHttpAgent({ url })`.
+ *                 runtime reaches it with `HttpAgent({ url })`.
  *   `langsmith` — `langgraph dev` serves every graph named in
  *                 `backend/langgraph.json`, and the runtime reaches it with
  *                 `LangGraphAgent({ deploymentUrl, graphId })`.

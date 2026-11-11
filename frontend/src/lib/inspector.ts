@@ -35,6 +35,17 @@ export const NESTED_PROVIDER_ROUTES = [
   "/generative-ui/mcp-apps/demo-chat",
   "/generative-ui/open-generative-ui/demo-chat",
   "/generative-ui/open-generative-ui/advanced",
+  "/generative-ui/components/demo-chat",
+  "/generative-ui/components/surfaces/demo-chat",
+  "/generative-ui/components/catalogs/demo-chat",
+  "/generative-ui/components/standard-catalog/demo-chat",
+  "/generative-ui/components/state-and-actions/demo-chat",
+  "/generative-ui/components/theming/demo-chat",
+  "/generative-ui/components/transports/demo-chat",
+  "/generative-ui/components/markdown-mode/demo-chat",
+  "/generative-ui/components/from-a2ui/demo-chat",
+  "/generative-ui/json-render/demo-chat",
+  "/generative-ui/hashbrown/demo-chat",
 ] as const;
 
 /**
