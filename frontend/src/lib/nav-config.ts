@@ -271,10 +271,10 @@ export const NAV: NavGroup[] = [
         title: "Tool Call Rendering",
         docPath: "/langgraph-python/generative-ui/tool-rendering",
         summary:
-          "A named renderer for the get_weather tool, plus the wildcard catch-all from useDefaultRenderTool.",
+          "A named renderer for the get_weather tool, plus the wildcard catch-all from useDefaultRenderTool that paints the other three backend tools.",
         status: "partial",
         statusNote:
-          "get_weather only. The page wires four renderers but defines just this one backend tool; the other three are not invented here.",
+          "Backend is now the page's Code-tab agent (all four tools + stop_after_tool_failure). Frontend still has only the get_weather card; flights, stocks and d20 render through the default wildcard. The Code tab's flight/stock/d20 cards and retry view are not ported. Not yet checked in a browser.",
       },
       {
         path: "/generative-ui/state-rendering",

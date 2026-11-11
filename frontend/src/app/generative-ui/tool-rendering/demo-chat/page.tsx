@@ -23,10 +23,11 @@ import { WeatherCard } from "../weather-card";
  *     catch-all and unmatched tool calls are invisible; you only see the
  *     assistant's final text.
  *
- * The page also wires `search_flights`, `get_stock_price` and `roll_d20`, but
- * publishes no backend definition for any of them, so they are not invented
- * here. The wildcard is still registered — it is the half of the pattern that
- * matters, and it will catch anything you add later. See README §9.
+ * The backend now exposes all four tools from the page's demo Code tab
+ * (`search_flights`, `get_stock_price` and `roll_d20` besides `get_weather`).
+ * Only `get_weather` has a named renderer here; the other three are painted by
+ * the wildcard below. The Code tab's own per-tool cards for them (and its
+ * retry view) are not ported — see README §9 item 13.
  */
 interface WeatherResult {
   city?: string;

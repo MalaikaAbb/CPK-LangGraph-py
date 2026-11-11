@@ -276,9 +276,9 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/generative-ui/reasoning`** — The whole reasoning card replaced. **Pass:** an always-open banner tagged "Reasoning" rather than a collapsible card.
 
-**`/generative-ui/tool-based`** — `useComponent` registering a bar chart as a tool. **Try:** `Chart the number of days in each month of 2026`. **Pass:** a chart renders inline and the reply does not repeat the numbers.
+**`/generative-ui/tool-based`** — `useComponent` registering a bar chart as a tool. **Try:** `Chart the number of days in each month of 2026`. **Pass:** a chart renders inline and the reply does not repeat the numbers. The route page's **Rendering in a headless chat** panel is a hand-built list using `CopilotChatToolCallsView`: ask the same question there — **Pass:** the chart appears under the reply. **Fail:** the reply mentions a chart but nothing renders (tool calls not painted).
 
-**`/generative-ui/tool-rendering`** — A named renderer for `get_weather` plus the wildcard. **Try:** `What's the weather in Tokyo?` **Pass:** a card shows "Calling weather API…" then fills in with 68°, Sunny. **Note:** asking for flights or stock prices produces prose — see §9.
+**`/generative-ui/tool-rendering`** — A named renderer for `get_weather` plus the wildcard. **Try:** `What's the weather in Tokyo?` **Pass:** a card shows "Calling weather API…" then fills in with 68°, Sunny. **Try:** `Find flights to JFK and roll a d20.` **Pass:** two default status cards (`search_flights`, `roll_d20`) from the wildcard. **Fail:** prose only — the backend is missing the Code-tab tools.
 
 **`/generative-ui/state-rendering`** — A document assembling live beside a docked chat. **Try:** `Write a short blog post about…` **Pass:** the main pane fills progressively with a LIVE badge; the text never appears as a chat message.
 
@@ -382,8 +382,8 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. `maxConcurrentUploads: 3` (new on the page) is wired but ignored on 1.70 (§9 item 31). |
 | `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_TRANSCRIPTION_API_KEY` on the frontend (renamed by the 2026-11 page, which also dropped the guard class for `createTranscriptionService()`); sample-audio button works without. Not yet re-checked in a browser. |
 | `/langgraph-python/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | Same reasoning-model dependency. |
-| `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | |
-| `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | `get_weather` only — the page defines no other backend tool, but its prompt advertises three more. |
+| `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | New headless `CopilotChatToolCallsView` panel (2026-11) not yet checked in a browser; its surrounding chat is harness glue. |
+| `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | Backend is the page's Code-tab agent (4 tools + failure middleware). Frontend has the `get_weather` card only; the other three use the default wildcard (§9 item 13). Not yet checked in a browser. |
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
@@ -566,9 +566,9 @@ The 2026-11 doc sync added three APIs that `@copilotkit/react-core` 1.70.0 (the 
 
 It also imports `HeaderForwardingMiddleware` from `src.agents._header_forwarding_middleware`, a module no page shows. Its own comment explains it propagates `x-aimock-context` headers so CopilotKit's recorded-fixture test harness keeps matching — CI infrastructure, not part of the pattern. Dropped rather than reconstructed.
 
-**13. Three of Tool Rendering's four backend tools**
+**13. ~~Three of Tool Rendering's four backend tools~~ — resolved 2026-11**
 
-The page wires renderers for `get_weather`, `search_flights`, `get_stock_price` and `roll_d20`, and defines only `get_weather`. The other three are not invented here. Its `SYSTEM_PROMPT` is reproduced verbatim and still advertises all four, so asking for a flight or a stock price produces prose rather than a tool call — the faithful consequence.
+The page's prose still prints only the head of its agent (imports, prompt, `get_weather`), but its demo **Code tab** carries the whole `tool_rendering_agent.py`: `search_flights`, `get_stock_price`, `roll_d20` and a `before_model` middleware, `stop_after_tool_failure`. `backend/src/graphs/tool_rendering.py` is now that file (model and checkpointer redirected as everywhere else), so the prompt no longer advertises tools that don't exist. Still open: the Code tab's frontend has per-tool cards for flights, stocks and d20 plus a retry view, and imports `./stock-card`, `./d20-card` and `./suggestions`, which are not among its tabs; none of that is ported, so those three tools render through the default wildcard card. Grouping (`toolCallDisplay`) needs CopilotKit > 1.79 (§9 item 31 on the Basics sync).
 
 **14. Both A2UI schema files**
 
