@@ -316,15 +316,15 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 ### Multi-Agent
 
-**`/multi-agent/subagents`** — Supervisor → research → write → critique. **Try:** `Write a short paragraph explaining why agent-native UIs beat chatbots`. **Pass:** three log cards in order with role chips lighting up. **Fail:** the log stays empty, or the critic card stacks repeatedly.
+**`/multi-agent/subagents`** — Supervisor → research → write → critique. **Try:** `Write a short paragraph explaining why agent-native UIs beat chatbots`. **Pass:** three log cards in order with role chips lighting up. **Fail:** the log stays empty, or the critic card stacks repeatedly. On a continued thread the earlier cards repeat — that is the page's own reducer contradicting its new merge-by-id callout (§9 item 30), not a harness bug.
 
 ### LangGraph Runtime
 
 **`/agent-config`** — A typed config object published as runtime context. **Try:** ask the same question at `expertise=beginner` then `expert`. **Pass:** visibly different answers.
 
-**`/agent-app-context`** — Live app state shared with `useAgentContext`. **Try:** `Draft a short email to the person I have selected`. **Pass:** it addresses whoever is selected, and follows when you change it.
+**`/agent-app-context`** — Live app state shared with `useAgentContext`. **Try:** `Draft a short email to the person I have selected`. **Pass:** it addresses whoever is selected, and follows when you change it. The page now warns that non-string context values reach the agent as JSON text; the custom-graph lookup (`find_context_entry`) parses them with `json.loads`, as the page's updated snippet does.
 
-**`/configurable`** — Per-run execution parameters. **Pass:** both forwarded keys show "arrived" — which disproves the page's filtering claim. See §9.
+**`/configurable`** — Server-owned graph execution settings: FastAPI builds a request-local agent with the page's `build_agent(tenant_id)`; the browser sends no config. **Try:** `What tenant and recursion limit did the server give you?` **Pass:** the panel and the reply show `tenant-demo` (or `CONFIGURABLE_TENANT_ID`) and `50`. **Fail:** `KeyError: 'tenant_id'` — the request missed the per-request endpoint (or you are on `langgraph dev`). See §9 item 3.
 
 **`/subgraphs`** — A nested graph streaming its state live. **Pass:** the stage chip advances and findings appear in two waves *before* the summary. **Fail:** everything lands at once at the end.
 
@@ -399,10 +399,10 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | |
 | `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. |
 | `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. |
-| `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. |
+| `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. Its `operator.add` reducer contradicts the page's new merge-by-id callout, so the log doubles on a continued thread (§9 item 30). |
 | `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | `build_system_prompt` wording is this repo's. |
 | `/langgraph-python/agent-app-context` | `/agent-app-context` | ✅ Working | |
-| `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Works, and disproves the page's filtering claim. Uses the page's deprecated `config_schema=` — doc-verbatim. |
+| `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Page rewritten 2026-11 (trust boundary). `build_agent` + node verbatim; reply node, per-request endpoint and tenant stand-in are harness glue (§9 item 3). FastAPI transport only. Not yet checked in a browser. |
 | `/langgraph-python/subgraphs` | `/subgraphs` | ⚠️ Partial | The page prints no agent code at all; the graph is this repo's. |
 | `/langgraph-python/guardrails` | `/guardrails` | ✅ Working | All four boundaries screen, verified against the compiled graph via `ainvoke()`. Two of the page's five snippets do not work as published — `OutputFirewall` scrubs nothing, `ToolFirewall` kills every tool call — so the route displays them verbatim and installs two subclasses that add the missing async methods. See §9 items 27–28. |
 | — (tooling, not a doc page) | `/doc-sync` | ✅ Working | Fetches all 36 tracked doc pages and diffs them against `doc-snapshot/`. Verified: 36-page baseline in ~4s; code/heading/prose edits classify High/Medium/Low. |
@@ -508,24 +508,23 @@ the composer sends carries metadata and fails. Left unpatched so the harness rep
 real state of the integration; a `wrap_model_call` middleware stripping the key is the
 obvious workaround if you need attachments today.
 
-**3. The `configurable` schema does not filter anything**
+**3. Configurable publishes only part of the server-side wiring**
 
-[The Configurable page](https://docs.copilotkit.ai/langgraph-python/configurable) claims "any item passed to 'configurables' which is not included in the schema, will be filtered out". Verified false on LangGraph 1.2.10: forwarding a key absent from `ConfigSchema` leaves it fully readable in `config['configurable']`. The `/configurable` route forwards one declared and one undeclared key side by side to demonstrate it. Do not rely on the schema to strip anything security-relevant.
+The [Configurable page](https://docs.copilotkit.ai/langgraph-python/configurable) was rewritten in November 2026: browser-supplied `forwardedProps.config` is now untrusted, and graph execution settings belong to the backend. Its Python tab prints `build_agent(tenant_id)` (a request-local `LangGraphAGUIAgent` with `config={"configurable": {"tenant_id": …}, "recursion_limit": 50}`) and a node that reads `config["configurable"]["tenant_id"]` and returns state unchanged. Both are verbatim in `backend/src/graphs/configurable.py`. The page leaves `graph` and `AgentState` undefined, never shows the endpoint that calls `build_agent` per request (it points at the Authentication guide), and its node produces no reply. The harness fills those in, labelled as glue: a `reply_node` that answers with the values, a hand-written `POST /configurable` in `backend/main.py` shaped like the [Authentication page's](https://docs.copilotkit.ai/langgraph-python/auth) self-hosted endpoint, and a `CONFIGURABLE_TENANT_ID` env var (default `tenant-demo`) standing in for "the tenant resolved after authentication". The old claims this section used to dispute (schema filtering, `config_schema=`) are gone from the page. Under `langgraph dev` the route raises `KeyError: 'tenant_id'`, because only the FastAPI transport builds the request-local agent.
 
-**4. Two deprecated LangGraph constructor keywords**
+**4. A deprecated LangGraph constructor keyword**
 
-`StateGraph(OverallState, input=…, output=…)` on [Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) and `StateGraph(AgentState, config_schema=…)` on Configurable both warn:
+`StateGraph(OverallState, input=…, output=…)` on [Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) warns (Configurable used to add `config_schema=`; its November rewrite dropped it):
 
 ```
 LangGraphDeprecatedSinceV05: `input` is deprecated … Please use `input_schema` instead.
-LangGraphDeprecatedSinceV10: `config_schema` is deprecated … Please use `context_schema` instead.
 ```
 
 Kept as published. Note that Python suppresses `DeprecationWarning` outside `__main__` by default, so these are **silent** on a normal boot — run the backend with `python -W default::DeprecationWarning main.py` to see them. They work today and will break on LangGraph 2.
 
 **5. `~20 snippets specify a model OpenAI does not publish**
 
-Almost every Python snippet builds on `ChatOpenAI(model="gpt-5.4")` — a placeholder from CopilotKit's internal showcase repo. Those snippets cannot run as printed. The only model the docs commit to is the Quickstart's `gpt-4.1-mini`, which is what every graph here uses. The two reasoning routes use `o4-mini`, which the reasoning pages *do* name.
+Almost every Python snippet used to build on `ChatOpenAI(model="gpt-5.4")` — a placeholder from CopilotKit's internal showcase repo. As of the 2026-11 doc sync the pages are moving to `ChatOpenAI(model="gpt-6-luna", reasoning_effort="none")` (`"openai:gpt-6-luna"` in the `create_agent` one-liners). The harness has not confirmed that a standard OpenAI key can call that model, so it keeps redirecting the literal to `_shared.MODEL`; set `OPENAI_MODEL=gpt-6-luna` in `backend/.env` to try the docs' value. Pages still on `gpt-5.4` cannot run as printed. The only model the docs commit to is the Quickstart's `gpt-4.1-mini`, which is what every graph here uses. The two reasoning routes use `o4-mini`, which the reasoning pages *do* name.
 
 **6. The page's ref write during render**
 
@@ -729,7 +728,7 @@ Unlike almost every other Python page in this set, this one names a model that e
 | **Browser tab or dev server hangs on a route** | **Two inspectors mounted on one page** | Only one provider per page may enable it. See §9 item 25. |
 | `npm install` ERESOLVE on zod | `zod` bumped to 4 | See §9 item 23. Stay on `^3.25.76`. |
 | Attachment sends → 400 `Unexpected keys in a message content image dict` | `ag-ui-langgraph` 0.0.42 adds `metadata` to media content blocks | Upstream bug, deliberately unpatched. See §9 item 2. |
-| Want to see the deprecation warnings | Python hides `DeprecationWarning` by default | `python -W default::DeprecationWarning main.py`. Expected — see §9 item 3. |
+| Want to see the deprecation warnings | Python hides `DeprecationWarning` by default | `python -W default::DeprecationWarning main.py`. Expected — see §9 item 4. |
 
 ---
 

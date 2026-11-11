@@ -466,7 +466,7 @@ export const NAV: NavGroup[] = [
           "A supervisor delegating to research, writing and critique sub-agents, with a live delegation log.",
         status: "partial",
         statusNote:
-          "The page prints the sub-agents and their delegation tools but never the supervisor; that create_agent call is this repo's.",
+          "The page prints the sub-agents and their delegation tools but never the supervisor; that create_agent call is this repo's. Its operator.add reducer contradicts the page's own merge-by-id callout, so the log doubles on a continued thread (README §9 item 30).",
       },
     ],
   },
@@ -500,10 +500,10 @@ export const NAV: NavGroup[] = [
         title: "Configurable",
         docPath: "/langgraph-python/configurable",
         summary:
-          "Per-run execution parameters forwarded through forwardedProps.config.configurable — auth tokens and session metadata that are not state.",
+          "Server-owned execution settings: a request-local LangGraphAGUIAgent built by build_agent(tenant_id); the browser sends no config.",
         status: "partial",
         statusNote:
-          "Works, but disproves the page on two points: config_schema is deprecated, and undeclared configurables are NOT filtered out.",
+          "build_agent and the node are verbatim; the reply node, per-request endpoint and tenant stand-in are harness glue (README §9 item 3). FastAPI transport only. Not yet checked in a browser.",
       },
       {
         path: "/subgraphs",
