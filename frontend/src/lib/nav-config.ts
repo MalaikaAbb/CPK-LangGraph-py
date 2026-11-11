@@ -367,9 +367,9 @@ export const NAV: NavGroup[] = [
         docPath: "/langgraph-python/human-in-the-loop/useInterrupt",
         summary:
           "A backend tool pauses the graph with interrupt(); useInterrupt renders a picker in the chat and resolve() resumes it.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Page excerpts are verbatim @region blocks of the CopilotKit showcase files used here (Python interrupt_agent.py graph assembly; generateFallbackSlots via CPK-LangGraph-TS; TimePickerCard is a minimal stand-in; the suggestions hook is not copied). Not yet checked in a browser.",
+          "Backend is only the page's printed schedule_meeting tool; the page never builds an agent from it, so no gen-ui-interrupt graph is registered (showcase assembly not borrowed). Frontend: generateFallbackSlots via CPK-LangGraph-TS; TimePickerCard is a minimal stand-in; suggestions hook not copied.",
       },
       {
         path: "/human-in-the-loop/headless",
@@ -393,7 +393,7 @@ export const NAV: NavGroup[] = [
           "Gating a side-effecting tool call behind an approve/reject card before it runs.",
         status: "partial",
         statusNote:
-          "Ported from CPK-LangGraph-TS (via aws-strands-ts). The useHumanInTheLoop approval works in principle; the governance behind it (policy engine, GovernedAction emitter, executeSideEffect) is published nowhere, so verdicts are whatever the model invents. The useInterrupt variant is not built. Not yet checked in a browser.",
+          "Ported from CPK-LangGraph-TS (via aws-strands-ts); backend is the HITL pages' frontend_tools.py snippet (no tools, default prompt). The useHumanInTheLoop approval works in principle; the governance behind it (policy engine, GovernedAction emitter, executeSideEffect) is published nowhere, so verdicts are whatever the model invents. The useInterrupt variant is not built. Not yet checked in a browser.",
       },
       {
         path: "/programmatic-control",

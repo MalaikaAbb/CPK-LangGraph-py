@@ -148,16 +148,10 @@ hitl_in_chat_graph = build_chat_graph(
 
 programmatic_control_graph = build_chat_graph()
 
-# `/human-in-the-loop/governed-actions` — the page publishes only frontend
-# code (a `useHumanInTheLoop` approval card); any graph that forwards frontend
-# tools serves it. Prompt is this repo's (same as CPK-LangGraph-TS's).
-governed_actions_graph = build_chat_graph(
-    system_prompt=(
-        "You are an operations assistant. Before any side-effecting action "
-        "(refunds, deletions, payments), call the approval tool the app registers "
-        "and wait for the user's decision; report the outcome afterwards."
-    )
-)
+# `/human-in-the-loop/governed-actions` publishes no backend. It runs on the
+# HITL section's own `frontend_tools.py` snippet (tools=[], default prompt),
+# which forwards the page's `approve_governed_action` frontend tool.
+governed_actions_graph = build_chat_graph()
 
 
 # --- Subgraphs -----------------------------------------------------------

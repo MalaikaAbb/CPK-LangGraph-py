@@ -122,12 +122,9 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "hitl-in-chat": RegisteredGraph(
         "hitl_in_chat", "graph", "/langgraph-python/human-in-the-loop"
     ),
-    # Pausing the Agent for Input (useInterrupt): `schedule_meeting` calls
-    # LangGraph's interrupt(); agent from the showcase file the page excerpts.
-    "gen-ui-interrupt": RegisteredGraph(
-        "gen_ui_interrupt", "graph",
-        "/langgraph-python/human-in-the-loop/useInterrupt",
-    ),
+    # Pausing the Agent for Input (useInterrupt) addresses `gen-ui-interrupt`,
+    # but the page prints only the `schedule_meeting` tool and never assembles
+    # a graph (src/agents/interrupt_agent.py), so nothing is registered for it.
     "governed-actions": RegisteredGraph(
         "chat", "governed_actions_graph",
         "/langgraph-python/human-in-the-loop/governed-actions",

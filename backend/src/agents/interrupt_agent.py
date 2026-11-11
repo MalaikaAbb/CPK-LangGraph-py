@@ -1,18 +1,10 @@
-# Borrowed from the CopilotKit showcase, NOT fully published on the doc page:
-# https://github.com/CopilotKit/CopilotKit/blob/a358fa06ee1ee05a2e8a61f85461bdbabffbbd77/showcase/integrations/langgraph-python/src/agents/interrupt_agent.py
-# The page (human-in-the-loop/useInterrupt) prints the `backend-interrupt-tool`
-# region below verbatim, but not the model / create_agent assembly after it.
-"""LangGraph agent for the Human-in-the-Loop (Interrupt-based) booking demo.
-
-Defines a backend tool `schedule_meeting(topic, attendee)` that uses
-LangGraph's `interrupt()` primitive to pause the run and surface a
-structured booking payload to the frontend. The frontend `useInterrupt`
-renderer shows a time picker inline in the chat and resolves with
-`{chosen_time, chosen_label}` or `{cancelled: true}`, which this tool
-turns into a human-readable result the agent uses to confirm the booking.
-"""
-
-# @region[backend-interrupt-tool]
+# Verbatim from https://docs.copilotkit.ai/langgraph-python/human-in-the-loop/useInterrupt
+# — the page's printed block, byte-for-byte (its own path comment is the first
+# line below). The page never builds the agent from this tool (no model, no
+# `create_agent(...)`, no `graph`), so there is nothing to register: the
+# `gen-ui-interrupt` agent the page's frontend addresses does not exist in this
+# harness and the route is broken (README §9 item 38).
+# src/agents/interrupt_agent.py
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
@@ -24,8 +16,6 @@ from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langgraph.types import interrupt
 from copilotkit import CopilotKitMiddleware
-
-from src.graphs._shared import MODEL, checkpointer
 
 
 SYSTEM_PROMPT = (
@@ -100,19 +90,3 @@ def schedule_meeting(topic: str, attendee: Optional[str] = None) -> str:
             return f"Meeting scheduled for {chosen_label}: {topic}"
 
     return f"User did not pick a time. Meeting NOT scheduled: {topic}"
-
-
-# @endregion[backend-interrupt-tool]
-
-
-# Showcase: ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"); redirected
-# to _shared.MODEL (README §9 item 5).
-model = ChatOpenAI(model=MODEL)
-
-graph = create_agent(
-    model=model,
-    tools=[schedule_meeting],
-    middleware=[CopilotKitMiddleware()],
-    system_prompt=SYSTEM_PROMPT,
-    checkpointer=checkpointer(),  # harness: transport-dependent, see _shared
-)

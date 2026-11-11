@@ -25,16 +25,18 @@ export default function Page() {
         </div>
       </Panel>
 
-      <Callout tone="info" title="Doc regions verbatim; minimal stand-ins around them">
+      <Callout tone="warn" title="Broken: the page builds no agent">
         <p>
           The page prints the <code>schedule_meeting</code> tool and the{" "}
           <code>useInterrupt</code> render as excerpts, without the graph
           assembly, <code>TimePickerCard</code>,{" "}
-          <code>generateFallbackSlots</code> or the suggestions hook. The agent
-          (the Python <code>interrupt_agent.py</code>) and, via
-          CPK-LangGraph-TS, <code>_shared/interrupt-fallback-slots.ts</code>{" "}
-          come from the CopilotKit showcase, with the page&apos;s excerpts as
-          their <code>@region</code> blocks, unchanged.{" "}
+          <code>generateFallbackSlots</code> or the suggestions hook.{" "}
+          <code>interrupt_agent.py</code> holds only the printed tool; no
+          model or <code>create_agent</code> is borrowed, so the{" "}
+          <code>gen-ui-interrupt</code> agent does not exist and this demo
+          fails until the docs publish it. Via CPK-LangGraph-TS,{" "}
+          <code>_shared/interrupt-fallback-slots.ts</code> comes from the
+          CopilotKit showcase.{" "}
           <code>TimePickerCard</code> is a minimal stand-in with the showcase
           card&apos;s props; the suggestions hook is not copied (its call is
           commented out). See README §9.
