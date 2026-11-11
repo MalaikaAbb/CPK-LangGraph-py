@@ -75,6 +75,13 @@ chat_controls_graph = build_chat_graph()
 
 chat_customization_css_graph = build_chat_graph()
 chat_slots_graph = build_chat_graph()
+# `/custom-look-and-feel/markdown` — the page publishes no backend; any chat
+# agent works. Nudged towards markdown so the three markdownRenderer shapes
+# have headings and links to draw (prompt wording is this repo's).
+chat_markdown_graph = build_chat_graph(
+    system_prompt=DEFAULT_SYSTEM_PROMPT
+    + " Format answers in markdown (headings, lists, links) when it helps."
+)
 headless_simple_graph = build_chat_graph()
 headless_complete_graph = build_chat_graph()
 

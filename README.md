@@ -266,6 +266,8 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/custom-look-and-feel/reasoning-messages`** — Default card vs. two replaced sub-slots, toggleable. **Try:** the bat-and-ball puzzle. **Pass:** a reasoning card streams above the answer. **Fail:** no card — the model did not deliberate; ask something harder.
 
+**`/custom-look-and-feel/markdown`** — The `markdownRenderer` slot in its three shapes, one tab each (components map, class string, replacement component). **Try:** `Reply with a level-2 markdown heading, then a paragraph containing a markdown link to https://copilotkit.ai`. **Pass:** components tab — in DevTools the `<h2>`/`<a>` carry `my-heading`/`my-link` and no `data-streamdown`; class tab — container has `text-sm leading-7`; PlainText tab — raw markdown inside a `<pre>`. **Fail:** `data-streamdown="link"` still on the anchor, or the PlainText tab shows formatted HTML.
+
 ### Input Modalities
 
 **`/multimodal-attachments`** — `attachments={{ enabled: true }}`. ⚠️ **Currently fails by upstream bug** — any image attachment 400s before reaching the model. The client-side rejection half still works: attach a `.zip` and an amber banner names it `invalid-type`. See §9 item 2.
@@ -379,8 +381,9 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | New `toolCallsView` panel added 2026-11 (not yet checked in a browser); `toolCallDisplay` needs CopilotKit ≥ 1.80 (§9 item 31). |
 | `/langgraph-python/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Minimal example; the "complete" one is on Programmatic Control. |
 | `/langgraph-python/custom-look-and-feel/reasoning-messages` | `/custom-look-and-feel/reasoning-messages` | ⚠️ Partial | Needs a reasoning model, which no doc page enables. This repo does. |
-| `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. `maxConcurrentUploads: 3` (new on the page) is wired but ignored on 1.70 (§9 item 31). |
-| `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_TRANSCRIPTION_API_KEY` on the frontend (renamed by the 2026-11 page, which also dropped the guard class for `createTranscriptionService()`); sample-audio button works without. Not yet re-checked in a browser. |
+| `/langgraph-python/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ⚠️ Partial | New 2026-11. Snippets verbatim; route ported from CPK-LangGraph-TS; `chat-markdown` graph is this repo's. No CSS for `my-link`/`my-heading` on the page, so example 1 is DevTools-only. Not yet checked in a browser. |
+| `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. |
+| `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_API_KEY` on the frontend; sample-audio button works without. |
 | `/langgraph-python/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | Same reasoning-model dependency. |
 | `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | New headless `CopilotChatToolCallsView` panel (2026-11) not yet checked in a browser; its surrounding chat is harness glue. |
 | `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | Backend is the page's Code-tab agent (4 tools + failure middleware). Frontend has the `get_weather` card only; the other three use the default wildcard (§9 item 13). Not yet checked in a browser. |
@@ -853,7 +856,7 @@ A few choices look arbitrary until they bite:
 
 **Prebuilt Components** — [CopilotChat](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/chat) · [CopilotSidebar](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/sidebar) · [CopilotPopup](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/popup) · [Open, close, and feedback](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/chat-controls)
 
-**Custom Look and Feel** — [CSS](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/css) · [Slots](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/slots) · [Headless UI](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/headless-ui) · [Reasoning Messages](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/reasoning-messages)
+**Custom Look and Feel** — [CSS](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/css) · [Slots](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/slots) · [Headless UI](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/headless-ui) · [Reasoning Messages](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/reasoning-messages) · [Markdown Rendering](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/markdown)
 
 **Input Modalities** — [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) · [Voice](https://docs.copilotkit.ai/langgraph-python/voice)
 
