@@ -236,7 +236,7 @@ export const NAV: NavGroup[] = [
           "A second runtime carrying a TranscriptionService, which is what makes the composer grow a mic button.",
         status: "partial",
         statusNote:
-          "The mic transcribes through OpenAI Whisper, so it needs OPENAI_API_KEY in the frontend process. Without one the route still runs via the doc's sample-audio button.",
+          "The mic transcribes through OpenAI Whisper, so it needs OPENAI_TRANSCRIPTION_API_KEY in the frontend process (the page's 2026-11 name). Without it the mic button is hidden and the route still runs via the doc's sample-audio button.",
       },
     ],
   },

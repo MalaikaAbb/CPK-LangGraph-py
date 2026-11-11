@@ -19,8 +19,8 @@ export default function Page() {
         <div className="mt-4">
           <TryIt
             prompts={["Press the 🎙 sample-audio button, then send"]}
-            expect="Text lands in the composer and the agent answers in short spoken-length prose. With OPENAI_API_KEY set, the mic button also records and transcribes."
-            fail="No mic button at all — the runtime has no transcription service, or basePath does not match the route directory. Those are the only two causes."
+            expect="Text lands in the composer and the agent answers in short spoken-length prose. With OPENAI_TRANSCRIPTION_API_KEY set in frontend/.env.local, the mic button also appears and transcribes; without it there is no mic button, by design."
+            fail="No mic button even with OPENAI_TRANSCRIPTION_API_KEY set — the runtime has no transcription service, or basePath does not match the route directory."
           />
         </div>
       </Panel>
@@ -50,6 +50,13 @@ export default function Page() {
 
       <Panel title="The runtime">
         <SourceCode file="frontend/src/app/api/copilotkit-voice/[[...slug]]/route.ts" />
+      </Panel>
+
+      <Panel
+        title="The transcription service"
+        description="Built only when OPENAI_TRANSCRIPTION_API_KEY is set; otherwise undefined, so the runtime hides the mic and /transcribe answers 503."
+      >
+        <SourceCode file="frontend/src/lib/transcription-service.ts" />
       </Panel>
 
       <Panel title="The demo">

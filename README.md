@@ -170,7 +170,7 @@ cp .env.example frontend/.env.local
 | `AGENT_HOST` / `AGENT_PORT` | `backend/.env` | Where the FastAPI server listens. Defaults `0.0.0.0:8123`. |
 | `LOG_LEVEL` | `backend/.env` | Uvicorn/LangGraph log level. Defaults `INFO`. |
 | `OPENAI_MODEL` / `OPENAI_REASONING_MODEL` | `backend/.env` | Optional overrides. Default `gpt-4.1-mini` / `o4-mini`. |
-| `OPENAI_API_KEY` | `frontend/.env.local` | Optional. Whisper transcription for the `/voice` mic only. |
+| `OPENAI_TRANSCRIPTION_API_KEY` | `frontend/.env.local` | Optional. Whisper transcription for the `/voice` mic only. Without it the mic button is hidden. |
 | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR` | `frontend/.env.local` | Optional. Set to `off` to disable the Inspector app-wide. |
 
 **Default ports:** frontend **3000**, agent server **8123**.
@@ -260,7 +260,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/custom-look-and-feel/css`** — v2 shadcn tokens plus `.copilotKit*` class hooks, scoped to one wrapper. **Pass:** warm parchment surface, square corners, your messages in mono behind a copper `→`.
 
-**`/custom-look-and-feel/slots`** — All three override levels. **Pass:** a gradient welcome panel before sending; afterwards each reply sits in a tinted card with a "slot" badge and the disclaimer is custom.
+**`/custom-look-and-feel/slots`** — All three override levels. **Pass:** a gradient welcome panel before sending; afterwards each reply sits in a tinted card with a "slot" badge and the disclaimer is custom. The **Tool calls slot** panel (page's `toolCallsView` example) is a second chat: ask `What's the weather in Lisbon?` — **Pass:** the weather card renders inside a dashed border. **Fail:** the card has no border (slot ignored) or no card at all (tool not registered).
 
 **`/custom-look-and-feel/headless-ui`** — A chat with zero CopilotKit components. **Pass:** tokens stream into hand-written bubbles.
 
@@ -270,7 +270,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/multimodal-attachments`** — `attachments={{ enabled: true }}`. ⚠️ **Currently fails by upstream bug** — any image attachment 400s before reaching the model. The client-side rejection half still works: attach a `.zip` and an amber banner names it `invalid-type`. See §9 item 2.
 
-**`/voice`** — A second runtime carrying a `TranscriptionService`. **Try:** the 🎙 sample-audio button. **Pass:** text lands in the composer and the agent answers in spoken-length prose. The mic itself needs `OPENAI_API_KEY` on the frontend. **Fail:** no mic button at all — the runtime has no transcription service, or `basePath` is wrong.
+**`/voice`** — A second runtime carrying a `TranscriptionService`. **Try:** the 🎙 sample-audio button. **Pass:** text lands in the composer and the agent answers in spoken-length prose. The mic itself needs `OPENAI_TRANSCRIPTION_API_KEY` in `frontend/.env.local`; without it the mic button is hidden (expected). **Fail:** no mic button even with the key set — the runtime has no transcription service, or `basePath` is wrong.
 
 ### Generative UI
 
@@ -288,7 +288,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 ### App Control
 
-**`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
+**`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates. The **Registering a list of tools** panel is text only (needs CopilotKit ≥ 1.74).
 
 **`/human-in-the-loop`** — `useHumanInTheLoop` suspending the run. **Try:** `Book an intro call with the sales team`. **Pass:** a picker renders and **nothing further streams** until you choose; the card then collapses to a green "Booked" badge.
 
@@ -374,20 +374,20 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/prebuilt-components/chat` | `/prebuilt-components/chat` | ✅ Working | |
 | `/langgraph-python/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | |
 | `/langgraph-python/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | |
-| `/langgraph-python/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | |
+| `/langgraph-python/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | The page's new controlled `open`/`onOpenChange` pattern is reference-only (needs CopilotKit ≥ 1.71, §9 item 31); the context pattern still works. |
 | `/langgraph-python/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | v2 tokens; the page's `--copilot-kit-*` set is v1 and inert here. |
-| `/langgraph-python/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | |
+| `/langgraph-python/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | New `toolCallsView` panel added 2026-11 (not yet checked in a browser); `toolCallDisplay` needs CopilotKit ≥ 1.80 (§9 item 31). |
 | `/langgraph-python/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Minimal example; the "complete" one is on Programmatic Control. |
 | `/langgraph-python/custom-look-and-feel/reasoning-messages` | `/custom-look-and-feel/reasoning-messages` | ⚠️ Partial | Needs a reasoning model, which no doc page enables. This repo does. |
-| `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. |
-| `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_API_KEY` on the frontend; sample-audio button works without. |
+| `/langgraph-python/multimodal-attachments` | `/multimodal-attachments` | ❌ Broken | **Blocked upstream.** `ag-ui-langgraph` 0.0.42 injects a `metadata` key into every media content block; OpenAI 400s. Every attachment fails. See §9 item 2. `maxConcurrentUploads: 3` (new on the page) is wired but ignored on 1.70 (§9 item 31). |
+| `/langgraph-python/voice` | `/voice` | ⚠️ Partial | Mic needs `OPENAI_TRANSCRIPTION_API_KEY` on the frontend (renamed by the 2026-11 page, which also dropped the guard class for `createTranscriptionService()`); sample-audio button works without. Not yet re-checked in a browser. |
 | `/langgraph-python/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | Same reasoning-model dependency. |
 | `/langgraph-python/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | |
 | `/langgraph-python/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ⚠️ Partial | `get_weather` only — the page defines no other backend tool, but its prompt advertises three more. |
 | `/langgraph-python/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming graph, as the docs do. |
 | `/langgraph-python/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ⚠️ Partial | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/langgraph-python/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Book button inert — Python SDK has no `action_handlers`. Schema JSON is this repo's. |
-| `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | |
+| `/langgraph-python/frontend-tools` | `/frontend-tools` | ✅ Working | The page's new `useFrontendTools` section is reference-only: the hook needs CopilotKit ≥ 1.74 (§9 item 31). |
 | `/langgraph-python/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/langgraph-python/human-in-the-loop/interrupt-flow` | `/human-in-the-loop/interrupt-flow` | ⚠️ Partial | Two tabs. **Single interrupt** works. **Multiple interrupts** reproduces the page's `enabled` predicate verbatim and never fires. See §9 item 1. |
 | `/langgraph-python/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Renders nothing, faithfully — the published snippet ends after the handlers and never shows the JSX. Also destructures three undefined helpers. See §9 item 19. |
@@ -550,9 +550,13 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
-**30. Sub-Agents' new merge-by-id warning contradicts its own `operator.add` reducer**
+**31. Basics pages now document APIs newer than this repo's CopilotKit (1.70.0)**
 
-[Sub-Agents](https://docs.copilotkit.ai/langgraph-python/multi-agent/subagents) now warns that a slot which blindly appends whatever it receives (it names `Annotated[list, operator.add]`) doubles the delegation log when a thread is continued, because the client sends its copy of shared state back as run input. The page's own `AgentState` still declares `delegations: Annotated[list[Delegation], operator.add]`. Kept verbatim in `backend/src/graphs/subagents.py`, so the doubling the callout describes is expected on a continued thread in `/multi-agent/subagents` (send a second request on the same thread and the earlier cards repeat).
+The 2026-11 doc sync added three APIs that `@copilotkit/react-core` 1.70.0 (the version in `package-lock.json`) does not have. Checked against the published packages: `maxConcurrentUploads` first appears in 1.71.0, `useFrontendTools` in 1.74.0, and `toolCallDisplay` (tool-call grouping, linked from [Slots](https://docs.copilotkit.ai/langgraph-python/custom-look-and-feel/slots)) after 1.79.0. Bumping CopilotKit is an infra change of its own (PR_GUIDELINES §1), so this sync does not do it:
+- [Frontend Tools](https://docs.copilotkit.ai/langgraph-python/frontend-tools) "Registering a list of tools": `useFrontendTools` is not exported, so importing it would fail the bundle. The snippet is shown as reference-only text on `/frontend-tools`.
+- [Multimodal Attachments](https://docs.copilotkit.ai/langgraph-python/multimodal-attachments) "Upload concurrency": the `maxConcurrentUploads: 3` example is wired verbatim with `@ts-expect-error` (unknown property on 1.70). It is ignored at runtime, so files still upload one at a time.
+- [Open, close, and feedback](https://docs.copilotkit.ai/langgraph-python/prebuilt-components/chat-controls) now leads with controlled `open` / `onOpenChange` on `CopilotSidebar`/`CopilotPopup`, which first ship in 1.71.0. Shown as reference-only text on `/prebuilt-components/chat-controls`; the demo keeps the `useCopilotChatConfiguration` pattern the page still documents.
+- `toolCallDisplay` is only linked from Slots, not shown, so nothing is wired.
 
 ### Things the docs reference but never define
 
@@ -719,7 +723,7 @@ Unlike almost every other Python page in this set, this one names a model that e
 | Shared state resets on restart | `MemorySaver` | In-memory by design. Swap in a real checkpointer to persist. |
 | Reasoning card never appears | Model did not deliberate, or is not a reasoning model | Only `o4-mini` here emits reasoning tokens, and only for prompts that need working out. |
 | No mic button on `/voice` | Runtime has no `transcriptionService`, or `basePath` ≠ route directory | Both are required for `/info` to advertise `audioFileTranscriptionEnabled`. |
-| Mic returns an error | No `OPENAI_API_KEY` on the **frontend** | Transcription is a separate Whisper call. Use the sample-audio button instead. |
+| No mic button, `/transcribe` answers 503 `service_not_configured` | No `OPENAI_TRANSCRIPTION_API_KEY` on the **frontend**, so `createTranscriptionService()` returned `undefined` | Transcription is a separate Whisper call. Set the key in `frontend/.env.local`, or use the sample-audio button. Posting to `/transcribe` yourself: multipart field must be `audio`; JSON needs `mimeType`. |
 | A2UI surface renders as raw JSON | `catalogId` mismatch, or middleware not attached | The backend's `createSurface.catalogId` must equal the frontend `createCatalog` id. |
 | **Browser tab or dev server hangs on a route** | **Two inspectors mounted on one page** | Only one provider per page may enable it. See §9 item 25. |
 | `npm install` ERESOLVE on zod | `zod` bumped to 4 | See §9 item 23. Stay on `^3.25.76`. |
