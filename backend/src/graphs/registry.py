@@ -127,6 +127,13 @@ REGISTRY: dict[str, RegisteredGraph] = {
         "/langgraph-python/generative-ui/hashbrown",
     ),
 
+    # Components and surfaces (nine pages): repo-authored, framework-neutral
+    # pages publish no LangGraph agent. Served by /api/copilotkit-genui and
+    # /api/copilotkit-genui-transports.
+    "genui": RegisteredGraph(
+        "genui", "graph", "/langgraph-python/generative-ui/components",
+    ),
+
     # --- App control -----------------------------------------------------
     "frontend-tools": RegisteredGraph(
         "chat", "frontend_tools_graph", "/langgraph-python/frontend-tools"

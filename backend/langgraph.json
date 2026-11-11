@@ -24,6 +24,7 @@
     "gen-ui-tool-based": "./src/graphs/chat.py:gen_ui_tool_based_graph",
     "a2ui-fixed-schema": "./src/graphs/a2ui_fixed.py:graph",
     "declarative-gen-ui": "./src/graphs/declarative_gen_ui.py:graph",
+    "genui": "./src/graphs/genui.py:graph",
     "byoc_json_render": "./src/graphs/byoc_json_render.py:graph",
     "byoc_hashbrown": "./src/graphs/byoc_hashbrown.py:graph",
     "frontend-tools": "./src/graphs/chat.py:frontend_tools_graph",
