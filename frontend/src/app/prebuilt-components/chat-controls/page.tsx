@@ -1,6 +1,27 @@
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode } from "@/components/source-code";
-import { Callout, Panel, TryIt } from "@/components/ui";
+import { Callout, CodeBlock, Panel, TryIt } from "@/components/ui";
+
+// Verbatim from the page's "Control the open state from your own UI" section
+// (2026-11). Reference only: `open` / `onOpenChange` on CopilotSidebar and
+// CopilotPopup ship in @copilotkit/react-core 1.71.0; this repo is on 1.70.0.
+// See README §9 item 31.
+const CONTROLLED = `import { useState } from "react";
+import { CopilotSidebar } from "@copilotkit/react-core/v2";
+
+function Layout() {
+  const [chatOpen, setChatOpen] = useState(false);
+
+  return (
+    <>
+      <nav>
+        <button onClick={() => setChatOpen(true)}>Ask the assistant</button>
+      </nav>
+
+      <CopilotSidebar open={chatOpen} onOpenChange={setChatOpen} />
+    </>
+  );
+}`;
 
 export default function Page() {
   return (
@@ -28,6 +49,28 @@ export default function Page() {
       <Panel title="The demo">
         <SourceCode file="frontend/src/app/prebuilt-components/chat-controls/demo-chat/page.tsx" />
       </Panel>
+
+      <Panel title="Controlled open state — reference only">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          New on the page and now its first pattern: own the open state with{" "}
+          <code>open</code> + <code>onOpenChange</code>, so a button outside
+          the chat subtree can open it with no extra provider. Shown as text:
+          those props first ship in <code>@copilotkit/react-core</code> 1.71.0
+          and this repo is on 1.70.0, so the demo above still uses the
+          configuration-context pattern, which the page keeps as the
+          alternative.
+        </p>
+        <CodeBlock code={CONTROLLED} language="tsx" />
+      </Panel>
+
+      <Callout tone="info" title="Thumbs without handlers needs Intelligence">
+        <p>
+          The page now says the thumbs buttons also appear with no handler when
+          Automatic Learning capture is on and a Trajectory has started. That is
+          an Intelligence Platform feature — requires premium, not testable
+          locally — so this demo still opts in with handlers.
+        </p>
+      </Callout>
 
       <Callout
         tone="warn"

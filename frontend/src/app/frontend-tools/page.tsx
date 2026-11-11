@@ -1,6 +1,19 @@
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode } from "@/components/source-code";
-import { Callout, Panel, TryIt } from "@/components/ui";
+import { Callout, CodeBlock, Panel, TryIt } from "@/components/ui";
+
+// Verbatim from the page's "Registering a list of tools" section (2026-11).
+// Reference only: `useFrontendTools` is not exported by this repo's
+// @copilotkit/react-core 1.70.0 (it ships in 1.74.0), and importing a missing
+// export fails the bundle. See README §9 item 31.
+const USE_FRONTEND_TOOLS = `useFrontendTools(
+  reports.map((report) => ({
+    name: \`open_\${report.id}\`,
+    description: \`Open the \${report.title} report\`,
+    handler: async () => navigate(\`/reports/\${report.id}\`),
+  })),
+  [navigate],
+);`;
 
 export default function Page() {
   return (
@@ -43,6 +56,18 @@ export default function Page() {
           and the tool silently stops existing as far as the agent is concerned.
         </p>
         <SourceCode file="backend/src/graphs/chat.py" region="factory" />
+      </Panel>
+
+      <Panel title="Registering a list of tools — reference only">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          New on the page: <code>useFrontendTool</code> registers one tool per
+          call, so a list whose length changes between renders needs{" "}
+          <code>useFrontendTools</code>, which takes an array and diffs it.
+          Shown as text only: the hook first ships in{" "}
+          <code>@copilotkit/react-core</code> 1.74.0 and this repo is on 1.70.0,
+          so it cannot be imported here.
+        </p>
+        <CodeBlock code={USE_FRONTEND_TOOLS} language="tsx" />
       </Panel>
 
       <Callout tone="info" title="The handler's return value is a tool result">
