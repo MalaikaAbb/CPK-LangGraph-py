@@ -49,7 +49,7 @@ export default function Page() {
       <Callout tone="warn" title="Two independent switches, and they fail differently">
         <p>
           Threads need <strong>Intelligence mode</strong> — the runtime built
-          with <code>INTELLIGENCE_API_KEY</code>. Without it the runtime falls
+          with <code>CPK_INTELLIGENCE_API_KEY</code>. Without it the runtime falls
           back to SSE with an in-memory runner: the list answers locally,
           nothing survives a restart, and mutations are off.
         </p>
