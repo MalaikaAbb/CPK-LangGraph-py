@@ -69,6 +69,10 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "chat-slots": RegisteredGraph(
         "chat", "chat_slots_graph", "/langgraph-python/custom-look-and-feel/slots"
     ),
+    "chat-markdown": RegisteredGraph(
+        "chat", "chat_markdown_graph",
+        "/langgraph-python/custom-look-and-feel/markdown",
+    ),
     "headless-simple": RegisteredGraph(
         "chat", "headless_simple_graph",
         "/langgraph-python/custom-look-and-feel/headless-ui",
@@ -111,6 +115,16 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "declarative-gen-ui": RegisteredGraph(
         "declarative_gen_ui", "graph",
         "/langgraph-python/generative-ui/a2ui/dynamic-schema",
+    ),
+    # Declarative › JSON Render and Hashbrown. Ids are the graph ids the
+    # pages' Code-tab runtime routes name; each has its own runtime endpoint.
+    "byoc_json_render": RegisteredGraph(
+        "byoc_json_render", "graph",
+        "/langgraph-python/generative-ui/json-render",
+    ),
+    "byoc_hashbrown": RegisteredGraph(
+        "byoc_hashbrown", "graph",
+        "/langgraph-python/generative-ui/hashbrown",
     ),
 
     # --- App control -----------------------------------------------------

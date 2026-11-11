@@ -5,7 +5,7 @@ how to override a slot, how to theme it — and print exactly one backend
 snippet between them, the one reproduced in `build_chat_graph` below:
 
     graph = create_agent(
-        model=ChatOpenAI(model="gpt-5.4"),
+        model=ChatOpenAI(reasoning_effort="none", model="gpt-6-luna"),
         tools=[],
         middleware=[CopilotKitMiddleware()],
         system_prompt="You are a helpful, concise assistant.",
@@ -13,7 +13,9 @@ snippet between them, the one reproduced in `build_chat_graph` below:
 
 That snippet appears under the heading "Wire CopilotKit middleware into your
 graph" on Frontend Tools, Components as Tools, Human in the Loop, Programmatic
-Control and others — identical each time. Rather than copy it fifteen times,
+Control and others — identical each time (Frontend Tools moved it from `gpt-5.4` to `gpt-6-luna`
+in November 2026; the model is redirected to `_shared.MODEL`, README §9 item 5).
+Rather than copy it fifteen times,
 it is a factory here and each route gets its own instance.
 
 **Why one graph per route instead of one shared graph.** Each compiled graph
@@ -73,6 +75,13 @@ chat_controls_graph = build_chat_graph()
 
 chat_customization_css_graph = build_chat_graph()
 chat_slots_graph = build_chat_graph()
+# `/custom-look-and-feel/markdown` — the page publishes no backend; any chat
+# agent works. Nudged towards markdown so the three markdownRenderer shapes
+# have headings and links to draw (prompt wording is this repo's).
+chat_markdown_graph = build_chat_graph(
+    system_prompt=DEFAULT_SYSTEM_PROMPT
+    + " Format answers in markdown (headings, lists, links) when it helps."
+)
 headless_simple_graph = build_chat_graph()
 headless_complete_graph = build_chat_graph()
 

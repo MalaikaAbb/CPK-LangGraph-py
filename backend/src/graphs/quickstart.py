@@ -25,6 +25,8 @@ from src.graphs._shared import MODEL, checkpointer
 
 
 async def mock_llm(state: MessagesState):
+    # Page (2026-11): ChatOpenAI(model="gpt-6-luna", reasoning_effort="none");
+    # redirected to _shared.MODEL (README §9 item 5).
     model = ChatOpenAI(model=MODEL)
     system_message = SystemMessage(content="You are a helpful assistant.")
     response = await model.ainvoke(

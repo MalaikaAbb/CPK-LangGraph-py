@@ -95,6 +95,11 @@ export default function Page() {
                 ],
                 ["maxSize", "20 MB", "Maximum file size in bytes."],
                 [
+                  "maxConcurrentUploads",
+                  "1",
+                  "How many files upload at once. Needs CopilotKit 1.71+; ignored on this repo's 1.70.0.",
+                ],
+                [
                   "onUpload",
                   "base64 inline",
                   "Custom upload handler. Return { type: 'url' } to host the file yourself.",

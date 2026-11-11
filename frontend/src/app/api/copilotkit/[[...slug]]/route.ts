@@ -9,7 +9,7 @@ import { buildAgents } from "@/lib/runtime-agents";
  * whole registry and taught both of its deployment tabs.
  *
  * The Quickstart registers exactly one agent and shows a different class per
- * tab: `LangGraphHttpAgent({ url })` for FastAPI, `LangGraphAgent({
+ * tab: `HttpAgent({ url })` (from `@ag-ui/client`) for FastAPI, `LangGraphAgent({
  * deploymentUrl, graphId })` for LangSmith. This harness has one graph per doc
  * route, so `buildAgents()` applies whichever of those two the active transport
  * calls for, once per registered id. Nothing else about the route changes
