@@ -17,7 +17,7 @@ The Quickstart mounts a single graph at `/`:
 
 This harness has one graph per doc route, so the same call runs once per
 registered id with `path=f"/{agent_id}"`. `frontend/src/app/api/copilotkit/
-route.ts` then points one `LangGraphHttpAgent` at each of those paths.
+route.ts` then points one `HttpAgent` (`@ag-ui/client`) at each of those paths.
 
 The sibling transport is `langgraph.json` + `langgraph dev`; see README §3 for
 why both exist and how to switch. Nothing in `src/graphs/` knows which one is

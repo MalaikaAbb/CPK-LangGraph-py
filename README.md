@@ -38,7 +38,7 @@ Next.js 16 App Router  ·  localhost:3000
   │  Copilot Runtime (@copilotkit/runtime)
   │  one agent per registered graph id
   ▼
-  ├── LANGGRAPH_TRANSPORT=fastapi    → LangGraphHttpAgent({ url })
+  ├── LANGGRAPH_TRANSPORT=fastapi    → HttpAgent({ url })  (@ag-ui/client)
   │     POST http://localhost:8123/<graph-id>
   │     backend/main.py  ·  add_langgraph_fastapi_endpoint per graph
   │
@@ -61,7 +61,7 @@ The Quickstart documents two ways to serve a LangGraph agent and this repo imple
 |---|---|---|
 | Server | `backend/main.py` (uvicorn) | `langgraph dev` (LangGraph CLI) |
 | Mounting | `add_langgraph_fastapi_endpoint` per graph | `backend/langgraph.json` |
-| Runtime class | `LangGraphHttpAgent({ url })` | `LangGraphAgent({ deploymentUrl, graphId })` |
+| Runtime class | `HttpAgent({ url })` from `@ag-ui/client` (was `LangGraphHttpAgent` before the 2026-11 Quickstart) | `LangGraphAgent({ deploymentUrl, graphId })` |
 | Routing by | URL path | `graphId` |
 | Checkpointer | `MemorySaver`, compiled in | supplied by the platform |
 | Extra key | none | `LANGSMITH_API_KEY` |
@@ -370,7 +370,7 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | Doc page | Route | Status | Notes |
 |---|---|---|---|
 | `/langgraph-python` | `/` | 📖 Reference | Orientation + transport readout. |
-| `/langgraph-python/quickstart?agent=bring-your-own` | `/quickstart` | ✅ Working | Both deployment tabs implemented. |
+| `/langgraph-python/quickstart?agent=bring-your-own` | `/quickstart` | ✅ Working | Both deployment tabs implemented. 2026-11 sync: FastAPI tab now uses `HttpAgent` from `@ag-ui/client`, env var `CPK_INTELLIGENCE_API_KEY` (old name still read), provider passes `useSingleEndpoint={false}`. The page's new TypeScript-agent tab is out of scope for this Python repo. |
 | `/langgraph-python/prebuilt-components/chat` | `/prebuilt-components/chat` | ✅ Working | |
 | `/langgraph-python/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | |
 | `/langgraph-python/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | |
@@ -524,7 +524,7 @@ Kept as published. Note that Python suppresses `DeprecationWarning` outside `__m
 
 **5. `~20 snippets specify a model OpenAI does not publish**
 
-Almost every Python snippet used to build on `ChatOpenAI(model="gpt-5.4")` — a placeholder from CopilotKit's internal showcase repo. As of the 2026-11 doc sync the pages are moving to `ChatOpenAI(model="gpt-6-luna", reasoning_effort="none")` (`"openai:gpt-6-luna"` in the `create_agent` one-liners). The harness has not confirmed that a standard OpenAI key can call that model, so it keeps redirecting the literal to `_shared.MODEL`; set `OPENAI_MODEL=gpt-6-luna` in `backend/.env` to try the docs' value. Pages still on `gpt-5.4` cannot run as printed. The only model the docs commit to is the Quickstart's `gpt-4.1-mini`, which is what every graph here uses. The two reasoning routes use `o4-mini`, which the reasoning pages *do* name.
+Almost every Python snippet builds on `ChatOpenAI(model="gpt-5.4")` — a placeholder from CopilotKit's internal showcase repo. Those snippets cannot run as printed. The Quickstart's `gpt-4.1-mini` was the one real model the docs committed to, and is what every graph here uses; the Quickstart's 2026-11 revision moved it to `ChatOpenAI(model="gpt-6-luna", reasoning_effort="none")` too, which the harness has not verified (set `OPENAI_MODEL=gpt-6-luna` in `backend/.env` to try it). The two reasoning routes use `o4-mini`, which the reasoning pages *do* name.
 
 **6. The page's ref write during render**
 
@@ -806,7 +806,7 @@ langgraph-python/
         └── lib/
             ├── nav-config.ts                # ★ routes, docs, status — one source
             ├── agents.ts                    # ★ agent ids + transport switch
-            ├── runtime-agents.ts            # ★ builds LangGraphAgent vs LangGraphHttpAgent
+            ├── runtime-agents.ts            # ★ builds LangGraphAgent vs HttpAgent
             ├── inspector.ts                 # which provider owns the Inspector
             ├── source.ts                    # server-only file reader + repo-root guard
             ├── highlight.ts                 # server-only Shiki wrapper
