@@ -533,6 +533,18 @@ export const NAV: NavGroup[] = [
         statusNote:
           "Renders nothing, faithfully. The published snippet ends after the handlers and never shows the JSX, so there is no UI to reproduce; it also destructures three helpers it never defines. See README §9 item 19.",
       },
+      {
+        path: "/webmcp",
+        hasDemo: true,
+        agentId: "webmcp",
+        title: "WebMCP",
+        docPath: "/langgraph-python/webmcp",
+        summary:
+          "A frontend tool mirrored onto document.modelContext so WebMCP browser agents can call it, plus the core-only registration with no agent.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (via aws-strands-ts); both snippets verbatim, searchOrders is a repo-authored stub. The webmcp option needs CopilotKit 1.71+ and this repo is on 1.70.0, so it is suppressed and ignored: only the chat path works here (README §9 item 37). WebMCP itself also needs Chrome 149+ with the flag or origin trial. Not yet checked in a browser.",
+      },
     ],
   },
   {

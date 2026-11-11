@@ -151,6 +151,9 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "frontend-tools": RegisteredGraph(
         "chat", "frontend_tools_graph", "/langgraph-python/frontend-tools"
     ),
+    "webmcp": RegisteredGraph(
+        "chat", "webmcp_graph", "/langgraph-python/webmcp"
+    ),
     "hitl-in-chat": RegisteredGraph(
         "chat", "hitl_in_chat_graph", "/langgraph-python/human-in-the-loop"
     ),

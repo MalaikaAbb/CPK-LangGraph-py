@@ -135,6 +135,16 @@ voice_graph = build_chat_graph(
 # frontend; CopilotKitMiddleware forwards them in.
 
 frontend_tools_graph = build_chat_graph()
+# `/webmcp` — the page publishes only frontend code (`useFrontendTool` for
+# `searchOrders`, mirrored to `document.modelContext`). Any graph whose
+# middleware forwards frontend tools serves it; the prompt is this repo's
+# (same as CPK-LangGraph-TS's webmcp graph).
+webmcp_graph = build_chat_graph(
+    system_prompt=(
+        "You are a helpful assistant. Use the tools the app registers to answer; "
+        "when the user asks about orders, call `searchOrders`."
+    )
+)
 
 gen_ui_tool_based_graph = build_chat_graph(
     system_prompt=(

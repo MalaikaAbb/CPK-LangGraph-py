@@ -31,6 +31,7 @@
     "byoc_json_render": "./src/graphs/byoc_json_render.py:graph",
     "byoc_hashbrown": "./src/graphs/byoc_hashbrown.py:graph",
     "frontend-tools": "./src/graphs/chat.py:frontend_tools_graph",
+    "webmcp": "./src/graphs/chat.py:webmcp_graph",
     "hitl-in-chat": "./src/graphs/chat.py:hitl_in_chat_graph",
     "interrupt-flow": "./src/graphs/interrupt_flow.py:graph",
     "programmatic-control": "./src/graphs/chat.py:programmatic_control_graph",
