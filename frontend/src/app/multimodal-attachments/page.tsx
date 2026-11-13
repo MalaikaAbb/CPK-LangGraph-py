@@ -97,7 +97,7 @@ export default function Page() {
                 [
                   "maxConcurrentUploads",
                   "1",
-                  "How many files upload at once. Needs CopilotKit 1.71+; ignored on this repo's 1.70.0.",
+                  "How many files upload at once. Needs CopilotKit 1.71+ (this repo is on 1.85).",
                 ],
                 [
                   "onUpload",

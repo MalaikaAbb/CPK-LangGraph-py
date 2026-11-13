@@ -14,7 +14,6 @@ export const copilotkit = new CopilotKitCore({
         const orders = await searchOrders(status);
         return JSON.stringify(orders);
       },
-      // @ts-expect-error `webmcp` ships in @copilotkit/core 1.71+; this repo is on 1.70.0, so it is an unknown property and ignored at runtime (README §9 item 37)
       webmcp: {
         annotations: {
           readOnlyHint: true,
