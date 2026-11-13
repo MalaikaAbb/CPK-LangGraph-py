@@ -627,6 +627,10 @@ The nine [Components and surfaces](https://docs.copilotkit.ai/langgraph-python/g
 
 [JSON Render](https://docs.copilotkit.ai/langgraph-python/generative-ui/json-render) and [Hashbrown](https://docs.copilotkit.ai/langgraph-python/generative-ui/hashbrown) publish complete demos in their Code tabs but no install line. This repo added `@json-render/core` + `@json-render/react` ^0.21.4, `zod4` (`npm:zod@^4.6.7`, imported by the json-render catalog; root `zod` stays 3.25.76 for A2UI, see item 24) and `@hashbrownai/core` + `@hashbrownai/react` **exactly 0.7.0** (the code uses `prompt` and `useUiKit({ examples })`, removed in 0.8). Hashbrown 0.7.0 pins `@ag-ui/core`/`client` 1.0.2 while CopilotKit 1.70.0 pins 0.0.57, so `package.json` has a nested override giving Hashbrown its own 1.0.2 copy; CopilotKit's agents never touch it. Both Code-tab runtime routes hardcode `new LangGraphAgent({ deploymentUrl, graphId })`, which only works against `langgraph dev`; here they call `buildAgents` (as Voice and A2UI do) so the default FastAPI transport works. The Python agents live at the docs' own paths under `backend/src/agents/`, re-exported by `src/graphs/byoc_*.py`. Each Code tab's `chat.tsx` also imports `./suggestions` (suggestion chips); those files are showcase demo extras, not needed for rendering, so they were not copied and the import/call lines are kept as `// doc:` comments.
 
+**39. Reasoning's dark-mode classes use shadcn tokens this repo doesn't define**
+
+Since the 2026-11 doc sync, [Reasoning](https://docs.copilotkit.ai/langgraph-python/generative-ui/reasoning)'s `ReasoningBlock` adds `dark:border-border`, `dark:text-foreground`, `dark:bg-card` and `dark:text-muted-foreground`. These are shadcn theme tokens; this repo's Tailwind v4 `@theme` defines none of them, so in dark mode the classes generate nothing and the block keeps its light colours (white "Reasoning" pill, dark grey text). Copied as published in `frontend/src/app/generative-ui/reasoning/reasoning-block.tsx`.
+
 ### Things the docs reference but never define
 
 **38. The new Human-in-the-loop pages print excerpts, not agents**
