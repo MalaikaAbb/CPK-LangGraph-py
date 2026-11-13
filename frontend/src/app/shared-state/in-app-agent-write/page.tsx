@@ -13,7 +13,7 @@ export default function Page() {
           in both of the forms the page shows. The plain version writes state and
           stops — the value is picked up &ldquo;next time the agent runs&rdquo;.
           The Advanced Usage version follows it with{" "}
-          <code>agent.runAgent()</code> to re-run immediately rather than waiting
+          <code>copilotkit.runAgent({"{ agent }"})</code> to re-run immediately rather than waiting
           for the user&apos;s next message.
         </p>
         <div className="mt-4">

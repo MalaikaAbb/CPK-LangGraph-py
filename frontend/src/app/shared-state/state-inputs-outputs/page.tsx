@@ -1,6 +1,19 @@
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode } from "@/components/source-code";
-import { Callout, Panel, TryIt } from "@/components/ui";
+import { Callout, CodeBlock, Panel, TryIt } from "@/components/ui";
+
+// Verbatim from the page's "Emitting a state key outside the output schema"
+// section (2026-11). Reference only: no released ag-ui-langgraph (checked up
+// to 0.0.47; this repo runs 0.0.42) or copilotkit (up to 0.1.96) reads
+// `schema_keys` from the agent config, so wiring it would change nothing.
+// See README §9 item 32.
+const SCHEMA_KEYS = `from copilotkit import LangGraphAGUIAgent
+
+agent = LangGraphAGUIAgent(
+    name="sample_agent",
+    graph=graph,
+    config={"schema_keys": {"output": ["steps"]}},
+)`;
 
 export default function Page() {
   return (
@@ -36,6 +49,20 @@ export default function Page() {
 
       <Panel title="The graph">
         <SourceCode file="backend/src/graphs/state_inputs_outputs.py" region="agent" />
+      </Panel>
+
+      <Panel title="Emitting a key outside the output schema — reference only">
+        <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
+          New on the page: list extra keys under <code>schema_keys</code> in
+          the agent&apos;s <code>config</code> and they are emitted alongside
+          the output schema&apos;s. Not wired here, because no released{" "}
+          <code>ag-ui-langgraph</code> (through 0.0.47) or{" "}
+          <code>copilotkit</code> (through 0.1.96) reads that config key: its{" "}
+          <code>get_schema_keys</code> still derives keys from the graph&apos;s
+          schemas only. Wiring it onto this agent would also contradict the
+          route&apos;s main lesson that <code>resources</code> stays hidden.
+        </p>
+        <CodeBlock code={SCHEMA_KEYS} language="python" />
       </Panel>
 
       <Callout tone="warn" title="The page's constructor keywords are deprecated">

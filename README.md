@@ -458,11 +458,11 @@ Commit it along with the rest of `doc-snapshot/` — together with `git log -p d
 | `/langgraph-python/shared-state/streaming` | `/shared-state/streaming` | ✅ Working | |
 | `/langgraph-python/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ✅ Working | |
 | `/langgraph-python/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | The page's custom `chat_node` graph; only its elided node body was filled in. See §9 item 18. |
-| `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | |
-| `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. |
-| `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. |
-| `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. Its `operator.add` reducer contradicts the page's new merge-by-id callout, so the log doubles on a continued thread (§9 item 30). |
-| `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | `build_system_prompt` wording is this repo's. |
+| `/langgraph-python/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | Re-run now uses `copilotkit.runAgent({ agent })` per the 2026-11 page (was `agent.runAgent()`); not yet re-checked in a browser. |
+| `/langgraph-python/shared-state/state-inputs-outputs` | `/shared-state/state-inputs-outputs` | ✅ Working | Uses the page's deprecated `input=`/`output=` keywords — doc-verbatim. The page's new `schema_keys` section is reference-only: no released package reads it (§9 item 32). |
+| `/langgraph-python/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ✅ Working | All three variants live: manual emission, tool emission, prebuilt. Tool emission is now the page's complete 2026-11 graph (verbatim; model and checkpointer redirected); not yet re-checked in a browser. |
+| `/langgraph-python/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | The page never prints the supervisor; that `create_agent` call is this repo's. |
+| `/langgraph-python/agent-config` | `/agent-config` | ✅ Working | Backend is now the page's Code-tab rulebook agent (2026-11); option values follow its prompt because `config-types.ts` is unpublished (§9 item 17). Not yet re-checked in a browser. |
 | `/langgraph-python/agent-app-context` | `/agent-app-context` | ✅ Working | |
 | `/langgraph-python/configurable` | `/configurable` | ⚠️ Partial | Page rewritten 2026-11 (trust boundary). `build_agent` + node verbatim; reply node, per-request endpoint and tenant stand-in are harness glue (§9 item 3). FastAPI transport only. Not yet checked in a browser. |
 | `/langgraph-python/subgraphs` | `/subgraphs` | ⚠️ Partial | The page prints no agent code at all; the graph is this repo's. |
@@ -614,6 +614,9 @@ The `--copilot-kit-*` variables and the `CopilotKitCSSProperties` helper importe
 
 `@copilotkit/react-ui` is v1 and nothing on that page imports from it. Not a dependency here. The provider snippet also imports `CopilotKit` — that is the v1 compatibility wrapper; a v2 app root wants `CopilotKitProvider`.
 
+**32. `schema_keys` in the agent config is not read by any released package**
+
+[Input/Output Schemas](https://docs.copilotkit.ai/langgraph-python/shared-state/state-inputs-outputs) now documents `LangGraphAGUIAgent(..., config={"schema_keys": {"output": ["steps"]}})` to emit state keys outside a narrow output schema, and says a malformed value is logged and ignored. Checked on 2026-11-09: `ag-ui-langgraph` 0.0.42 (installed) through 0.0.47 (latest on PyPI) and `copilotkit` 0.1.96 never read `schema_keys` from the config; `get_schema_keys` only introspects the graph. The snippet is shown as reference-only text on `/shared-state/state-inputs-outputs`; wiring it would be a silent no-op.
 **37. WebMCP's `webmcp` option needs CopilotKit 1.71+**
 
 [WebMCP](https://docs.copilotkit.ai/langgraph-python/webmcp) adds `webmcp: { annotations: { readOnlyHint: true } }` to `useFrontendTool` and to a `CopilotKitCore` tool so the tool is also registered on `document.modelContext`. `@copilotkit/react-core` / `@copilotkit/core` 1.70.0 (this repo's pin) have no WebMCP support (it first appears in 1.71.0). Both snippets are verbatim in `frontend/src/app/webmcp/_demo/` with `@ts-expect-error` on the `webmcp` line; at runtime the option is ignored. The page also never defines `searchOrders`; the stub comes from CPK-LangGraph-TS (via aws-strands-ts).
@@ -658,9 +661,9 @@ The page's prose still prints only the head of its agent (imports, prompt, `get_
 
 [Shared State](https://docs.copilotkit.ai/langgraph-python/shared-state) publishes its `create_agent` literal in full, referencing both. Neither definition appears anywhere. Written here to what the page describes in prose and in its own system prompt.
 
-**17. `build_system_prompt`**
+**17. ~~`build_system_prompt`~~ — resolved 2026-11; Agent Config's option values still unpublished**
 
-[Agent Config](https://docs.copilotkit.ai/langgraph-python/agent-config)'s node calls it every turn and prints `read_config_value` in full, but never the function that turns three fields into directives. Its wording here is this repo's; only its job is the page's.
+[Agent Config](https://docs.copilotkit.ai/langgraph-python/agent-config) no longer prints `read_config_value`, `my_agent_node` or the call to the never-defined `build_system_prompt`; its prose now shows a pseudocode "backend flow" and points at the demo Code tab's `agent_config_agent.py` (a static rulebook `SYSTEM_PROMPT` plus `CopilotKitMiddleware`). `backend/src/graphs/agent_config.py` is now that file. Still missing: the Code tab imports `./config-types` (the `TONE_OPTIONS` etc. the selects use) but does not show it, so the route's option lists are taken from the values the published rulebook names (`professional`/`casual`/`enthusiastic`, `beginner`/`intermediate`/`expert`, `concise`/`detailed`).
 
 **18. The in-app read/write pages elide their node body**
 
