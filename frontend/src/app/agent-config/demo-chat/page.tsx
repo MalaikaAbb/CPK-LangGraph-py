@@ -15,8 +15,13 @@ import { DemoFrame } from "@/components/demo-frame";
  * langgraph-python is a `shared-state` framework in the page's own taxonomy, so
  * config travels as runtime context rather than provider properties: the UI
  * holds a typed object, `ConfigContextRelay` publishes it with
- * `useAgentContext`, and the backend rebuilds its system prompt from it on
- * every turn.
+ * `useAgentContext`, and `CopilotKitMiddleware` injects it into the prompt on
+ * every turn, where the agent's rulebook prompt (from the page's Code tab)
+ * maps each value to a style.
+ *
+ * The option lists are harness glue: the page's `config-types.ts` is not
+ * among its Code tabs, so the values are the ones the published
+ * `SYSTEM_PROMPT` rulebook names (README §9 item 17).
  *
  * `ConfigContextRelay` is a separate null-rendering component, exactly as the
  * page writes it. That is not ceremony — keeping the hook out of the panel
@@ -29,9 +34,9 @@ type AgentConfig = {
 };
 
 const OPTIONS: Record<keyof AgentConfig, string[]> = {
-  tone: ["professional", "friendly", "playful", "formal"],
+  tone: ["professional", "casual", "enthusiastic"],
   expertise: ["beginner", "intermediate", "expert"],
-  responseLength: ["concise", "balanced", "detailed"],
+  responseLength: ["concise", "detailed"],
 };
 
 export default function Page() {
