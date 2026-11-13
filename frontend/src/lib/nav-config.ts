@@ -461,6 +461,8 @@ export const NAV: NavGroup[] = [
         status: "partial",
         statusNote:
           "Ported from CPK-LangGraph-TS (via aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Airport and Arrow are repo scaffolding. The support matrix rules out @ag-ui/a2ui-toolkit 0.0.5 agent tools, (aws-strands-ts's fixed-schema agent; this repo's builds operations by hand).",
+      },
+      {
         path: "/generative-ui/json-render",
         hasDemo: true,
         agentId: "byoc_json_render",
