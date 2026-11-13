@@ -33,15 +33,15 @@ export default function Page() {
         </div>
       </Panel>
 
-      <Callout tone="warn" title="The webmcp option needs CopilotKit 1.71+">
+      <Callout tone="info" title="The webmcp option needs CopilotKit 1.71+">
         <p>
-          This repo is on <code>@copilotkit/react-core</code> /{" "}
-          <code>@copilotkit/core</code> 1.70.0, which have no WebMCP bridge.
-          The page&apos;s <code>webmcp: {"{ annotations }"}</code> is kept
-          verbatim with a <code>@ts-expect-error</code> and is ignored at
-          runtime, so nothing is mirrored onto{" "}
-          <code>document.modelContext</code> here. The chat path (the agent
-          calling <code>searchOrders</code>) works. See README §9 item 37.
+          WebMCP support first shipped in <code>@copilotkit/react-core</code> /{" "}
+          <code>@copilotkit/core</code> 1.71. Since the bump to 1.85 the
+          page&apos;s <code>webmcp: {"{ annotations }"}</code> type-checks
+          without a suppression and reaches the registry; whether it mirrors
+          onto <code>document.modelContext</code> still depends on a
+          WebMCP-capable browser (Chrome 149+ with the flag). Not yet
+          re-checked in a browser. See README §9 item 37.
         </p>
       </Callout>
 
