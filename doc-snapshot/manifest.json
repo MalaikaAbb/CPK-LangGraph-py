@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "docsRoot": "https://docs.copilotkit.ai/langgraph-python",
-  "syncedAt": "2026-11-09T12:31:20.901Z",
+  "syncedAt": "2026-11-13T11:09:19.664Z",
   "pages": {
     "/langgraph-python": {
       "file": "langgraph-python.md",
@@ -15,7 +15,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:21 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/agent-app-context": {
       "file": "langgraph-python__agent-app-context.md",
@@ -27,7 +27,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:21 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/agent-config": {
       "file": "langgraph-python__agent-config.md",
@@ -39,7 +39,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:21 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/configurable": {
       "file": "langgraph-python__configurable.md",
@@ -51,7 +51,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:21 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/custom-look-and-feel/css": {
       "file": "langgraph-python__custom-look-and-feel__css.md",
@@ -63,7 +63,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:21 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/custom-look-and-feel/headless-ui": {
       "file": "langgraph-python__custom-look-and-feel__headless-ui.md",
@@ -75,7 +75,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:21 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
+    },
+    "/langgraph-python/custom-look-and-feel/markdown": {
+      "file": "langgraph-python__custom-look-and-feel__markdown.md",
+      "sha256": "6d919c06f1cd9a4981f0140b336c41b1bbcca0f98c79d2019cfe650aae6480a2",
+      "bytes": 5848,
+      "lines": 159,
+      "routes": [
+        "/custom-look-and-feel/markdown"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/custom-look-and-feel/reasoning-messages": {
       "file": "langgraph-python__custom-look-and-feel__reasoning-messages.md",
@@ -87,7 +99,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/custom-look-and-feel/slots": {
       "file": "langgraph-python__custom-look-and-feel__slots.md",
@@ -99,7 +111,31 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
+    },
+    "/langgraph-python/deploy-agentcore": {
+      "file": "langgraph-python__deploy-agentcore.md",
+      "sha256": "a3f325e6f59bc3f478baede38a3e528083028c8c03d7fb4a5d9120c12ee6824a",
+      "bytes": 131,
+      "lines": 5,
+      "routes": [
+        "/deploy-agentcore"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
+    },
+    "/langgraph-python/deploy-langsmith": {
+      "file": "langgraph-python__deploy-langsmith.md",
+      "sha256": "55f59ffab334d97fe600605caa1fe95672726dae4a28f4394f75ab3dfaaa8ed4",
+      "bytes": 185,
+      "lines": 5,
+      "routes": [
+        "/deploy-langsmith"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/frontend-tools": {
       "file": "langgraph-python__frontend-tools.md",
@@ -111,43 +147,187 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
+    },
+    "/langgraph-python/generative-ui/a2ui": {
+      "file": "langgraph-python__generative-ui__a2ui.md",
+      "sha256": "ad84b3742b5343e7fc339458f26694b3753ce526d4ad2efb0c82a497914dea8d",
+      "bytes": 6208,
+      "lines": 166,
+      "routes": [
+        "/generative-ui/a2ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/generative-ui/a2ui/dynamic-schema": {
       "file": "langgraph-python__generative-ui__a2ui__dynamic-schema.md",
-      "sha256": "706aaf55243fb3d837ee3628e759e2205cb024c5938004c08f48d0b5dea1eaf4",
-      "bytes": 22983,
-      "lines": 688,
+      "sha256": "0c143b09612e448165e01a8305d3d3802cca7b04b7bc925f2236e6fc7b4938f4",
+      "bytes": 23139,
+      "lines": 689,
       "routes": [
         "/generative-ui/a2ui/dynamic-schema"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
     },
     "/langgraph-python/generative-ui/a2ui/fixed-schema": {
       "file": "langgraph-python__generative-ui__a2ui__fixed-schema.md",
-      "sha256": "ce0e615bce63db93ca767878ee355ecfe39f98cd24cb930eb666e0d856a2e46e",
-      "bytes": 21656,
+      "sha256": "c3acb8ef80ee62b2ae93791ae7f4b02dd7c29e08c3c67dbee1f2769832a7dc89",
+      "bytes": 21830,
       "lines": 605,
       "routes": [
         "/generative-ui/a2ui/fixed-schema"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:20 GMT"
+    },
+    "/langgraph-python/generative-ui/components": {
+      "file": "langgraph-python__generative-ui__components.md",
+      "sha256": "0d60b5b9a848abb3763452cb1c9df1b9ea54bc7b8c3368ed90730b4b8a17bbb7",
+      "bytes": 33629,
+      "lines": 795,
+      "routes": [
+        "/generative-ui/components"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/catalogs": {
+      "file": "langgraph-python__generative-ui__components__catalogs.md",
+      "sha256": "d3329fa607c255c2538ef5582289c50fb108869b3982aa59200ee2d8101f9865",
+      "bytes": 23837,
+      "lines": 520,
+      "routes": [
+        "/generative-ui/components/catalogs"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/markdown-mode": {
+      "file": "langgraph-python__generative-ui__components__markdown-mode.md",
+      "sha256": "d6cb43114e6aa4922cd7f9b7de92010e5e8258df356911bb18a13b0f915815b3",
+      "bytes": 8753,
+      "lines": 188,
+      "routes": [
+        "/generative-ui/components/markdown-mode"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/standard-catalog": {
+      "file": "langgraph-python__generative-ui__components__standard-catalog.md",
+      "sha256": "81b4e2b20d2f193fca9532d25e7f00ba9f37707bdf6051a17839d827a936e963",
+      "bytes": 16188,
+      "lines": 238,
+      "routes": [
+        "/generative-ui/components/standard-catalog"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/state-and-actions": {
+      "file": "langgraph-python__generative-ui__components__state-and-actions.md",
+      "sha256": "78cc473fc744a706998de8bd1d4c652e1c576d21022d36c48029fdea154e2161",
+      "bytes": 23525,
+      "lines": 556,
+      "routes": [
+        "/generative-ui/components/state-and-actions"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/surfaces": {
+      "file": "langgraph-python__generative-ui__components__surfaces.md",
+      "sha256": "b96b98373c1c87bdb5ce1a8730b9fe63187329a8eda6678393968ddc3793e750",
+      "bytes": 21280,
+      "lines": 427,
+      "routes": [
+        "/generative-ui/components/surfaces"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/theming": {
+      "file": "langgraph-python__generative-ui__components__theming.md",
+      "sha256": "0a004bf6fdcad3dae03bad1cc1a6fb52074edb7c23b7d8c3f0eb384708984509",
+      "bytes": 6808,
+      "lines": 203,
+      "routes": [
+        "/generative-ui/components/theming"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/components/transports": {
+      "file": "langgraph-python__generative-ui__components__transports.md",
+      "sha256": "9b09761dfad89878ce800e09a88fb5106b09463312558eccac09f1f3ed0072fe",
+      "bytes": 5164,
+      "lines": 139,
+      "routes": [
+        "/generative-ui/components/transports"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/hashbrown": {
+      "file": "langgraph-python__generative-ui__hashbrown.md",
+      "sha256": "3221eae3fc70fe892f4cf6e35f3c14464e495786789339d61278d43629187ce4",
+      "bytes": 11960,
+      "lines": 355,
+      "routes": [
+        "/generative-ui/hashbrown"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/json-render": {
+      "file": "langgraph-python__generative-ui__json-render.md",
+      "sha256": "08bec45db7713adafc0082d99213394800f22935d10e3bedbd8a2b1d8049ad37",
+      "bytes": 9596,
+      "lines": 265,
+      "routes": [
+        "/generative-ui/json-render"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
+    },
+    "/langgraph-python/generative-ui/mcp-apps": {
+      "file": "langgraph-python__generative-ui__mcp-apps.md",
+      "sha256": "ceedf0a4fc5df538d60025495afe9149ddfd97dc262810f3b92000faf58222ec",
+      "bytes": 8572,
+      "lines": 241,
+      "routes": [
+        "/generative-ui/mcp-apps"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
     },
     "/langgraph-python/generative-ui/reasoning": {
       "file": "langgraph-python__generative-ui__reasoning.md",
-      "sha256": "ec267500ed7296682ba35af3cd436815faf742cb6df48c6c472d76d1d2359c5d",
-      "bytes": 5646,
+      "sha256": "92457cd81ee6cb58e275e007c76ae1aa20dfb7407ab95c9f3db3df7cb170f3ab",
+      "bytes": 5780,
       "lines": 180,
       "routes": [
         "/generative-ui/reasoning"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
     },
     "/langgraph-python/generative-ui/state-rendering": {
       "file": "langgraph-python__generative-ui__state-rendering.md",
@@ -159,7 +339,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
     },
     "/langgraph-python/generative-ui/tool-based": {
       "file": "langgraph-python__generative-ui__tool-based.md",
@@ -171,7 +351,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
     },
     "/langgraph-python/generative-ui/tool-rendering": {
       "file": "langgraph-python__generative-ui__tool-rendering.md",
@@ -183,7 +363,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
     },
     "/langgraph-python/guardrails": {
       "file": "langgraph-python__guardrails.md",
@@ -195,7 +375,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:21 GMT"
     },
     "/langgraph-python/headless-threads": {
       "file": "langgraph-python__headless-threads.md",
@@ -207,7 +387,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/human-in-the-loop": {
       "file": "langgraph-python__human-in-the-loop.md",
@@ -219,7 +399,43 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
+    },
+    "/langgraph-python/human-in-the-loop/governed-actions": {
+      "file": "langgraph-python__human-in-the-loop__governed-actions.md",
+      "sha256": "c3ffbf2aa5a8b697765c47f5668c9ac1f3608ae778728bb504b77c18a995214b",
+      "bytes": 7168,
+      "lines": 256,
+      "routes": [
+        "/human-in-the-loop/governed-actions"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
+    },
+    "/langgraph-python/human-in-the-loop/headless": {
+      "file": "langgraph-python__human-in-the-loop__headless.md",
+      "sha256": "ed84a3dce47f36f26b5a331e6d6bf52d69efe468f0970c9f092a04e9e31abbd3",
+      "bytes": 12449,
+      "lines": 386,
+      "routes": [
+        "/human-in-the-loop/headless"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
+    },
+    "/langgraph-python/human-in-the-loop/index": {
+      "file": "langgraph-python__human-in-the-loop__index.md",
+      "sha256": "43c8e73179a6000e6a754f629710ab9034bdbd6c17cc6e93b5704d7c9f2044b1",
+      "bytes": 7495,
+      "lines": 230,
+      "routes": [
+        "/human-in-the-loop/index"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/human-in-the-loop/interrupt-flow": {
       "file": "langgraph-python__human-in-the-loop__interrupt-flow.md",
@@ -231,19 +447,31 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
+    },
+    "/langgraph-python/human-in-the-loop/useInterrupt": {
+      "file": "langgraph-python__human-in-the-loop__useInterrupt.md",
+      "sha256": "274bbce7cf4433c3745859c2e4e9094b14da03fde17ad3a98f815287464da44b",
+      "bytes": 16571,
+      "lines": 460,
+      "routes": [
+        "/human-in-the-loop/useInterrupt"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/multi-agent/subagents": {
       "file": "langgraph-python__multi-agent__subagents.md",
-      "sha256": "4ffe47aca8504d7ffb11ef261e3fbb3fcc9ab14517d3a379b29bb62a981b0617",
-      "bytes": 25696,
-      "lines": 694,
+      "sha256": "53ed61b8ab5084f7abd364c9d83abb6499e910364ca2c1ee3a095f50290cca59",
+      "bytes": 26133,
+      "lines": 696,
       "routes": [
         "/multi-agent/subagents"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/multimodal-attachments": {
       "file": "langgraph-python__multimodal-attachments.md",
@@ -255,7 +483,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/prebuilt-components/chat": {
       "file": "langgraph-python__prebuilt-components__chat.md",
@@ -267,7 +495,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/prebuilt-components/chat-controls": {
       "file": "langgraph-python__prebuilt-components__chat-controls.md",
@@ -279,7 +507,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:22 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/prebuilt-components/copilot-threads-drawer": {
       "file": "langgraph-python__prebuilt-components__copilot-threads-drawer.md",
@@ -291,7 +519,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/prebuilt-components/popup": {
       "file": "langgraph-python__prebuilt-components__popup.md",
@@ -303,7 +531,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/prebuilt-components/sidebar": {
       "file": "langgraph-python__prebuilt-components__sidebar.md",
@@ -315,19 +543,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/programmatic-control": {
       "file": "langgraph-python__programmatic-control.md",
-      "sha256": "5c89f2ab46e65ec24cd72904f8beac1b884cf63246eb64daf6162541ba637982",
-      "bytes": 9997,
+      "sha256": "efa64e575141f27a8b51818f7742a944fb62249d0f309d82e0fc17b5bd3e5787",
+      "bytes": 10054,
       "lines": 301,
       "routes": [
         "/programmatic-control"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/quickstart": {
       "file": "langgraph-python__quickstart.md",
@@ -339,19 +567,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/shared-state": {
       "file": "langgraph-python__shared-state.md",
-      "sha256": "9da706eca3ccc8b25e9adb7f26fd7de2fed379f6bec70fdf3150eea7f8a0d92b",
-      "bytes": 10989,
+      "sha256": "2471f12f395e71d6af640aa8800a1c6d63261f08c410632da1b52a6cb6b9d5ac",
+      "bytes": 11151,
       "lines": 311,
       "routes": [
         "/shared-state"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/shared-state/agent-readonly": {
       "file": "langgraph-python__shared-state__agent-readonly.md",
@@ -363,7 +591,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/shared-state/in-app-agent-read": {
       "file": "langgraph-python__shared-state__in-app-agent-read.md",
@@ -375,7 +603,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/shared-state/in-app-agent-write": {
       "file": "langgraph-python__shared-state__in-app-agent-write.md",
@@ -387,7 +615,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:22 GMT"
     },
     "/langgraph-python/shared-state/predictive-state-updates": {
       "file": "langgraph-python__shared-state__predictive-state-updates.md",
@@ -399,7 +627,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     },
     "/langgraph-python/shared-state/rendering-in-app": {
       "file": "langgraph-python__shared-state__rendering-in-app.md",
@@ -411,7 +639,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     },
     "/langgraph-python/shared-state/state-inputs-outputs": {
       "file": "langgraph-python__shared-state__state-inputs-outputs.md",
@@ -423,7 +651,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     },
     "/langgraph-python/shared-state/streaming": {
       "file": "langgraph-python__shared-state__streaming.md",
@@ -435,7 +663,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     },
     "/langgraph-python/subgraphs": {
       "file": "langgraph-python__subgraphs.md",
@@ -447,7 +675,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     },
     "/langgraph-python/threads-lifecycle": {
       "file": "langgraph-python__threads-lifecycle.md",
@@ -459,7 +687,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     },
     "/langgraph-python/voice": {
       "file": "langgraph-python__voice.md",
@@ -471,11 +699,23 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 09 Nov 2026 12:31:23 GMT"
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
+    },
+    "/langgraph-python/webmcp": {
+      "file": "langgraph-python__webmcp.md",
+      "sha256": "40b41987665787cab3df6c49734208350c54ceeb3166a06e189055ad40b2172f",
+      "bytes": 7495,
+      "lines": 165,
+      "routes": [
+        "/webmcp"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 11:09:23 GMT"
     }
   },
   "sitemap": {
-    "fetchedAt": "2026-11-09T12:31:20.901Z",
+    "fetchedAt": "2026-11-13T11:09:19.664Z",
     "urlsUnderRoot": 216,
     "knownUnmapped": [
       "https://docs.copilotkit.ai/langgraph-python/AG-UI-Streams",
@@ -527,6 +767,7 @@
       "https://docs.copilotkit.ai/langgraph-python/cookbook/arcade",
       "https://docs.copilotkit.ai/langgraph-python/cookbook/claude-managed-agents",
       "https://docs.copilotkit.ai/langgraph-python/cookbook/daytona",
+      "https://docs.copilotkit.ai/langgraph-python/cookbook/google-antigravity",
       "https://docs.copilotkit.ai/langgraph-python/cookbook/jev-generative-ui",
       "https://docs.copilotkit.ai/langgraph-python/cookbook/manufact",
       "https://docs.copilotkit.ai/langgraph-python/cookbook/openbox-governed-copilotkit",

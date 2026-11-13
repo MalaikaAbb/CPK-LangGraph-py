@@ -1,0 +1,4 @@
+# LangSmith Platform
+
+> Deploy your LangGraph agent to the LangSmith Platform and connect it to CopilotKit.
+<Content framework="langgraph" partial="integrations/langsmith/index.mdx" />

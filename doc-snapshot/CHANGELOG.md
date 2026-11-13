@@ -8,6 +8,230 @@ Holds the 3 most recent dated entries. When a change lands on a fourth
 date, the oldest entry is dropped. Entries are counted, not aged, so a gap of
 weeks between changes does not expire anything.
 
+## 2026-11-13
+
+### 11:09 UTC — 26 pages, highest severity high
+
+**High — A2UI · Dynamic Schema**
+
+`/langgraph-python/generative-ui/a2ui/dynamic-schema` · route `/generative-ui/a2ui/dynamic-schema` · under “Implement the React renderers” · in a `typescript` block
+
+9 code lines changed.
+
+````diff
+- up: "#059669",
+- down: "#dc2626",
++ up: "light-dark(#059669, #34d399)",
++ down: "light-dark(#dc2626, #f87171)",
++ stroke="var(--card)"
+- <Tooltip />
++ <Tooltip contentStyle={tooltipStyle} />
+- <Tooltip />
+````
+
+**High — A2UI · Fixed Schema**
+
+`/langgraph-python/generative-ui/a2ui/fixed-schema` · route `/generative-ui/a2ui/fixed-schema` · under “Implement the React renderers” · in a `typescript` block
+
+16 code lines changed.
+
+````diff
+- <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
++ <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500 dark:text-muted-foreground">
+- <h3 className="text-base font-semibold leading-none tracking-tight text-neutral-900">
++ <h3 className="text-base font-semibold leading-none tracking-tight text-neutral-900 dark:text-foreground">
+- <span className="font-mono text-2xl font-semibold tracking-wider text-neutral-900">
++ <span className="font-mono text-2xl font-semibold tracking-wider text-neutral-900 dark:text-foreground">
+- <Separator className="flex-1 bg-neutral-200" />
++ <Separator className="flex-1 bg-neutral-200 dark:bg-border" />
+````
+
+**High — Reasoning**
+
+`/langgraph-python/generative-ui/reasoning` · route `/generative-ui/reasoning` · under “Custom reasoning rendering” · in a `typescript` block
+
+10 code lines changed.
+
+````diff
+- className="my-2 rounded-xl border border-[#DBDBE5] bg-[#BEC2FF1A] px-3.5 py-2.5 text-sm"
++ className="my-2 rounded-xl border border-[#DBDBE5] bg-[#BEC2FF1A] px-3.5 py-2.5 text-sm dark:border-border"
+- <div className="flex items-center gap-2 font-medium text-[#010507]">
+- <span className="inline-block rounded-full border border-[#BEC2FF] bg-white px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-[#57575B]">
++ <div className="flex items-center gap-2 font-medium text-[#010507] dark:text-foreground">
++ <span className="inline-block rounded-full border border-[#BEC2FF] bg-white px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-[#57575B] dark:bg-card dark:text-muted-foreground">
+- <span className="text-[#57575B]">
++ <span className="text-[#57575B] dark:text-muted-foreground">
+````
+
+**High — Sub-Agents**
+
+`/langgraph-python/multi-agent/subagents` · route `/multi-agent/subagents` · under “Rendering a live delegation log” · in a `typescript` block
+
+30 code lines changed.
+
+````diff
+- className="w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-[#DBDBE5] overflow-hidden"
++ className="w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-[#DBDBE5] overflow-hidden dark:bg-card dark:border-border"
+- <div className="flex items-center justify-between px-6 py-3 border-b border-[#E9E9EF] bg-[#FAFAFC]">
++ <div className="flex items-center justify-between px-6 py-3 border-b border-[#E9E9EF] bg-[#FAFAFC] dark:border-border dark:bg-muted">
+- <span className="text-lg font-semibold text-[#010507]">
++ <span className="text-lg font-semibold text-[#010507] dark:text-foreground">
+- className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[#BEC2FF] bg-[#BEC2FF1A] text-[#010507] text-[10px] font-semibold uppercase tracking-[0.12em]"
++ className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[#BEC2FF] bg-[#BEC2FF1A] text-[#010507] text-[10px] font-semibold uppercase tracking-[0.12em] dark:text-foreground"
+````
+
+**High — Programmatic Control**
+
+`/langgraph-python/programmatic-control` · route `/programmatic-control` · under “Resolving a LangGraph interrupt from a button” · in a `typescript` block
+
+4 code lines changed.
+
+````diff
+- <div className="grid h-screen grid-cols-[1fr_420px] bg-[#FAFAFC]">
++ <div className="grid h-screen grid-cols-[1fr_420px] bg-[#FAFAFC] dark:bg-background">
+- <div className="border-l border-[#DBDBE5] bg-white">
++ <div className="border-l border-[#DBDBE5] bg-white dark:border-border dark:bg-background">
+````
+
+**High — Shared State**
+
+`/langgraph-python/shared-state` · route `/shared-state` · under “Rendering shared state in the UI” · in a `typescript` block
+
+10 code lines changed.
+
+````diff
+- <code className="font-mono text-[11px] text-[#010507]">
++ <code className="font-mono text-[11px] text-[#010507] dark:text-foreground">
+- className="text-sm text-[#838389] italic min-h-[160px] flex items-center justify-center text-center px-4 border border-dashed border-[#E9E9EF] rounded-xl bg-[#FAFAFC]"
++ className="text-sm text-[#838389] italic min-h-[160px] flex items-center justify-center text-center px-4 border border-dashed border-[#E9E9EF] rounded-xl bg-[#FAFAFC] dark:text-muted-foreground dark:border-border dark:bg-muted"
+- className="space-y-2 text-sm text-[#010507]"
++ className="space-y-2 text-sm text-[#010507] dark:text-foreground"
+- className="flex gap-2 rounded-lg border border-[#E9E9EF] bg-[#FAFAFC] px-3 py-2"
++ className="flex gap-2 rounded-lg border border-[#E9E9EF] bg-[#FAFAFC] px-3 py-2 dark:border-border dark:bg-muted"
+````
+
+**Info — Markdown Rendering**
+
+`/langgraph-python/custom-look-and-feel/markdown` · route `/custom-look-and-feel/markdown`
+
+Now tracked for the first time.
+
+**Info — AWS AgentCore**
+
+`/langgraph-python/deploy-agentcore` · route `/deploy-agentcore`
+
+Now tracked for the first time.
+
+**Info — LangSmith Platform**
+
+`/langgraph-python/deploy-langsmith` · route `/deploy-langsmith`
+
+Now tracked for the first time.
+
+**Info — A2UI**
+
+`/langgraph-python/generative-ui/a2ui` · route `/generative-ui/a2ui`
+
+Now tracked for the first time.
+
+**Info — Components and surfaces**
+
+`/langgraph-python/generative-ui/components` · route `/generative-ui/components`
+
+Now tracked for the first time.
+
+**Info — Components · Catalogs**
+
+`/langgraph-python/generative-ui/components/catalogs` · route `/generative-ui/components/catalogs`
+
+Now tracked for the first time.
+
+**Info — Components · Markdown mode**
+
+`/langgraph-python/generative-ui/components/markdown-mode` · route `/generative-ui/components/markdown-mode`
+
+Now tracked for the first time.
+
+**Info — Components · Standard catalog**
+
+`/langgraph-python/generative-ui/components/standard-catalog` · route `/generative-ui/components/standard-catalog`
+
+Now tracked for the first time.
+
+**Info — Components · State and actions**
+
+`/langgraph-python/generative-ui/components/state-and-actions` · route `/generative-ui/components/state-and-actions`
+
+Now tracked for the first time.
+
+**Info — Components · Surfaces**
+
+`/langgraph-python/generative-ui/components/surfaces` · route `/generative-ui/components/surfaces`
+
+Now tracked for the first time.
+
+**Info — Components · Theming**
+
+`/langgraph-python/generative-ui/components/theming` · route `/generative-ui/components/theming`
+
+Now tracked for the first time.
+
+**Info — Components · Transports**
+
+`/langgraph-python/generative-ui/components/transports` · route `/generative-ui/components/transports`
+
+Now tracked for the first time.
+
+**Info — Hashbrown**
+
+`/langgraph-python/generative-ui/hashbrown` · route `/generative-ui/hashbrown`
+
+Now tracked for the first time.
+
+**Info — JSON Render**
+
+`/langgraph-python/generative-ui/json-render` · route `/generative-ui/json-render`
+
+Now tracked for the first time.
+
+**Info — MCP Apps**
+
+`/langgraph-python/generative-ui/mcp-apps` · route `/generative-ui/mcp-apps`
+
+Now tracked for the first time.
+
+**Info — Governed Action Approval UI**
+
+`/langgraph-python/human-in-the-loop/governed-actions` · route `/human-in-the-loop/governed-actions`
+
+Now tracked for the first time.
+
+**Info — Headless Interrupts**
+
+`/langgraph-python/human-in-the-loop/headless` · route `/human-in-the-loop/headless`
+
+Now tracked for the first time.
+
+**Info — HITL Overview**
+
+`/langgraph-python/human-in-the-loop/index` · route `/human-in-the-loop/index`
+
+Now tracked for the first time.
+
+**Info — Pausing the Agent for Input**
+
+`/langgraph-python/human-in-the-loop/useInterrupt` · route `/human-in-the-loop/useInterrupt`
+
+Now tracked for the first time.
+
+**Info — WebMCP**
+
+`/langgraph-python/webmcp` · route `/webmcp`
+
+Now tracked for the first time.
+
+---
+
 ## 2026-11-09
 
 ### 12:31 UTC — 35 pages, highest severity high
@@ -522,6 +746,8 @@ Now tracked for the first time.
 `/langgraph-python/threads-lifecycle` · route `/threads-lifecycle`
 
 Now tracked for the first time.
+
+---
 
 ---
 

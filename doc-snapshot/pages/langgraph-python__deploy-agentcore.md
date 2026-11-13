@@ -1,0 +1,4 @@
+# AWS AgentCore
+
+> Add a production-ready frontend to your AWS AgentCore agents with CopilotKit.
+<Content framework="langgraph" />
