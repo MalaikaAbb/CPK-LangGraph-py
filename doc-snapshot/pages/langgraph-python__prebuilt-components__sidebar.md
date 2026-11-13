@@ -21,7 +21,9 @@ Use the sidebar when you want:
 
 For a floating bubble that overlays content, see
 [CopilotPopup](/langgraph-python/prebuilt-components/popup). For a fully embedded chat pane,
-use [`<CopilotChat>`](/langgraph-python/prebuilt-components/chat) directly.
+use [`<CopilotChat>`](/langgraph-python/prebuilt-components/chat) directly. For saved
+conversations and switching between them, the sidebar hosts the
+[Threads Drawer](/langgraph-python/prebuilt-components/copilot-threads-drawer).
 
 ## Basic setup
 
@@ -29,6 +31,17 @@ Wrap your app in `<CopilotKit>` once (it wires the runtime, session, and
 agent registry) and drop `<CopilotSidebar>` alongside your main content.
 The sidebar renders as a sibling so it can slide out without reflowing
 your page:
+
+```tsx
+import { CopilotKit, CopilotSidebar } from "@copilotkit/react-core/v2";
+import "@copilotkit/react-core/v2/styles.css";
+```
+
+<Callout type="warn">
+  `@copilotkit/react-ui` also exports a component named `CopilotSidebar`. That
+  one is the [deprecated v1 sidebar](/langgraph-python/migrate/v2). This page documents the v2
+  sidebar, which you import from `@copilotkit/react-core/v2`.
+</Callout>
 
 ```typescript
 // src/app/demos/prebuilt-sidebar/page.tsx

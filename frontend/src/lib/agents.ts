@@ -22,6 +22,7 @@ export const AGENT_IDS = [
   // Custom look and feel
   "chat-customization-css",
   "chat-slots",
+  "chat-markdown",
   "headless-simple",
   "headless-complete",
   "reasoning-default",
@@ -36,10 +37,19 @@ export const AGENT_IDS = [
   "gen-ui-tool-based",
   "a2ui-fixed-schema",
   "declarative-gen-ui",
+  "mcp_apps",
+  "open_gen_ui",
+  "open_gen_ui_advanced",
+  "genui",
+  "byoc_json_render",
+  "byoc_hashbrown",
 
   // App control
   "frontend-tools",
+  "webmcp",
   "hitl-in-chat",
+  "gen-ui-interrupt",
+  "governed-actions",
   "interrupt-flow",
   "programmatic-control",
   "interrupt-headless",

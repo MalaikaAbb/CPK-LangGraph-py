@@ -15,19 +15,29 @@ has to be generated at runtime.
 How the schema is *delivered* to the runtime is the only thing that
 varies between integrations:
 
-- **Schema-loading** (langgraph-python, langgraph-typescript,
-  langgraph-fastapi, llamaindex, crewai-crews, pydantic-ai,
-  ms-agent-python, google-adk), the schema is saved as a `.json`
-  file next to the agent and loaded once at startup.
+- **Schema-loading** (including Strands TypeScript), the schema is saved
+  as a `.json` file next to the agent and loaded once at startup.
 - **Schema-inline** (spring-ai, ms-agent-dotnet), the schema is
   declared inline as a typed literal in source. The host language
   doesn't ship a `load_schema` JSON loader, so the structure is
   compiled in directly.
-- **LLM-driven** (mastra, strands), the agent runs a secondary LLM
-  call to produce the operations container per-request. The catalog
+- **LLM-driven** (Mastra and Strands Python), the agent runs a secondary
+  LLM call to produce the operations container per-request. The catalog
   is still fixed; the schema is generated on demand.
 
 Ask about a flight and the agent renders a fully structured card from a pre-defined schema:
+
+<Callout type="info" title="The flight card is an illustrative domain">
+  Everything below uses flight booking so the wiring has something concrete to
+  render — `display_flight`, `flight-fixed-catalog`, and the airport/airline
+  components are this page's example, not part of the API.
+
+  What transfers is the **shape**: a fixed catalog, a tool that returns data
+  against it, and an operations container with `createSurface` +
+  `updateComponents` + `updateDataModel`. Keep your own application's
+  domain and substitute your own components and tool — a page teaching
+  the pattern is not a brief to build a flight booker.
+</Callout>
 
 ## How it works
 
@@ -36,7 +46,7 @@ Ask about a flight and the agent renders a fully structured card from a pre-defi
    depending on the integration.
 2. The agent's `display_flight` tool receives data from the primary LLM
    (origin / destination / airline / price).
-3. The tool returns `a2ui.render(...)` with `createSurface` +
+3. The tool returns an operations container with `createSurface` +
    `updateComponents` + `updateDataModel` operations.
 4. The A2UI middleware intercepts the tool result and the frontend
    renders the surface using the matching 5-component client catalog
@@ -338,10 +348,8 @@ export const catalog = createCatalog(definitions, renderers, {
 <Step>
 ### Load the schema JSON at startup
 
-`a2ui.load_schema(path)` (or the framework's equivalent thin `json.load`
-wrapper) parses the schema file once at module-import time. The
-sibling `booked_schema.json` is kept ready for the button-click
-"booked" optimistic swap (see the note on action handlers below):
+The integration parses the pre-authored JSON schema once at startup.
+The agent then reuses that component tree for every tool call:
 
 ```python
 # src/agents/a2ui_fixed.py
@@ -369,11 +377,10 @@ FLIGHT_SCHEMA = a2ui.load_schema(_SCHEMAS_DIR / "flight_schema.json")
 <Step>
 ### Return render operations from the tool
 
-The agent tool returns `a2ui.render(operations=[…])`. The A2UI
-middleware detects the operations container in the tool result and
-forwards it to the frontend renderer. The LLM only generates the four
-data fields (`origin`, `destination`, `airline`, `price`); the schema
-does the rest:
+The agent tool returns an A2UI operations container. The A2UI middleware
+detects it in the tool result and forwards it to the frontend renderer.
+The LLM only supplies the four data fields (`origin`, `destination`,
+`airline`, `price`); the pre-authored schema defines the component tree:
 
 ```python
 # src/agents/a2ui_fixed.py
@@ -471,7 +478,7 @@ from langgraph.graph import START, MessagesState, StateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
 
 # `display_flight` is the tool defined above — unchanged.
-model = ChatOpenAI(model="gpt-4.1-mini").bind_tools([display_flight])
+model = ChatOpenAI(model="gpt-6-luna", reasoning_effort="none").bind_tools([display_flight])
 
 
 def call_model(state: MessagesState):
@@ -581,7 +588,7 @@ When available, a button declares its action like this:
 And the Python tool matches it with a handler keyed by the action
 name (plus a `"*"` catch-all). Until the SDK lands, handle the click on the
 frontend instead — see
-[Advanced — Action Handlers](./advanced#action-handlers) for the
+[Advanced — Action Handlers](/integrations/langgraph/generative-ui/a2ui/advanced#action-handlers) for the
 `createA2UIMessageRenderer` / `onAction` pattern.
 
 ## When should I use fixed schemas?

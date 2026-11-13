@@ -75,6 +75,13 @@ chat_controls_graph = build_chat_graph()
 
 chat_customization_css_graph = build_chat_graph()
 chat_slots_graph = build_chat_graph()
+# `/custom-look-and-feel/markdown` — the page publishes no backend; any chat
+# agent works. Nudged towards markdown so the three markdownRenderer shapes
+# have headings and links to draw (prompt wording is this repo's).
+chat_markdown_graph = build_chat_graph(
+    system_prompt=DEFAULT_SYSTEM_PROMPT
+    + " Format answers in markdown (headings, lists, links) when it helps."
+)
 headless_simple_graph = build_chat_graph()
 headless_complete_graph = build_chat_graph()
 
@@ -128,6 +135,16 @@ voice_graph = build_chat_graph(
 # frontend; CopilotKitMiddleware forwards them in.
 
 frontend_tools_graph = build_chat_graph()
+# `/webmcp` — the page publishes only frontend code (`useFrontendTool` for
+# `searchOrders`, mirrored to `document.modelContext`). Any graph whose
+# middleware forwards frontend tools serves it; the prompt is this repo's
+# (same as CPK-LangGraph-TS's webmcp graph).
+webmcp_graph = build_chat_graph(
+    system_prompt=(
+        "You are a helpful assistant. Use the tools the app registers to answer; "
+        "when the user asks about orders, call `searchOrders`."
+    )
+)
 
 gen_ui_tool_based_graph = build_chat_graph(
     system_prompt=(
@@ -137,6 +154,9 @@ gen_ui_tool_based_graph = build_chat_graph(
     )
 )
 
+# No longer registered: since the 2026-11 sync `hitl-in-chat` is served by the
+# HITL Overview page's own Code-tab agent (src/agents/hitl_in_chat_agent.py).
+# Kept so the earlier prompt stays visible for comparison.
 hitl_in_chat_graph = build_chat_graph(
     system_prompt=(
         "You are a scheduling assistant. When the user asks to book, schedule "
@@ -146,6 +166,11 @@ hitl_in_chat_graph = build_chat_graph(
 )
 
 programmatic_control_graph = build_chat_graph()
+
+# `/human-in-the-loop/governed-actions` publishes no backend. It runs on the
+# HITL section's own `frontend_tools.py` snippet (tools=[], default prompt),
+# which forwards the page's `approve_governed_action` frontend tool.
+governed_actions_graph = build_chat_graph()
 
 
 # --- Subgraphs -----------------------------------------------------------

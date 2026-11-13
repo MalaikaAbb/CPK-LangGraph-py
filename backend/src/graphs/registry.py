@@ -69,6 +69,10 @@ REGISTRY: dict[str, RegisteredGraph] = {
     "chat-slots": RegisteredGraph(
         "chat", "chat_slots_graph", "/langgraph-python/custom-look-and-feel/slots"
     ),
+    "chat-markdown": RegisteredGraph(
+        "chat", "chat_markdown_graph",
+        "/langgraph-python/custom-look-and-feel/markdown",
+    ),
     "headless-simple": RegisteredGraph(
         "chat", "headless_simple_graph",
         "/langgraph-python/custom-look-and-feel/headless-ui",
@@ -112,13 +116,55 @@ REGISTRY: dict[str, RegisteredGraph] = {
         "declarative_gen_ui", "graph",
         "/langgraph-python/generative-ui/a2ui/dynamic-schema",
     ),
+    # Declarative › JSON Render and Hashbrown. Ids are the graph ids the
+    # pages' Code-tab runtime routes name; each has its own runtime endpoint.
+    "byoc_json_render": RegisteredGraph(
+        "byoc_json_render", "graph",
+        "/langgraph-python/generative-ui/json-render",
+    ),
+    "byoc_hashbrown": RegisteredGraph(
+        "byoc_hashbrown", "graph",
+        "/langgraph-python/generative-ui/hashbrown",
+    ),
+
+    # Components and surfaces (nine pages): repo-authored, framework-neutral
+    # pages publish no LangGraph agent. Served by /api/copilotkit-genui and
+    # /api/copilotkit-genui-transports.
+    "genui": RegisteredGraph(
+        "genui", "graph", "/langgraph-python/generative-ui/components",
+    ),
+
+    # Generative UI › Open-ended (MCP Apps, Open Generative UI). Ids are the
+    # graph ids the pages' Code-tab runtime routes name.
+    "mcp_apps": RegisteredGraph(
+        "mcp_apps", "graph", "/langgraph-python/generative-ui/mcp-apps",
+    ),
+    "open_gen_ui": RegisteredGraph(
+        "open_gen_ui", "graph", "/langgraph-python/generative-ui/open-generative-ui",
+    ),
+    "open_gen_ui_advanced": RegisteredGraph(
+        "open_gen_ui_advanced", "graph",
+        "/langgraph-python/generative-ui/open-generative-ui",
+    ),
 
     # --- App control -----------------------------------------------------
     "frontend-tools": RegisteredGraph(
         "chat", "frontend_tools_graph", "/langgraph-python/frontend-tools"
     ),
+    # Served by the HITL Overview page's Code-tab agent since 2026-11; the
+    # older /human-in-the-loop route shares it.
+    "webmcp": RegisteredGraph(
+        "chat", "webmcp_graph", "/langgraph-python/webmcp"
+    ),
     "hitl-in-chat": RegisteredGraph(
-        "chat", "hitl_in_chat_graph", "/langgraph-python/human-in-the-loop"
+        "hitl_in_chat", "graph", "/langgraph-python/human-in-the-loop"
+    ),
+    # Pausing the Agent for Input (useInterrupt) addresses `gen-ui-interrupt`,
+    # but the page prints only the `schedule_meeting` tool and never assembles
+    # a graph (src/agents/interrupt_agent.py), so nothing is registered for it.
+    "governed-actions": RegisteredGraph(
+        "chat", "governed_actions_graph",
+        "/langgraph-python/human-in-the-loop/governed-actions",
     ),
     # Native LangGraph `interrupt()` — the pattern with no ADK counterpart.
     "interrupt-flow": RegisteredGraph(
@@ -129,6 +175,8 @@ REGISTRY: dict[str, RegisteredGraph] = {
         "chat", "programmatic_control_graph",
         "/langgraph-python/programmatic-control",
     ),
+    # Also serves /human-in-the-loop/headless (Headless Interrupts publishes
+    # no backend; this graph interrupts with the same {topic, attendee, slots}).
     "interrupt-headless": RegisteredGraph(
         "interrupt_headless", "graph", "/langgraph-python/programmatic-control"
     ),

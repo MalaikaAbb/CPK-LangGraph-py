@@ -1,4 +1,4 @@
-# Fully Headless UI
+# Headless UI
 
 > Build any UI — chat or not — on top of the CopilotKit primitives with zero UI opinions.
 
