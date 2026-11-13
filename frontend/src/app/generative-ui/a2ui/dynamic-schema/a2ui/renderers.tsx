@@ -41,6 +41,17 @@ const c = {
   divider: "#e2e8f0",
 };
 
+// `tooltipStyle` and `barCursor` are used by the page's renderers snippet but
+// not defined in it. Taken verbatim from the same page's demo Code tab
+// (src/app/demos/declarative-gen-ui/a2ui/renderers.tsx), not the page prose.
+// `--card` / `--border` are not defined in this repo's theme (only `--accent`
+// is), so the dark-mode halves fall back to the CSS initial value.
+const tooltipStyle = {
+  backgroundColor: "light-dark(#fff, var(--card))",
+  border: "1px solid light-dark(#ccc, var(--border))",
+};
+const barCursor = { fill: "light-dark(#ccc, var(--accent))" };
+
 /**
  * The LLM sometimes emits chart values as strings, which Recharts treats as
  * categorical (unordered axis ticks). Coerce, but warn rather than silently
@@ -151,8 +162,8 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
 
   Metric: ({ props }) => {
     const trendColors: Record<string, string> = {
-      up: "#059669",
-      down: "#dc2626",
+      up: "light-dark(#059669, #34d399)",
+      down: "light-dark(#dc2626, #f87171)",
       neutral: c.muted,
     };
     const trendIcons: Record<string, string> = {
@@ -309,12 +320,13 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
                   innerRadius={40}
                   outerRadius={80}
                   paddingAngle={2}
+                  stroke="var(--card)"
                 >
                   {data.map((_, i) => (
                     <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} />
               </RechartsPieChart>
             </ResponsiveContainer>
           </div>
@@ -342,7 +354,7 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
                 <CartesianGrid strokeDasharray="3 3" stroke={c.divider} />
                 <XAxis dataKey="label" tick={{ fontSize: 11, fill: c.muted }} />
                 <YAxis tick={{ fontSize: 11, fill: c.muted }} />
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} cursor={barCursor} />
                 <Bar dataKey="value" fill="#4285f4" radius={[4, 4, 0, 0]} />
               </RechartsBarChart>
             </ResponsiveContainer>
