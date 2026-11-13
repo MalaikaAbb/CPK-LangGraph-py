@@ -355,6 +355,8 @@ export const NAV: NavGroup[] = [
         status: "partial",
         statusNote:
           "The page's Code tab (two Python agents, runtime route, both demo pages); route builds agents via buildAgents. ./chat (minimal) and ./design-skill (feeds openGenerativeUI.designSkill) are borrowed from the CopilotKit showcase (via CPK-LangGraph-TS); suggestion chips not copied (advanced page's useConfigureSuggestions kept as doc: comments). Advanced variant at /generative-ui/open-generative-ui/advanced. Not yet checked in a browser.",
+      },
+      {
         path: "/generative-ui/components",
         hasDemo: true,
         agentId: "genui",
