@@ -8,6 +8,10 @@
  *
  * The primitives imported below are self-defined — see
  * `../../_components/primitives.tsx` and the warning on the route page.
+ *
+ * The `dark:` classes on Title/Airport/Arrow/PriceTag are the page's own
+ * (shadcn tokens `foreground`, `muted-foreground`, `border`). This repo's
+ * Tailwind v4 theme defines none of them, so they generate nothing here.
  */
 import React from "react";
 import type { CatalogRenderers } from "@copilotkit/a2ui-renderer";
@@ -40,10 +44,10 @@ export const renderers: CatalogRenderers<Definitions> = {
   Title: ({ props }) => (
     <div className="flex items-center justify-between">
       <div className="space-y-1">
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500 dark:text-muted-foreground">
           Itinerary
         </p>
-        <h3 className="text-base font-semibold leading-none tracking-tight text-neutral-900 dark:text-slate-100">
+        <h3 className="text-base font-semibold leading-none tracking-tight text-neutral-900 dark:text-foreground">
           {s(props.text)}
         </h3>
       </div>
@@ -54,14 +58,14 @@ export const renderers: CatalogRenderers<Definitions> = {
   ),
   Airport: ({ props }) => (
     <div className="flex flex-col items-center">
-      <span className="font-mono text-2xl font-semibold tracking-wider text-neutral-900 dark:text-slate-100">
+      <span className="font-mono text-2xl font-semibold tracking-wider text-neutral-900 dark:text-foreground">
         {s(props.code)}
       </span>
     </div>
   ),
   Arrow: () => (
     <div className="flex flex-1 items-center px-3">
-      <Separator className="flex-1" />
+      <Separator className="flex-1 bg-neutral-200 dark:bg-border" />
       <svg
         width="16"
         height="16"
@@ -71,13 +75,13 @@ export const renderers: CatalogRenderers<Definitions> = {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="mx-1 text-neutral-400"
+        className="mx-1 text-neutral-400 dark:text-muted-foreground"
         aria-hidden
       >
         <line x1="5" y1="12" x2="19" y2="12" />
         <polyline points="12 5 19 12 12 19" />
       </svg>
-      <Separator className="flex-1" />
+      <Separator className="flex-1 bg-neutral-200 dark:bg-border" />
     </div>
   ),
   AirlineBadge: ({ props }) => (
@@ -87,10 +91,10 @@ export const renderers: CatalogRenderers<Definitions> = {
   ),
   PriceTag: ({ props }) => (
     <div className="flex items-baseline gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+      <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500 dark:text-muted-foreground">
         Total
       </span>
-      <span className="font-mono text-base font-semibold text-neutral-900 dark:text-slate-100">
+      <span className="font-mono text-base font-semibold text-neutral-900 dark:text-foreground">
         {s(props.amount)}
       </span>
     </div>

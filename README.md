@@ -628,6 +628,10 @@ The nine [Components and surfaces](https://docs.copilotkit.ai/langgraph-python/g
 
 Since the 2026-11 doc sync, [A2UI Dynamic Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/dynamic-schema)'s `myRenderers` passes `contentStyle={tooltipStyle}` and `cursor={barCursor}` to the Recharts tooltips, but the page's snippet never declares either constant. Both are in the page's own demo Code tab (`src/app/demos/declarative-gen-ui/a2ui/renderers.tsx`) and were copied from there, labelled, into `frontend/src/app/generative-ui/a2ui/dynamic-schema/a2ui/renderers.tsx`. Their dark halves (and the new `stroke="var(--card)"` on the pie) reference `--card` / `--border`, which this repo's theme doesn't define, so those fall back to the CSS initial value. The `light-dark()` trend colours only switch when a `color-scheme` is set.
 
+**41. A2UI Fixed Schema's dark-mode classes use shadcn tokens this repo doesn't define**
+
+Since the 2026-11 doc sync, [A2UI Fixed Schema](https://docs.copilotkit.ai/langgraph-python/generative-ui/a2ui/fixed-schema)'s renderers (Title, Airport, Arrow, PriceTag) add `dark:text-foreground`, `dark:text-muted-foreground` and `dark:bg-border`. This repo's Tailwind v4 theme has none of these tokens, so in dark mode the classes generate nothing; the previous harness-only `dark:text-slate-100` was dropped to match the page, so the flight card's headings stay `text-neutral-900` in dark mode. Copied as published in `frontend/src/app/generative-ui/a2ui/fixed-schema/a2ui/renderers.tsx`.
+
 ### Things the docs reference but never define
 
 **38. The new Human-in-the-loop pages print excerpts, not agents**
